@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {name}
-  namespace: default
+  name: control-tower
+  namespace: gateway
 spec:
   scaleTargetRef:
     apiVersion: apps/v1beta1
     kind: Deployment
-    name: {name}
+    name: control-tower
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 60
