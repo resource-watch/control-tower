@@ -63,8 +63,8 @@ node {
             sh("kubectl apply -f k8s/services/")
             sh("kubectl apply -f k8s/staging/")
           }
-          sh("kubectl set image deployment ${appName} ${appName}=${imageTag} --record")
-          sh("kubectl set image deployment ${appName}-cron ${appName}-cron=${imageTag} --record")
+          sh("kubectl set image deployment ${appName} ${appName}=${imageTag} --record -n gateway")
+          sh("kubectl set image deployment ${appName}-cron ${appName}-cron=${imageTag} --record -n gateway")
           break
 
         // Roll out to aws
@@ -78,7 +78,9 @@ node {
             sh("kubectl apply -f k8s/services/")
             sh("kubectl apply -f k8s/staging/")
           }
-          sh("kubectl set image deployment ${appName} ${appName}=${imageTag} --record")
+          sh("kubectl set image deployment ${appName} ${appName}=${imageTag} --record -n gateway")
+          sh("kubectl set image deployment ${appName}-cron ${appName}-cron=${imageTag} --record -n gateway")
+
           break
 
         // Roll out to production
@@ -111,8 +113,8 @@ node {
               sh("kubectl apply -f k8s/services/")
               sh("kubectl apply -f k8s/production/")
             }
-            sh("kubectl set image deployment ${appName} ${appName}=${imageTag} --record")
-            sh("kubectl set image deployment ${appName}-cron ${appName}-cron=${imageTag} --record")
+            sh("kubectl set image deployment ${appName} ${appName}=${imageTag} --record -n gateway")
+            sh("kubectl set image deployment ${appName}-cron ${appName}-cron=${imageTag} --record -n gateway")
           } else {
             sh("echo NOT DEPLOYED")
             currentBuild.result = 'SUCCESS'
