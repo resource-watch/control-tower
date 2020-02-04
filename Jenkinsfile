@@ -67,6 +67,20 @@ node {
           sh("kubectl set image deployment ${appName}-cron ${appName}-cron=${imageTag} --record")
           break
 
+        // Roll out to aws
+        case "aws":
+          sh("echo Deploying to AWS cluster")
+          sh("kubectl config use-context ${KUBECTL_CONTEXT_PREFIX}_${CLOUD_PROJECT_NAME}_${CLOUD_PROJECT_ZONE}_${KUBE_STAGING_CLUSTER}")
+          def service = sh([returnStdout: true, script: "kubectl get deploy ${appName} || echo NotFound"]).trim()
+          if ((service && service.indexOf("NotFound") > -1) || (forceCompleteDeploy)){
+            sh("sed -i -e 's/{name}/${appName}/g' k8s/services/*.yaml")
+            sh("sed -i -e 's/{name}/${appName}/g' k8s/staging/*.yaml")
+            sh("kubectl apply -f k8s/services/")
+            sh("kubectl apply -f k8s/staging/")
+          }
+          sh("kubectl set image deployment ${appName} ${appName}=${imageTag} --record")
+          break
+
         // Roll out to production
         case "master":
           def userInput = true
