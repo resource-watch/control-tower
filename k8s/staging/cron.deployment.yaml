@@ -4,6 +4,7 @@ metadata:
   labels:
     name: control-tower-cron
   name: control-tower-cron
+  namespace: gateway
 spec:
   template:
     metadata:
