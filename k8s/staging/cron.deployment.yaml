@@ -11,6 +11,11 @@ spec:
       labels:
         name: control-tower-cron
     spec:
+      tolerations:
+        - key: "type"
+          operator: "Equal"
+          value: "gateway"
+          effect: "NoSchedule"
       containers:
       - name: control-tower-cron
         image: vizzuality/control-tower
