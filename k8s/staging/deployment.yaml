@@ -16,6 +16,15 @@ spec:
           operator: "Equal"
           value: "gateway"
           effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - gateway
       containers:
         - name: control-tower
           image: vizzuality/control-tower
