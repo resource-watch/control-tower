@@ -11,11 +11,6 @@ spec:
       labels:
         name: control-tower
     spec:
-      tolerations:
-        - key: "type"
-          operator: "Equal"
-          value: "gateway"
-          effect: "NoSchedule"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
