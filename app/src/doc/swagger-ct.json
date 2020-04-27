@@ -7,7 +7,7 @@
     },
     "host": "control.tower.dev",
     "schemes": [
-        "http"
+        "https"
     ],
     "produces": [
         "application/vnd.api+json",

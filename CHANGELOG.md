@@ -1,3 +1,7 @@
+## 27/04/2020
+
+- Modify configuration to match AWS deployment. Deprecate deployment on GCP.
+
 # 2.3.0
 
 ## 02/04/2020

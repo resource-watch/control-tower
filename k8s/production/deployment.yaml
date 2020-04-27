@@ -2,19 +2,15 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    name: {name}
-  name: {name}
+    name: control-tower
+  name: control-tower
+  namespace: gateway
 spec:
   template:
     metadata:
       labels:
-        name: {name}
+        name: control-tower
     spec:
-      tolerations:
-        - key: "type"
-          operator: "Equal"
-          value: "gateway"
-          effect: "NoSchedule"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -25,8 +21,8 @@ spec:
                     values:
                       - gateway
       containers:
-        - name: {name}
-          image: vizzuality/{name}
+        - name: control-tower
+          image: vizzuality/control-tower
           imagePullPolicy: Always
           resources:
             requests:
@@ -61,142 +57,142 @@ spec:
             - name: CT_MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: dbsecrets
+                  name: control-tower
                   key: CT_MONGO_URI
             - name: SESSION_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: SESSION_KEY
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: JWT_SECRET
             - name: GFW_TWITTER_CONSUMER_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: GFW_TWITTER_CONSUMER_KEY
             - name: GFW_TWITTER_CONSUMER_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: GFW_TWITTER_CONSUMER_SECRET
             - name: GFW_FACEBOOK_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: GFW_FACEBOOK_CLIENT_ID
             - name: GFW_FACEBOOK_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: GFW_FACEBOOK_CLIENT_SECRET
             - name: GFW_GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: GFW_GOOGLE_CLIENT_ID
             - name: GFW_GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: GFW_GOOGLE_CLIENT_SECRET
             - name: RW_TWITTER_CONSUMER_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: RW_TWITTER_CONSUMER_KEY
             - name: RW_TWITTER_CONSUMER_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: RW_TWITTER_CONSUMER_SECRET
             - name: RW_FACEBOOK_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: RW_FACEBOOK_CLIENT_ID
             - name: RW_FACEBOOK_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: RW_FACEBOOK_CLIENT_SECRET
             - name: RW_GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: RW_GOOGLE_CLIENT_ID
             - name: RW_GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: RW_GOOGLE_CLIENT_SECRET
             - name: PREP_TWITTER_CONSUMER_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: PREP_TWITTER_CONSUMER_KEY
             - name: PREP_TWITTER_CONSUMER_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: PREP_TWITTER_CONSUMER_SECRET
             - name: PREP_FACEBOOK_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: PREP_FACEBOOK_CLIENT_ID
             - name: PREP_FACEBOOK_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: PREP_FACEBOOK_CLIENT_SECRET
             - name: PREP_GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: PREP_GOOGLE_CLIENT_ID
             - name: PREP_GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: PREP_GOOGLE_CLIENT_SECRET
             - name: BASICAUTH_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: BASICAUTH_PASSWORD
             - name: SPARKPOST_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: SPARKPOST_KEY
             - name: INSTAPUSH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: INSTAPUSH_TOKEN
             - name: INSTAPUSH_ID
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: INSTAPUSH_ID
             - name: INSTAPUSH_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: INSTAPUSH_SECRET
             - name: FASTLY_APIKEY
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: FASTLY_APIKEY
             - name: FASTLY_SERVICEID
               valueFrom:
                 secretKeyRef:
-                  name: ctsecrets
+                  name: control-tower
                   key: FASTLY_SERVICEID
 
           ports:

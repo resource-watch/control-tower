@@ -47,7 +47,7 @@ describe('Microservices endpoints - Get docs', () => {
             },
             host: config.get('server.publicUrl').replace('http://', ''),
             schemes: [
-                'http'
+                'https'
             ],
             produces: [
                 'application/vnd.api+json',
