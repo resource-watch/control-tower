@@ -67,6 +67,7 @@ node {
           break
 
         // Roll out to production
+        case "master":
           def userInput = true
           def didTimeout = false
           try {
