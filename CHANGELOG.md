@@ -1,3 +1,7 @@
+## 27/04/2020
+
+- Modify configuration to match AWS deployment. Deprecate deployment on GCP.
+
 ## 01/04/2020
 - Add possibility of toggling a read-only mode that blocks all write endpoints.
 
