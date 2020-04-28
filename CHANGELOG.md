@@ -1,7 +1,3 @@
-## 28/04/2020
-
-- Add root route and response.
-
 ## 27/04/2020
 
 - Modify configuration to match AWS deployment. Deprecate deployment on GCP.
