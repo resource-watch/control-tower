@@ -1,6 +1,7 @@
 ## 25/06/2020
 
 - Add GET `/user/me` endpoint as a convenient way to get the details of the current user.
+- Prevent users from assigning roles to themselves on sign up.
 
 ## 27/04/2020
 

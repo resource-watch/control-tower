@@ -165,7 +165,11 @@ describe('OAuth endpoints tests - Sign up with JSON content type', () => {
     });
 
     it('Registering a user with an existing email address (temp user) returns a 422 error', async () => {
-        const tempUser = await UserTempModel.findOne({ email: 'someemail@gmail.com' }).exec();
+        const tempUser = await new UserTempModel({
+            email: 'someemail@gmail.com',
+            confirmationToken: 'myToken'
+        }).save();
+
         should.exist(tempUser);
 
         const response = await requester
@@ -185,7 +189,11 @@ describe('OAuth endpoints tests - Sign up with JSON content type', () => {
     });
 
     it('Confirming a user\'s account using the email token should be successful (user without app)', async () => {
-        const tempUser = await UserTempModel.findOne({ email: 'someemail@gmail.com' }).exec();
+        const tempUser = await new UserTempModel({
+            email: 'someemail@gmail.com',
+            confirmationToken: 'myToken',
+            extraUserData: { apps: [] }
+        }).save();
 
         const response = await requester
             .get(`/auth/confirm/${tempUser.confirmationToken}`)
@@ -207,7 +215,12 @@ describe('OAuth endpoints tests - Sign up with JSON content type', () => {
     });
 
     it('Registering a user with an existing email address (confirmed user) returns a 422 error', async () => {
-        const user = await UserModel.findOne({ email: 'someemail@gmail.com' }).exec();
+        const user = await new UserModel({
+            email: 'someemail@gmail.com',
+            confirmationToken: 'myToken',
+            extraUserData: { apps: [] }
+        }).save();
+
         should.exist(user);
 
         const response = await requester
@@ -226,8 +239,6 @@ describe('OAuth endpoints tests - Sign up with JSON content type', () => {
         response.body.errors[0].detail.should.equal('Email exists');
     });
 
-
-    // User registration - with app
     it('Registering a user with correct data and app returns a 200', async () => {
         nock('https://api.sparkpost.com')
             .post('/api/v1/transmissions', (body) => {
@@ -297,8 +308,82 @@ describe('OAuth endpoints tests - Sign up with JSON content type', () => {
         user.extraUserData.apps.should.be.an('array').and.contain('rw');
     });
 
+    it('Registering a user with a custom role should return a 200 and ignore the role', async () => {
+        nock('https://api.sparkpost.com')
+            .post('/api/v1/transmissions', (body) => {
+                const expectedRequestBody = {
+                    content: {
+                        template_id: 'confirm-user'
+                    },
+                    recipients: [
+                        {
+                            address: {
+                                email: 'someotheremail@gmail.com'
+                            }
+                        }
+                    ],
+                    substitution_data: {
+                        fromEmail: 'noreply@resourcewatch.org',
+                        fromName: 'RW API',
+                        appName: 'RW API',
+                        logo: 'https://resourcewatch.org/static/images/logo-embed.png'
+                    }
+                };
+
+                body.should.have.property('substitution_data').and.be.an('object');
+                body.substitution_data.should.have.property('urlConfirm').and.include(`${process.env.PUBLIC_URL}/auth/confirm/`);
+
+                delete body.substitution_data.urlConfirm;
+
+                body.should.deep.equal(expectedRequestBody);
+
+                return isEqual(body, expectedRequestBody);
+            })
+            .reply(200);
+
+        const missingUser = await UserTempModel.findOne({ email: 'someotheremail@gmail.com' }).exec();
+        should.not.exist(missingUser);
+
+        const response = await requester
+            .post(`/auth/sign-up`)
+            .set('Content-Type', 'application/json')
+            .send({
+                email: 'someotheremail@gmail.com',
+                password: 'somepassword',
+                repeatPassword: 'somepassword',
+                role: 'ADMIN',
+                apps: ['rw']
+            });
+
+        response.status.should.equal(200);
+        response.should.be.json;
+        // eslint-disable-next-line
+        response.body.should.have.property('data').and.not.be.empty;
+
+        const responseUser = response.body.data;
+        responseUser.should.have.property('email').and.equal('someotheremail@gmail.com');
+        responseUser.should.have.property('role').and.equal('USER');
+        responseUser.should.have.property('extraUserData').and.be.an('object');
+        // eslint-disable-next-line
+        responseUser.extraUserData.should.have.property('apps').and.be.an('array').and.contain('rw');
+
+
+        const user = await UserTempModel.findOne({ email: 'someotheremail@gmail.com' }).exec();
+        should.exist(user);
+        user.should.have.property('email').and.equal('someotheremail@gmail.com');
+        user.should.have.property('role').and.equal('USER');
+        // eslint-disable-next-line
+        user.should.have.property('confirmationToken').and.not.be.empty;
+        user.should.have.property('extraUserData').and.be.an('object');
+        user.extraUserData.apps.should.be.an('array').and.contain('rw');
+    });
+
     it('Confirming a user\'s account using the email token should be successful (user with app)', async () => {
-        const tempUser = await UserTempModel.findOne({ email: 'someotheremail@gmail.com' }).exec();
+        const tempUser = await new UserTempModel({
+            email: 'someotheremail@gmail.com',
+            confirmationToken: 'myToken',
+            extraUserData: { apps: ['rw'] }
+        }).save();
 
         const response = await requester
             .get(`/auth/confirm/${tempUser.confirmationToken}`)
@@ -318,14 +403,12 @@ describe('OAuth endpoints tests - Sign up with JSON content type', () => {
         confirmedUser.extraUserData.apps.should.be.an('array').and.contain('rw');
     });
 
-    after(async () => {
-        UserModel.deleteMany({}).exec();
-        UserTempModel.deleteMany({}).exec();
+    after(closeTestAgent);
 
-        closeTestAgent();
-    });
+    afterEach(async () => {
+        await UserModel.deleteMany({}).exec();
+        await UserTempModel.deleteMany({}).exec();
 
-    afterEach(() => {
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);
         }
