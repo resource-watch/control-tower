@@ -1,3 +1,7 @@
+## 25/06/2020
+
+- Add GET `/user/me` endpoint as a convenient way to get the details of the current user.
+
 ## 27/04/2020
 
 - Modify configuration to match AWS deployment. Deprecate deployment on GCP.
