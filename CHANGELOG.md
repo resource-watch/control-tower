@@ -1,3 +1,5 @@
+# 2.4.0
+
 ## 25/06/2020
 
 - Add GET `/user/me` endpoint as a convenient way to get the details of the current user.
