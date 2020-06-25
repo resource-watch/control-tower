@@ -73,6 +73,7 @@ describe('Microservice cron - Pending checking', () => {
         (await VersionModel.findOne({ name: appConstants.ENDPOINT_VERSION })).should.have.property('lastUpdated').and.afterTime(preVersion.lastUpdated);
     });
 
+    // eslint-disable-next-line max-len
     it('Running the "pending" cron will activate a pending microservice that has become reachable, add redirects to existing endpoints (toDelete set to false) and update the version number', async () => {
         const preVersion = await VersionModel.findOne({ name: appConstants.ENDPOINT_VERSION });
 
@@ -135,7 +136,7 @@ describe('Microservice cron - Pending checking', () => {
         (await VersionModel.findOne({ name: appConstants.ENDPOINT_VERSION })).should.have.property('lastUpdated').and.afterTime(preVersion.lastUpdated);
     });
 
-
+    // eslint-disable-next-line max-len
     it('Running the "pending" cron will activate a pending microservice that has become reachable, add redirects to existing endpoints (toDelete set to true) and update the version number', async () => {
         const preVersion = await VersionModel.findOne({ name: appConstants.ENDPOINT_VERSION });
 
