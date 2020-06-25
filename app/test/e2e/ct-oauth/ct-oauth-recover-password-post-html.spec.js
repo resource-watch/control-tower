@@ -25,17 +25,12 @@ describe('OAuth endpoints tests - Recover password post - HTML version', () => {
         }
 
         requester = await getTestAgent(true);
-
-
     });
 
     beforeEach(async () => {
-
-        UserModel.deleteMany({}).exec();
-        UserTempModel.deleteMany({}).exec();
-        RenewModel.deleteMany({}).exec();
-
-
+        await UserModel.deleteMany({}).exec();
+        await UserTempModel.deleteMany({}).exec();
+        await RenewModel.deleteMany({}).exec();
     });
 
     it('Recover password post with fake token should return an error - HTML format (TODO: this should return a 422)', async () => {
