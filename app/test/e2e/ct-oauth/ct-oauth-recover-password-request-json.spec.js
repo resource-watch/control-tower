@@ -25,17 +25,15 @@ describe('OAuth endpoints tests - Recover password request - JSON version', () =
 
         requester = await getTestAgent(true);
 
-        UserModel.deleteMany({}).exec();
-        UserTempModel.deleteMany({}).exec();
-
-
+        await UserModel.deleteMany({}).exec();
+        await UserTempModel.deleteMany({}).exec();
     });
 
     beforeEach(async () => {
 
-        UserModel.deleteMany({}).exec();
-        UserTempModel.deleteMany({}).exec();
-        RenewModel.deleteMany({}).exec();
+        await UserModel.deleteMany({}).exec();
+        await UserTempModel.deleteMany({}).exec();
+        await RenewModel.deleteMany({}).exec();
 
 
     });

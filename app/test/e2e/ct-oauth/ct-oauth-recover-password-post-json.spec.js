@@ -29,8 +29,6 @@ describe('OAuth endpoints tests - Recover password post - JSON version', () => {
         await RenewModel.deleteMany({}).exec();
 
         requester = await getTestAgent(true);
-
-
     });
 
     it('Recover password post with fake token returns a 422 error - JSON format', async () => {

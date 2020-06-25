@@ -30,10 +30,8 @@ describe('OAuth endpoints tests - Sign up with HTML UI', () => {
 
         requester = await getTestAgent(true);
 
-        UserModel.deleteMany({}).exec();
-        UserTempModel.deleteMany({}).exec();
-
-
+        await UserModel.deleteMany({}).exec();
+        await UserTempModel.deleteMany({}).exec();
     });
 
     it('Registering a user without being logged in returns an 401 error (JSON format)', async () => {
