@@ -247,7 +247,7 @@ function authService(plugin, connection) {
             const user = await new UserTempModel({
                 provider: 'local',
                 email: data.email,
-                role: data.role || 'USER',
+                role: 'USER',
                 password: bcrypt.hashSync(data.password, salt),
                 confirmationToken: crypto.randomBytes(20).toString('hex'),
                 salt,
