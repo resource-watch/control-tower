@@ -197,6 +197,20 @@ module.exports = (plugin, connection, generalConfig) => {
             ctx.body = UserSerializer.serialize(users, link);
         }
 
+        async function getCurrentUser(ctx) {
+            const requestUser = getUser(ctx);
+
+            logger.info('Get current user: ', requestUser.id);
+
+            const user = await AuthService.getUserById(requestUser.id);
+
+            if (!user) {
+                ctx.throw(404, 'User not found');
+                return;
+            }
+            ctx.body = user;
+        }
+
         async function getUserById(ctx) {
             logger.info('Get User by id: ', ctx.params.id);
 
@@ -698,6 +712,7 @@ module.exports = (plugin, connection, generalConfig) => {
             logout,
             generateJWT,
             getUsers,
+            getCurrentUser,
             getUserById,
             findByIds,
             getIdsByRole,
@@ -872,6 +887,7 @@ module.exports = (plugin, connection, generalConfig) => {
     ApiRouter.get('/generate-token', isLogged, API.generateJWT);
 
     ApiRouter.get('/user', isLogged, isAdmin, API.getUsers);
+    ApiRouter.get('/user/me', isLogged, API.getCurrentUser);
     ApiRouter.get('/user/:id', isLogged, isAdmin, API.getUserById);
     ApiRouter.post('/user/find-by-ids', isLogged, isMicroservice, API.findByIds);
     ApiRouter.get('/user/ids/:role', isLogged, isMicroservice, API.getIdsByRole);
