@@ -35,7 +35,7 @@ describe('GET users by id', () => {
         response.status.should.equal(401);
     });
 
-    it('Get user while being logged in as a regular user returns a 400 error', async () => {
+    it('Get user while being logged in as a regular user returns a 403 error', async () => {
         const { token } = await createUserAndToken({ role: 'USER' });
 
         const response = await requester
