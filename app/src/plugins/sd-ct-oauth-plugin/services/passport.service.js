@@ -181,7 +181,8 @@ function passportService(plugin) {
                     clientID: app.facebook.clientID,
                     clientSecret: app.facebook.clientSecret,
                     callbackURL: `${plugin.config.publicUrl}/auth/facebook/callback`,
-                    profileFields: ['id', 'displayName', 'photos', 'email']
+                    profileFields: ['id', 'displayName', 'photos', 'email'],
+                    graphAPIVersion: 'v7.0',
                 };
                 const facebookStrategy = new FacebookStrategy(configFacebook, registerUser);
                 facebookStrategy.name += `:${apps[i]}`;

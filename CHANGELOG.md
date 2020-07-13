@@ -1,3 +1,9 @@
+# 2.4.1
+
+## 13/07/2020
+
+- Update version used of Facebook Graph API to 7.0 in Facebook OAuth.
+
 # 2.4.0
 
 ## 25/06/2020
