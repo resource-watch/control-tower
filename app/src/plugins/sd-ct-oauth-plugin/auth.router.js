@@ -327,6 +327,10 @@ module.exports = (plugin, connection, generalConfig) => {
         async function success(ctx) {
             if (ctx.session.callbackUrl) {
                 logger.info('Url redirect', ctx.session.callbackUrl);
+
+                // Removing "#_=_", added by FB to the return callbacks to the frontend :scream:
+                ctx.session.callbackUrl = ctx.session.callbackUrl.replace('#_=_', '');
+
                 if (ctx.session.generateToken) {
                     // generate token and eliminate session
                     const token = await createToken(ctx, false);
