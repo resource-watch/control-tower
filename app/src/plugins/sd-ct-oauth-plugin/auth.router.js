@@ -334,11 +334,15 @@ module.exports = (plugin, connection, generalConfig) => {
                 if (ctx.session.generateToken) {
                     // generate token and eliminate session
                     const token = await createToken(ctx, false);
-                    if (ctx.session.callbackUrl.indexOf('?') > -1) {
-                        ctx.redirect(`${ctx.session.callbackUrl}&token=${token}`);
-                    } else {
-                        ctx.redirect(`${ctx.session.callbackUrl}?token=${token}`);
-                    }
+
+                    // Replace token query parameter in redirect URL
+                    const url = new URL(ctx.session.callbackUrl);
+                    const { searchParams } = url;
+                    searchParams.set('token', token);
+                    url.search = searchParams.toString();
+
+                    // Perform redirect
+                    ctx.redirect(url.toString());
                 } else {
                     ctx.redirect(ctx.session.callbackUrl);
                 }
