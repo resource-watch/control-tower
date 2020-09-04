@@ -1,13 +1,26 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  creationTimestamp: null
   labels:
     name: control-tower-cron
   name: control-tower-cron
   namespace: gateway
 spec:
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      name: control-tower-cron
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
+      creationTimestamp: null
       labels:
         name: control-tower-cron
     spec:
@@ -21,16 +34,8 @@ spec:
                     values:
                       - gateway
       containers:
-        - name: control-tower-cron
-          image: vizzuality/control-tower
-          imagePullPolicy: Always
-          resources:
-            requests:
-              cpu: "0.35"
-              memory: "256M"
-            limits:
-              cpu: "1"
-              memory: "512M"
+        - args:
+            - startCron
           env:
             - name: PORT
               value: "9000"
@@ -47,154 +52,166 @@ spec:
             - name: PUBLIC_URL
               value: http://production-api.globalforestwatch.org
             - name: APP_NAME
-              value: "RW API"
+              value: RW API
             - name: APP_LOGO
               value: http://www.wri.org/sites/all/themes/wri/images/logo.png
             - name: APP_COLOR
-              value: "#f1b319"
+              value: '#f1b319'
             - name: CT_MONGO_URI
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: CT_MONGO_URI
+                  name: control-tower
             - name: SESSION_KEY
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: SESSION_KEY
+                  name: control-tower
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: JWT_SECRET
+                  name: control-tower
             - name: GFW_TWITTER_CONSUMER_KEY
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: GFW_TWITTER_CONSUMER_KEY
+                  name: control-tower
             - name: GFW_TWITTER_CONSUMER_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: GFW_TWITTER_CONSUMER_SECRET
+                  name: control-tower
             - name: GFW_FACEBOOK_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: GFW_FACEBOOK_CLIENT_ID
+                  name: control-tower
             - name: GFW_FACEBOOK_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: GFW_FACEBOOK_CLIENT_SECRET
+                  name: control-tower
             - name: GFW_GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: GFW_GOOGLE_CLIENT_ID
+                  name: control-tower
             - name: GFW_GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: GFW_GOOGLE_CLIENT_SECRET
+                  name: control-tower
             - name: RW_TWITTER_CONSUMER_KEY
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: RW_TWITTER_CONSUMER_KEY
+                  name: control-tower
             - name: RW_TWITTER_CONSUMER_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: RW_TWITTER_CONSUMER_SECRET
+                  name: control-tower
             - name: RW_FACEBOOK_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: RW_FACEBOOK_CLIENT_ID
+                  name: control-tower
             - name: RW_FACEBOOK_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: RW_FACEBOOK_CLIENT_SECRET
+                  name: control-tower
             - name: RW_GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: RW_GOOGLE_CLIENT_ID
+                  name: control-tower
             - name: RW_GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: RW_GOOGLE_CLIENT_SECRET
+                  name: control-tower
             - name: PREP_TWITTER_CONSUMER_KEY
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: PREP_TWITTER_CONSUMER_KEY
+                  name: control-tower
             - name: PREP_TWITTER_CONSUMER_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: PREP_TWITTER_CONSUMER_SECRET
+                  name: control-tower
             - name: PREP_FACEBOOK_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: PREP_FACEBOOK_CLIENT_ID
+                  name: control-tower
             - name: PREP_FACEBOOK_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: PREP_FACEBOOK_CLIENT_SECRET
+                  name: control-tower
             - name: PREP_GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: PREP_GOOGLE_CLIENT_ID
+                  name: control-tower
             - name: PREP_GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: PREP_GOOGLE_CLIENT_SECRET
+                  name: control-tower
             - name: BASICAUTH_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: BASICAUTH_PASSWORD
+                  name: control-tower
             - name: SPARKPOST_KEY
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: SPARKPOST_KEY
+                  name: control-tower
             - name: INSTAPUSH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: INSTAPUSH_TOKEN
+                  name: control-tower
             - name: INSTAPUSH_ID
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: INSTAPUSH_ID
+                  name: control-tower
             - name: INSTAPUSH_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: INSTAPUSH_SECRET
+                  name: control-tower
             - name: FASTLY_APIKEY
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: FASTLY_APIKEY
+                  name: control-tower
             - name: FASTLY_SERVICEID
               valueFrom:
                 secretKeyRef:
-                  name: control-tower
                   key: FASTLY_SERVICEID
-
-          args:
-            - startCron
+                  name: control-tower
+          image: vizzuality/control-tower
+          imagePullPolicy: Always
+          name: control-tower-cron
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512M
+            requests:
+              cpu: 350m
+              memory: 256M
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
       restartPolicy: Always
-
-
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status: {}

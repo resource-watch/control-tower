@@ -1,6 +1,6 @@
 # Control Tower API Gateway - Resource Watch 
 
-[![Build Status](https://travis-ci.org/resource-watch/control-tower.svg?branch=develop)](https://travis-ci.org/resource-watch/control-tower)
+[![Build Status](https://travis-ci.org/resource-watch/control-tower.svg?branch=dev)](https://travis-ci.org/resource-watch/control-tower)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6998e7a532fb2d138ca3/test_coverage)](https://codeclimate.com/github/resource-watch/control-tower/test_coverage)
 
 ## Dependencies
