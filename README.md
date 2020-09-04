@@ -9,6 +9,7 @@ Control Tower is built using [Node.js](https://nodejs.org/en/), and can be execu
 
 Native execution requires:
 - [Node.js](https://nodejs.org/en/)
+- [Yarn](https://yarnpkg.com/)
 - [MongoDB](https://www.mongodb.com/)
 - [Redis](https://redis.io/)
 
