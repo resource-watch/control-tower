@@ -2,7 +2,8 @@
 
 ## 13/07/2020
 
-- Update version used of Facebook Graph API to 7.0 in Facebook OAuth.
+- Update version used of Facebook Graph API to 7.0 in Facebook OAuth. [GTC-654](https://gfw.atlassian.net/browse/GTC-654)
+- Security updates for `handlebars` and `websocket-extensions` NPM packages.
 
 # 2.4.0
 
