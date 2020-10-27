@@ -1,3 +1,9 @@
+# v2.4.2
+
+## 27/10/2020
+
+- Upgrade `sparkpost` NPM package to version 2.1.4.
+
 # 2.4.1
 
 ## 13/07/2020
