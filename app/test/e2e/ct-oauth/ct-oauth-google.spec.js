@@ -8,7 +8,7 @@ const PluginModel = require('models/plugin.model');
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const authServiceFunc = require('plugins/sd-ct-oauth-plugin/services/auth.service');
 
-const { getTestAgent, closeTestAgent } = require('./../test-server');
+const { getTestAgent, closeTestAgent } = require('../test-server');
 const { setPluginSetting } = require('../utils/helpers');
 const mongooseOptions = require('../../../../config/mongoose');
 
@@ -34,16 +34,16 @@ describe('Google auth endpoint tests', () => {
         // We need to force-start the server, to ensure mongo has plugin info we can manipulate in the next instruction
         await getTestAgent(true);
 
-        await setPluginSetting('oauth', 'defaultApp', 'rw');
-        await setPluginSetting('oauth', 'thirdParty.rw.google.active', true);
-        await setPluginSetting('oauth', 'thirdParty.rw.google.clientSecret', 'TEST_GOOGLE_OAUTH2_CLIENT_SECRET');
+        await setPluginSetting('oauth', 'config.defaultApp', 'rw');
+        await setPluginSetting('oauth', 'config.thirdParty.rw.google.active', true);
+        await setPluginSetting('oauth', 'config.thirdParty.rw.google.clientSecret', 'TEST_GOOGLE_OAUTH2_CLIENT_SECRET');
 
         if (!process.env.TEST_GOOGLE_OAUTH2_CLIENT_ID) {
             skipTests = true;
-            await setPluginSetting('oauth', 'thirdParty.rw.google.clientID', 'TEST_GOOGLE_OAUTH2_CLIENT_ID');
+            await setPluginSetting('oauth', 'config.thirdParty.rw.google.clientID', 'TEST_GOOGLE_OAUTH2_CLIENT_ID');
         } else {
             nock.enableNetConnect(new RegExp(`(${process.env.HOST_IP}|accounts.google.com)`));
-            await setPluginSetting('oauth', 'thirdParty.rw.google.clientID', process.env.TEST_GOOGLE_OAUTH2_CLIENT_ID);
+            await setPluginSetting('oauth', 'config.thirdParty.rw.google.clientID', process.env.TEST_GOOGLE_OAUTH2_CLIENT_ID);
         }
 
         requester = await getTestAgent(true);
@@ -138,7 +138,6 @@ describe('Google auth endpoint tests', () => {
         responseTwo.should.be.html;
         responseTwo.text.should.include('Welcome to the RW API');
 
-
         const confirmedUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
         should.exist(confirmedUser);
         confirmedUser.should.have.property('email').and.equal('john.doe@vizzuality.com');
@@ -193,7 +192,6 @@ describe('Google auth endpoint tests', () => {
             .get('/')
             .reply(200, 'ok');
 
-
         await requester
             .get(`/auth?callbackUrl=https://www.wikipedia.org`);
 
@@ -209,7 +207,6 @@ describe('Google auth endpoint tests', () => {
 
         responseTwo.should.redirect;
         responseTwo.should.redirectTo('https://www.wikipedia.org/');
-
 
         const confirmedUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
         should.exist(confirmedUser);
@@ -264,7 +261,6 @@ describe('Google auth endpoint tests', () => {
         nock('https://www.wikipedia.org')
             .get('/')
             .reply(200, 'ok');
-
 
         await requester
             .get(`/auth?callbackUrl=https://www.google.com`);

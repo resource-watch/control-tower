@@ -4,12 +4,12 @@ const chai = require('chai');
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const Endpoint = require('models/endpoint.model');
 
-const { getTestAgent } = require('./../test-server');
+const { getTestAgent } = require('../test-server');
 const {
     updateVersion, createEndpoint, ensureCorrectError, createUserAndToken
 } = require('../utils/helpers');
 const { createMockEndpoint } = require('../mock');
-const { TOKENS } = require('./../test.constants');
+const { TOKENS } = require('../test.constants');
 
 chai.should();
 

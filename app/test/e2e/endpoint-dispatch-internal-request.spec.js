@@ -7,7 +7,6 @@ const { endpointTest, testFilter } = require('./test.constants');
 const {
     createEndpoint, updateVersion, getUserFromToken, createUserAndToken
 } = require('./utils/helpers');
-const { createMockEndpointWithBody } = require('./mock');
 
 chai.should();
 let requester;
@@ -44,13 +43,15 @@ describe('Dispatch internal requests', () => {
                 }
             ],
         });
-        createMockEndpointWithBody(`/api/v1/test1/test?loggedUser=null`, {
-            response: { body: { data: { foo: 'bar' } } },
-            method: 'get'
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`, {
-            method: 'get'
-        });
+
+        nock('http://mymachine:6001')
+            .get(`/api/v1/test1/test?loggedUser=null`)
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .reply(200, 'ok');
+
         const response = await requester
             .get('/api/v1/dataset')
             .set('authentication', `${token}`)

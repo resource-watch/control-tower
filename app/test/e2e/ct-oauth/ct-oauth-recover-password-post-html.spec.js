@@ -6,13 +6,13 @@ const mongoose = require('mongoose');
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const UserTempModel = require('plugins/sd-ct-oauth-plugin/models/user-temp.model');
 const RenewModel = require('plugins/sd-ct-oauth-plugin/models/renew.model');
+const { setPluginSetting } = require('../utils/helpers');
 
 chai.should();
 
-const { getTestAgent, closeTestAgent } = require('./../test-server');
+const { getTestAgent, closeTestAgent } = require('../test-server');
 
 let requester;
-
 
 nock.disableNetConnect();
 nock.enableNetConnect(process.env.HOST_IP);
@@ -23,6 +23,10 @@ describe('OAuth endpoints tests - Recover password post - HTML version', () => {
         if (process.env.NODE_ENV !== 'test') {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
+
+        await setPluginSetting('oauth', 'config.local.confirmUrlRedirect', 'http://google.com');
+        await setPluginSetting('oauth', 'config.applications.gfw.confirmUrlRedirect', 'https://www.globalforestwatch.org');
+        await setPluginSetting('oauth', 'config.applications.rw.confirmUrlRedirect', 'https://resourcewatch.org');
 
         requester = await getTestAgent(true);
     });
@@ -107,6 +111,7 @@ describe('OAuth endpoints tests - Recover password post - HTML version', () => {
     });
 
     it('Recover password post with correct token and matching passwords should redirect to the configured URL (happy case) - HTML format', async () => {
+
         const user = await new UserModel({
             email: 'potato@gmail.com'
         }).save();
@@ -127,7 +132,7 @@ describe('OAuth endpoints tests - Recover password post - HTML version', () => {
 
         return new Promise((resolve) => {
             response.should.redirect;
-            response.should.redirectTo('http://resourcewatch.org');
+            response.should.redirectTo('https://resourcewatch.org');
             resolve();
         });
     });

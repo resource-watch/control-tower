@@ -9,7 +9,6 @@ const {
 const {
     createEndpoint, ensureCorrectError, updateVersion, getUserFromToken, createUserAndToken
 } = require('./utils/helpers');
-const { createMockEndpointWithBody } = require('./mock');
 
 chai.should();
 let requester;
@@ -41,17 +40,19 @@ describe('Dispatch PATCH requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test?loggedUser=null', {
-            response: { body: { data: { foo: 'bar' } } },
-            method: 'get'
-        });
-        createMockEndpointWithBody('/api/v1/dataset', {
-            body: {
+
+        nock('http://mymachine:6001')
+            .get('/api/v1/test1/test?loggedUser=null')
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .post('/api/v1/dataset', {
                 foo: 'bar',
                 loggedUser: null,
                 dataset: { body: { data: { foo: 'bar' } } },
-            }
-        });
+            })
+            .reply(200, 'ok');
+
         const response = await requester
             .patch('/api/v1/dataset')
             .send({ foo: 'bar' });
@@ -123,17 +124,19 @@ describe('Dispatch PATCH requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody(`/api/v1/test1/test?loggedUser=null`, {
-            response: { body: { data: { foo: 'bar' } } },
-            method: 'get'
-        });
-        createMockEndpointWithBody('/api/v1/dataset', {
-            body: {
+
+        nock('http://mymachine:6001')
+            .get('/api/v1/test1/test?loggedUser=null')
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .post('/api/v1/dataset', {
                 foo: 'bar',
                 loggedUser: await getUserFromToken(token, false),
                 dataset: { body: { data: { foo: 'bar' } } },
-            }
-        });
+            })
+            .reply(200, 'ok');
+
         const response = await requester
             .patch('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
@@ -164,18 +167,18 @@ describe('Dispatch PATCH requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            method: 'patch',
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody('/api/v1/dataset', {
-            body: {
+        nock('http://mymachine:6001')
+            .patch('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .post('/api/v1/dataset', {
                 foo: 'bar',
                 loggedUser: null,
                 dataset: { body: { data: { foo: 'bar' } } },
-            }
-        });
+            })
+            .reply(200, 'ok');
+
         const response = await requester
             .patch('/api/v1/dataset')
             .send({ foo: 'bar' });
@@ -207,18 +210,18 @@ describe('Dispatch PATCH requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            method: 'patch',
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody('/api/v1/dataset', {
-            body: {
+        nock('http://mymachine:6001')
+            .patch('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .post('/api/v1/dataset', {
                 foo: 'bar',
                 loggedUser: await getUserFromToken(token, false),
                 dataset: { body: { data: { foo: 'bar' } } },
-            }
-        });
+            })
+            .reply(200, 'ok');
+
         const response = await requester
             .patch('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
@@ -227,7 +230,6 @@ describe('Dispatch PATCH requests with filters', () => {
         response.status.should.equal(200);
         response.text.should.equal('ok');
     });
-
 
     it('Endpoint with filters that can be verified and match return a 200 HTTP code (happy case)', async () => {
         await updateVersion();
@@ -249,18 +251,19 @@ describe('Dispatch PATCH requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            method: 'patch',
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody('/api/v1/dataset', {
-            body: {
+
+        nock('http://mymachine:6001')
+            .patch('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .post('/api/v1/dataset', {
                 foo: 'bar',
                 loggedUser: null,
                 dataset: { body: { data: { foo: 'bar' } } },
-            }
-        });
+            })
+            .reply(200, 'ok');
+
         const response = await requester.patch('/api/v1/dataset').send({ foo: 'bar' });
         response.status.should.equal(200);
         response.text.should.equal('ok');
@@ -287,11 +290,9 @@ describe('Dispatch PATCH requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            method: 'patch',
-            response: { data: { test: 'bar' } }
-        });
+        nock('http://mymachine:6001')
+            .patch('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { data: { test: 'bar' } });
 
         const response = await requester.patch('/api/v1/dataset').send({ test: 'bar' });
         ensureCorrectError(response, 'Endpoint not found', 404);
@@ -317,11 +318,11 @@ describe('Dispatch PATCH requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            method: 'patch',
-            replyStatus: 404
-        });
+
+        nock('http://mymachine:6001')
+            .patch('/api/v1/test1/test', { loggedUser: null })
+            .reply(404);
+
         const response = await requester.patch('/api/v1/dataset').send({ test: 'bar' });
         ensureCorrectError(response, 'Endpoint not found', 404);
     });
@@ -373,23 +374,24 @@ describe('Dispatch PATCH requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            method: 'patch',
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody('/api/v1/test2/test?loggedUser=null', {
-            method: 'get',
-            response: { body: { data: { boo: 'tar' } } }
-        });
-        createMockEndpointWithBody('/api/v1/dataset', {
-            body: {
+
+        nock('http://mymachine:6001')
+            .patch('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .get('/api/v1/test2/test?loggedUser=null')
+            .reply(200, { body: { data: { boo: 'tar' } } });
+
+        nock('http://mymachine:6001')
+            .post('/api/v1/dataset', {
                 foo: 'bar',
                 loggedUser: null,
                 dataset: { body: { data: { foo: 'bar' } } },
-                widget: { body: { data: { boo: 'tar' } } },
-            }
-        });
+                widget: { body: { data: { boo: 'tar' } } }
+            })
+            .reply(200, 'ok');
+
         const response = await requester.patch('/api/v1/dataset').send({ foo: 'bar' });
         response.status.should.equal(200);
         response.text.should.equal('ok');

@@ -81,7 +81,6 @@ const createPlugin = async (pluginData) => (PluginModel({
     ...pluginData
 }).save());
 
-
 const createTempUser = async (userData) => (TempUserModel({
     _id: new ObjectId(),
     email: `${getUUID()}@control-tower.com`,
@@ -136,7 +135,6 @@ const isAdminOnly = async (requester, method, url) => {
     const { token: managerToken } = await createUserAndToken({ role: 'MANAGER' });
     const { token: userToken } = await createUserAndToken({ role: 'USER' });
 
-
     const request = (token) => requester[method](`/api/v1/${url}`)
         .set('Authorization', `Bearer ${token}`);
 
@@ -155,7 +153,6 @@ const isTokenRequired = async (requester, method, url) => {
     response.body.errors[0].should.have.property('detail').and.equal('Not authenticated');
     response.status.should.equal(401);
 };
-
 
 const ensureCorrectError = ({ body }, errMessage, expectedStatus) => {
     body.should.have.property('errors').and.be.an('array');
@@ -198,8 +195,7 @@ async function setPluginSetting(pluginName, settingKey, settingValue) {
             }
 
             const newConfig = {};
-            const pluginObjectKey = `config.${settingKey}`;
-            newConfig[pluginObjectKey] = settingValue;
+            newConfig[settingKey] = settingValue;
 
             return Plugin.updateOne({ name: pluginName }, { $set: newConfig }).exec().then(resolve);
         }

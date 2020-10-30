@@ -5,13 +5,13 @@ const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const UserTempModel = require('plugins/sd-ct-oauth-plugin/models/user-temp.model');
 const RenewModel = require('plugins/sd-ct-oauth-plugin/models/renew.model');
 const { isEqual } = require('lodash');
+const { setPluginSetting } = require('../utils/helpers');
 
 chai.should();
 
-const { getTestAgent, closeTestAgent } = require('./../test-server');
+const { getTestAgent, closeTestAgent } = require('../test-server');
 
 let requester;
-
 
 nock.disableNetConnect();
 nock.enableNetConnect(process.env.HOST_IP);
@@ -22,6 +22,8 @@ describe('OAuth endpoints tests - Recover password request - JSON version', () =
         if (process.env.NODE_ENV !== 'test') {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
+
+        await setPluginSetting('oauth', 'config.applications.gfw.emailSender', 'noreply@globalforestwatch.org');
 
         requester = await getTestAgent(true);
 
@@ -35,14 +37,12 @@ describe('OAuth endpoints tests - Recover password request - JSON version', () =
         await UserTempModel.deleteMany({}).exec();
         await RenewModel.deleteMany({}).exec();
 
-
     });
 
     it('Recover password request with no email should return an error - JSON format', async () => {
         const response = await requester
             .post(`/auth/reset-password`)
             .set('Content-Type', 'application/json');
-
 
         response.status.should.equal(422);
         response.should.be.json;

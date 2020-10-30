@@ -4,14 +4,53 @@ const { BasicStrategy } = require('passport-http');
 const TwitterStrategy = require('passport-twitter').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const AppleStrategy = require('passport-apple');
 const LocalStrategy = require('passport-local').Strategy;
 const GoogleTokenStrategy = require('passport-google-token').Strategy;
 const FacebookTokenStrategy = require('passport-facebook-token');
 const bcrypt = require('bcrypt');
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 
-
 function passportService(plugin) {
+    async function registerAppleUser(req, accessToken, refreshToken, decodedIdToken, profile, done) {
+        logger.info('[passportService - registerAppleUser] Registering user', profile);
+        logger.debug('[passportService - registerAppleUser] accessToken', accessToken);
+        logger.debug('[passportService - registerAppleUser] refreshToken', refreshToken);
+        logger.debug('[passportService - registerAppleUser] decodedIdToken', decodedIdToken);
+
+        let user = await UserModel.findOne({
+            provider: 'apple',
+            providerId: decodedIdToken.sub,
+        }).exec();
+        logger.info(user);
+        const { email } = decodedIdToken;
+        if (!user) {
+            logger.info('[passportService] User does not exist');
+            user = await new UserModel({
+                email,
+                provider: 'apple',
+                providerId: decodedIdToken.sub
+            }).save();
+        } else {
+            logger.info('[passportService] Updating email');
+            user.email = email;
+            await user.save();
+        }
+        logger.info('[passportService] Returning user');
+        done(null, {
+            // eslint-disable-next-line no-underscore-dangle
+            id: user._id,
+            provider: user.provider,
+            providerId: user.providerId,
+            role: user.role,
+            createdAt: user.createdAt,
+            extraUserData: user.extraUserData,
+            name: user.name,
+            photo: user.photo,
+            email: user.email
+        });
+    }
+
     async function registerUser(accessToken, refreshToken, profile, done) {
         logger.info('[passportService] Registering user', profile);
 
@@ -153,6 +192,22 @@ function passportService(plugin) {
                 passport.use(twitterStrategy);
             }
 
+            if (app.apple && app.apple.active) {
+                logger.info(`[passportService] Loading apple strategy ${apps[i]}`);
+                const configApple = {
+                    clientID: app.apple.clientId,
+                    teamID: app.apple.teamId,
+                    callbackURL: `${plugin.config.publicUrl}/auth/apple/callback`,
+                    keyID: app.apple.keyId,
+                    privateKeyString: app.apple.privateKeyString,
+                    passReqToCallback: true,
+                    scope: 'name email'
+                };
+                const appleStrategy = new AppleStrategy(configApple, registerAppleUser);
+                appleStrategy.name += `:${apps[i]}`;
+                passport.use(appleStrategy);
+            }
+
             if (app.google && app.google.active) {
                 logger.info(`[passportService] Loading google strategy ${apps[i]}`);
                 const configGoogle = {
@@ -200,6 +255,6 @@ function passportService(plugin) {
         }
     }
 
-
 }
+
 module.exports = passportService;

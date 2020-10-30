@@ -7,7 +7,7 @@ const UserTempModel = require('plugins/sd-ct-oauth-plugin/models/user-temp.model
 const { isEqual } = require('lodash');
 const { setPluginSetting, createUserAndToken, createTempUser } = require('../utils/helpers');
 
-const { getTestAgent, closeTestAgent } = require('./../test-server');
+const { getTestAgent, closeTestAgent } = require('../test-server');
 
 const should = chai.should();
 
@@ -26,7 +26,7 @@ describe('OAuth endpoints tests - Sign up with HTML UI', () => {
         // We need to force-start the server, to ensure mongo has plugin info we can manipulate in the next instruction
         await getTestAgent(true);
 
-        await setPluginSetting('oauth', 'allowPublicRegistration', false);
+        await setPluginSetting('oauth', 'config.allowPublicRegistration', false);
 
         requester = await getTestAgent(true);
 
