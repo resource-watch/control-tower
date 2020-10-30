@@ -2,13 +2,11 @@ const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const querystring = require('querystring');
 const { getTestAgent, closeTestAgent } = require('./test-server');
 const { endpointTest, testFilter } = require('./test.constants');
 const {
     createEndpoint, ensureCorrectError, updateVersion, getUserFromToken, createUserAndToken
 } = require('./utils/helpers');
-const { createMockEndpointWithBody } = require('./mock');
 
 chai.should();
 let requester;
@@ -59,7 +57,6 @@ describe('Dispatch GET requests with filters', () => {
     //     response.text.should.equal('ok');
     // });
 
-
     it('Endpoint with GET filter that can be verified and matches return a 200 HTTP code (no filter value) - Null user is passed as query argument', async () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
@@ -80,13 +77,15 @@ describe('Dispatch GET requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test?loggedUser=null', {
-            response: { body: { data: { foo: 'bar' } } },
-            method: 'get'
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`, {
-            method: 'get'
-        });
+
+        nock('http://mymachine:6001')
+            .get('/api/v1/test1/test?loggedUser=null')
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`)
+            .reply(200, 'ok');
+
         const response = await requester
             .get('/api/v1/dataset')
             .query({ foo: 'bar' });
@@ -122,13 +121,15 @@ describe('Dispatch GET requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody(`/api/v1/test1/test?loggedUser=null`, {
-            response: { body: { data: { foo: 'bar' } } },
-            method: 'get'
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`, {
-            method: 'get'
-        });
+
+        nock('http://mymachine:6001')
+            .get('/api/v1/test1/test?loggedUser=null')
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .reply(200, 'ok');
+
         const response = await requester
             .get('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
@@ -159,13 +160,14 @@ describe('Dispatch GET requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`, {
-            method: 'get'
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`)
+            .reply(200, 'ok');
+
         const response = await requester
             .get('/api/v1/dataset')
             .query({ foo: 'bar' });
@@ -198,13 +200,14 @@ describe('Dispatch GET requests with filters', () => {
         });
 
         // TODO: token should probably be passed to the filter request too
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`, {
-            method: 'get'
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .reply(200, 'ok');
+
         const response = await requester
             .get('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
@@ -237,13 +240,13 @@ describe('Dispatch GET requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`, {
-            method: 'get'
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .reply(200, 'ok');
 
         const response = await requester
             .get('/api/v1/dataset')
@@ -277,10 +280,9 @@ describe('Dispatch GET requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { data: { test: 'bar' } }
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { data: { test: 'bar' } });
 
         const response = await requester
             .get('/api/v1/dataset')
@@ -314,10 +316,9 @@ describe('Dispatch GET requests with filters', () => {
         });
 
         // TODO: token should probably be passed to the filter request too
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            replyStatus: 404
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(404);
 
         const response = await requester
             .get('/api/v1/dataset')
@@ -377,27 +378,25 @@ describe('Dispatch GET requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody('/api/v1/test2/test?loggedUser=null', {
-            method: 'get',
-            response: { body: { data: { boo: 'tar' } } }
-        });
 
-        const queryString = querystring.stringify({
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+        nock('http://mymachine:6001')
+            .get('/api/v1/test2/test?loggedUser=null')
+            .reply(200, { body: { data: { boo: 'tar' } } });
+
+        const query = {
             dataset: JSON.stringify({ body: { data: { foo: 'bar' } } }),
             loggedUser: await getUserFromToken(token),
             widget: JSON.stringify({ body: { data: { boo: 'tar' } } }),
             foo: 'bar'
-        });
-        createMockEndpointWithBody(
-            `/api/v1/dataset?${queryString}`,
-            {
-                method: 'get'
-            }
-        );
+        };
+
+        nock('http://mymachine:6001')
+            .get('/api/v1/dataset')
+            .query(query)
+            .reply(200, 'ok');
 
         const response = await requester
             .get('/api/v1/dataset')

@@ -4,7 +4,6 @@ const Endpoint = require('models/endpoint.model');
 const { getTestAgent } = require('./test-server');
 const { endpointTest, testFilter } = require('./test.constants');
 const { createEndpoint, ensureCorrectError, updateVersion } = require('./utils/helpers');
-const { createMockEndpointWithBody } = require('./mock');
 
 chai.should();
 let microservice;
@@ -46,10 +45,9 @@ describe('Endpoint dispatch with filter tests', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { data: { test: 'bar' } }
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { data: { test: 'bar' } });
 
         const result = await microservice.post('/api/v1/dataset').send({ test: 'bar' });
         ensureCorrectError(result, 'Endpoint not found', 404);
@@ -74,10 +72,11 @@ describe('Endpoint dispatch with filter tests', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            replyStatus: 404
-        });
+
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(404);
+
         const result = await microservice.post('/api/v1/dataset').send({ test: 'bar' });
         ensureCorrectError(result, 'Endpoint not found', 404);
     });

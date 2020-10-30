@@ -72,6 +72,26 @@ spec:
             secretKeyRef:
               key: JWT_SECRET
               name: control-tower
+        - name: APPLE_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: APPLE_KEY_ID
+              name: control-tower
+        - name: APPLE_TEAM_ID
+          valueFrom:
+            secretKeyRef:
+              key: APPLE_TEAM_ID
+              name: control-tower
+        - name: APPLE_AUTH_KEY
+          valueFrom:
+            secretKeyRef:
+              key: APPLE_AUTH_KEY
+              name: control-tower
+        - name: APPLE_SERVICE_ID
+          valueFrom:
+            secretKeyRef:
+              key: APPLE_SERVICE_ID
+              name: control-tower
         - name: GFW_TWITTER_CONSUMER_KEY
           valueFrom:
             secretKeyRef:

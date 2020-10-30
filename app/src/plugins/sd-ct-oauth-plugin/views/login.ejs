@@ -71,7 +71,7 @@
                     <% } %>
                     <a class="recover" href="/auth/reset-password">Recover password</a>
                   </form>
-                  <% if (thirdParty.twitter || thirdParty.google || thirdParty.facebook  || thirdParty.basic) { %>
+                  <% if (thirdParty.twitter || thirdParty.google || thirdParty.facebook  || thirdParty.basic || thirdParty.apple) { %>
                   <div class="third-party">
                       <h4>Other providers</h4>
                       <% if (thirdParty.twitter) { %>
@@ -82,6 +82,9 @@
                       <% } %>
                       <% if (thirdParty.google) { %>
                         <a href="/auth/google"><i class="fa fa-google-plus" aria-hidden="true"></i>Google</a>
+                      <% } %>
+                      <% if (thirdParty.apple) { %>
+                        <a href="/auth/apple"><i class="fa fa-apple" aria-hidden="true"></i>Apple</a>
                       <% } %>
                       <% if (thirdParty.basic) { %>
                         <a href="/auth/basic"><i class="fa fa-google-plus" aria-hidden="true"></i>Basic</a>

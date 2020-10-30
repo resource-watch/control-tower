@@ -2,7 +2,6 @@ const nock = require('nock');
 
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const Plugin = require('models/plugin.model');
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 
 const { getTestAgent, closeTestAgent } = require('./test-server');
@@ -89,26 +88,16 @@ describe('Read-only mode spec', () => {
         await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
+    });
 
-        // Create plugin if not it does not exist in the database
-        const existing = await Plugin.findOne({ name: 'readOnly' });
-        if (!existing) {
-            await new Plugin({
-                name: 'readOnly',
-                description: 'Turn on/off read-only mode for CT, blocking writes to the database.',
-                mainFile: 'plugins/read-only',
-                active: true,
-                config: {
-                    blacklist: [],
-                    whitelist: [],
-                },
-            }).save();
-        } else {
-            existing.active = true;
-            await existing.save();
-        }
+    beforeEach(async () => {
+        await setPluginSetting('oauth', 'ordering', 1);
+        await setPluginSetting('readOnly', 'ordering', 0);
+        await setPluginSetting('readOnly', 'active', true);
+        await setPluginSetting('readOnly', 'config.blacklist', []);
+        await setPluginSetting('readOnly', 'config.whitelist', []);
 
-        requester = await getTestAgent(true);
+        // requester = await getTestAgent(true);
     });
 
     it('When read-only mode is ON, GET requests that are NOT blacklisted should be passed through', async () => {
@@ -144,7 +133,7 @@ describe('Read-only mode spec', () => {
 
     it('When read-only mode is ON, GET requests that ARE blacklisted should return appropriate error message', async () => {
         await createCRUDEndpoints();
-        await setPluginSetting('readOnly', 'blacklist', ['/api/v1/dataset']);
+        await setPluginSetting('readOnly', 'config.blacklist', ['/api/v1/dataset']);
         requester = await getTestAgent(true);
 
         const getResult = await requester.get('/api/v1/dataset');
@@ -154,7 +143,7 @@ describe('Read-only mode spec', () => {
 
     it('When read-only mode is ON, POST/PUT/PATCH/DELETE requests that ARE whitelisted should be passed through', async () => {
         await createCRUDEndpoints();
-        await setPluginSetting('readOnly', 'whitelist', ['/api/v1/dataset']);
+        await setPluginSetting('readOnly', 'config.whitelist', ['/api/v1/dataset']);
         requester = await getTestAgent(true);
 
         createMockEndpoint('/api/v1/dataset', { method: 'post' });
@@ -232,7 +221,7 @@ describe('Read-only mode spec', () => {
 
     it('Allows usage of Regex to define paths on blacklist', async () => {
         await createCRUDEndpoints();
-        await setPluginSetting('readOnly', 'blacklist', ['.*dataset.*']);
+        await setPluginSetting('readOnly', 'config.blacklist', ['.*dataset.*']);
         requester = await getTestAgent(true);
 
         const getResult = await requester.get('/api/v1/dataset');
@@ -242,7 +231,7 @@ describe('Read-only mode spec', () => {
 
     it('Allows usage of Regex to define paths on whitelist', async () => {
         await createCRUDEndpoints();
-        await setPluginSetting('readOnly', 'whitelist', ['.*dataset.*']);
+        await setPluginSetting('readOnly', 'config.whitelist', ['.*dataset.*']);
         requester = await getTestAgent(true);
 
         createMockEndpoint('/api/v1/dataset', { method: 'post' });
@@ -271,14 +260,12 @@ describe('Read-only mode spec', () => {
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
 
+        await setPluginSetting('readOnly', 'active', false);
+
+        closeTestAgent();
+
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);
         }
-    });
-
-    after(async () => {
-        await Plugin.deleteOne({ name: 'readOnly' });
-
-        closeTestAgent();
     });
 });

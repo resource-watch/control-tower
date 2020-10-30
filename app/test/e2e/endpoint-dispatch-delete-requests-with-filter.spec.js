@@ -10,11 +10,13 @@ const {
 const {
     createEndpoint, ensureCorrectError, updateVersion, createUserAndToken, getUserFromToken
 } = require('./utils/helpers');
-const { createMockEndpointWithBody } = require('./mock');
 
 chai.should();
 
 let requester;
+
+nock.disableNetConnect();
+nock.enableNetConnect(process.env.HOST_IP);
 
 describe('Dispatch DELETE requests with filters', () => {
 
@@ -65,7 +67,6 @@ describe('Dispatch DELETE requests with filters', () => {
     //     response.text.should.equal('ok');
     // });
 
-
     it('Endpoint with DELETE filter that can be verified and matches return a 200 HTTP code (no filter value) - Null user is passed as query argument', async () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
@@ -86,13 +87,15 @@ describe('Dispatch DELETE requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test?loggedUser=null', {
-            response: { body: { data: { foo: 'bar' } } },
-            method: 'delete'
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`, {
-            method: 'delete'
-        });
+
+        nock('http://mymachine:6001')
+            .delete('/api/v1/test1/test?loggedUser=null')
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`)
+            .reply(200, 'ok');
+
         const response = await requester
             .delete('/api/v1/dataset')
             .query({ foo: 'bar' });
@@ -128,14 +131,15 @@ describe('Dispatch DELETE requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody(`/api/v1/test1/test?loggedUser=null`, {
-            response: { body: { data: { foo: 'bar' } } },
-            method: 'delete'
-        });
 
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`, {
-            method: 'delete'
-        });
+        nock('http://mymachine:6001')
+            .delete('/api/v1/test1/test?loggedUser=null')
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .reply(200, 'ok');
+
         const response = await requester
             .delete('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
@@ -166,13 +170,14 @@ describe('Dispatch DELETE requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`, {
-            method: 'delete'
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`)
+            .reply(200, 'ok');
+
         const response = await requester
             .delete('/api/v1/dataset')
             .query({ foo: 'bar' });
@@ -205,13 +210,14 @@ describe('Dispatch DELETE requests with filters', () => {
         });
 
         // TODO: token should probably be passed to the filter request too
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`, {
-            method: 'delete'
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .reply(200, 'ok');
+
         const response = await requester
             .delete('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
@@ -244,13 +250,13 @@ describe('Dispatch DELETE requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`, {
-            method: 'delete'
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .reply(200, 'ok');
 
         const response = await requester
             .delete('/api/v1/dataset')
@@ -284,10 +290,9 @@ describe('Dispatch DELETE requests with filters', () => {
             ],
         });
 
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { data: { test: 'bar' } }
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { data: { test: 'bar' } });
 
         const response = await requester
             .delete('/api/v1/dataset')
@@ -321,10 +326,9 @@ describe('Dispatch DELETE requests with filters', () => {
         });
 
         // TODO: token should probably be passed to the filter request too
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            replyStatus: 404
-        });
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(404);
 
         const response = await requester
             .delete('/api/v1/dataset')
@@ -384,14 +388,15 @@ describe('Dispatch DELETE requests with filters', () => {
                 }
             ],
         });
-        createMockEndpointWithBody('/api/v1/test1/test', {
-            body: { loggedUser: null },
-            response: { body: { data: { foo: 'bar' } } }
-        });
-        createMockEndpointWithBody('/api/v1/test2/test?loggedUser=null', {
-            method: 'delete',
-            response: { body: { data: { boo: 'tar' } } }
-        });
+
+        nock('http://mymachine:6001')
+            .post('/api/v1/test1/test', { loggedUser: null })
+            .reply(200, { body: { data: { foo: 'bar' } } });
+
+        nock('http://mymachine:6001')
+            .delete('/api/v1/test2/test?loggedUser=null')
+            .reply(200, { body: { data: { boo: 'tar' } } });
+
         const queryString = querystring.stringify({
             dataset: JSON.stringify({ body: { data: { foo: 'bar' } } }),
             loggedUser: await getUserFromToken(token),
@@ -399,10 +404,9 @@ describe('Dispatch DELETE requests with filters', () => {
             foo: 'bar'
         });
 
-        createMockEndpointWithBody(`/api/v1/dataset?${queryString}`,
-            {
-                method: 'delete'
-            });
+        nock('http://mymachine:6001')
+            .delete(`/api/v1/dataset?${queryString}`)
+            .reply(200, 'ok');
 
         const response = await requester
             .delete('/api/v1/dataset')

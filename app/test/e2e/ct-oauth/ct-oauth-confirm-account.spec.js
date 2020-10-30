@@ -4,7 +4,7 @@ const chai = require('chai');
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const UserTempModel = require('plugins/sd-ct-oauth-plugin/models/user-temp.model');
 
-const { getTestAgent, closeTestAgent } = require('./../test-server');
+const { getTestAgent, closeTestAgent } = require('../test-server');
 const { getUUID, setPluginSetting } = require('../utils/helpers');
 
 const should = chai.should();
@@ -23,10 +23,10 @@ describe('OAuth endpoints tests - Confirm account', () => {
 
         await getTestAgent(true);
 
-        await setPluginSetting('oauth', 'local.confirmUrlRedirect', null);
-        await setPluginSetting('oauth', 'local.gfw.confirmUrlRedirect', null);
-        await setPluginSetting('oauth', 'local.rw.confirmUrlRedirect', null);
-        await setPluginSetting('oauth', 'local.prep.confirmUrlRedirect', null);
+        await setPluginSetting('oauth', 'config.local.confirmUrlRedirect', null);
+        await setPluginSetting('oauth', 'config.local.gfw.confirmUrlRedirect', null);
+        await setPluginSetting('oauth', 'config.local.rw.confirmUrlRedirect', null);
+        await setPluginSetting('oauth', 'config.local.prep.confirmUrlRedirect', null);
 
         requester = await getTestAgent(true);
 
@@ -38,7 +38,6 @@ describe('OAuth endpoints tests - Confirm account', () => {
         const response = await requester
             .get(`/auth/confirm/fakeToken`)
             .set('Content-Type', 'application/json');
-
 
         response.status.should.equal(400);
         response.should.be.json;
@@ -59,7 +58,6 @@ describe('OAuth endpoints tests - Confirm account', () => {
         const response = await requester
             .get(`/auth/confirm/${confirmationToken}`)
             .set('Content-Type', 'application/json');
-
 
         response.status.should.equal(200);
         response.should.be.json;
@@ -85,7 +83,6 @@ describe('OAuth endpoints tests - Confirm account', () => {
         const response = await requester
             .get(`/auth/confirm/${confirmationToken}`);
 
-
         response.status.should.equal(200);
         response.should.be.json;
 
@@ -108,7 +105,7 @@ describe('OAuth endpoints tests - Confirm account', () => {
     });
 
     it('Confirm account request with valid token and a configured global redirect should return HTTP 200 and the redirect URL', async () => {
-        await setPluginSetting('oauth', 'local.confirmUrlRedirect', 'http://www.google.com/');
+        await setPluginSetting('oauth', 'config.local.confirmUrlRedirect', 'http://www.google.com/');
 
         requester = await getTestAgent(true);
 
@@ -123,7 +120,6 @@ describe('OAuth endpoints tests - Confirm account', () => {
 
         const response = await requester
             .get(`/auth/confirm/${confirmationToken}`).redirects(0);
-
 
         response.should.redirect;
 
@@ -141,10 +137,10 @@ describe('OAuth endpoints tests - Confirm account', () => {
     });
 
     it('Confirm account request with valid token and a configured redirect per app should return HTTP 200 and the matching redirect URL', async () => {
-        await setPluginSetting('oauth', 'local.gfw.confirmUrlRedirect', 'https://www.globalforestwatch.org/');
-        await setPluginSetting('oauth', 'local.rw.confirmUrlRedirect', 'https://resourcewatch.org/myrw/areas');
-        await setPluginSetting('oauth', 'local.prep.confirmUrlRedirect', 'https://www.prepdata.org/');
-        await setPluginSetting('oauth', 'local.confirmUrlRedirect', 'http://www.google.com/');
+        await setPluginSetting('oauth', 'config.local.gfw.confirmUrlRedirect', 'https://www.globalforestwatch.org/');
+        await setPluginSetting('oauth', 'config.local.rw.confirmUrlRedirect', 'https://resourcewatch.org/myrw/areas');
+        await setPluginSetting('oauth', 'config.local.prep.confirmUrlRedirect', 'https://www.prepdata.org/');
+        await setPluginSetting('oauth', 'config.local.confirmUrlRedirect', 'http://www.google.com/');
 
         requester = await getTestAgent(true);
 
@@ -160,7 +156,6 @@ describe('OAuth endpoints tests - Confirm account', () => {
         const response = await requester
             .get(`/auth/confirm/${confirmationToken}`)
             .redirects(0);
-
 
         response.should.redirect;
 
@@ -178,10 +173,10 @@ describe('OAuth endpoints tests - Confirm account', () => {
     });
 
     it('Confirm account request with valid token and a configured redirect per app should return HTTP 200 and the use the fallback redirect URL', async () => {
-        await setPluginSetting('oauth', 'local.gfw.confirmUrlRedirect', 'https://www.globalforestwatch.org/');
-        await setPluginSetting('oauth', 'local.rw.confirmUrlRedirect', 'https://resourcewatch.org/myrw/areas');
-        await setPluginSetting('oauth', 'local.prep.confirmUrlRedirect', 'https://www.prepdata.org/');
-        await setPluginSetting('oauth', 'local.confirmUrlRedirect', 'http://www.google.com/');
+        await setPluginSetting('oauth', 'config.local.gfw.confirmUrlRedirect', 'https://www.globalforestwatch.org/');
+        await setPluginSetting('oauth', 'config.local.rw.confirmUrlRedirect', 'https://resourcewatch.org/myrw/areas');
+        await setPluginSetting('oauth', 'config.local.prep.confirmUrlRedirect', 'https://www.prepdata.org/');
+        await setPluginSetting('oauth', 'config.local.confirmUrlRedirect', 'http://www.google.com/');
 
         requester = await getTestAgent(true);
 
@@ -197,7 +192,6 @@ describe('OAuth endpoints tests - Confirm account', () => {
         const response = await requester
             .get(`/auth/confirm/${confirmationToken}`)
             .redirects(0);
-
 
         response.should.redirect;
 
@@ -216,10 +210,10 @@ describe('OAuth endpoints tests - Confirm account', () => {
     });
 
     it('Confirm account request with valid token and a redirect query param should return HTTP 200 and the use the query param redirect', async () => {
-        await setPluginSetting('oauth', 'local.gfw.confirmUrlRedirect', 'https://www.globalforestwatch.org/');
-        await setPluginSetting('oauth', 'local.rw.confirmUrlRedirect', 'https://resourcewatch.org/myrw/areas');
-        await setPluginSetting('oauth', 'local.prep.confirmUrlRedirect', 'https://www.prepdata.org/');
-        await setPluginSetting('oauth', 'local.confirmUrlRedirect', 'http://www.google.com/');
+        await setPluginSetting('oauth', 'config.local.gfw.confirmUrlRedirect', 'https://www.globalforestwatch.org/');
+        await setPluginSetting('oauth', 'config.local.rw.confirmUrlRedirect', 'https://resourcewatch.org/myrw/areas');
+        await setPluginSetting('oauth', 'config.local.prep.confirmUrlRedirect', 'https://www.prepdata.org/');
+        await setPluginSetting('oauth', 'config.local.confirmUrlRedirect', 'http://www.google.com/');
 
         requester = await getTestAgent(true);
 
@@ -235,7 +229,6 @@ describe('OAuth endpoints tests - Confirm account', () => {
         const response = await requester
             .get(`/auth/confirm/${confirmationToken}?callbackUrl=http://vizzuality.com/`)
             .redirects(0);
-
 
         response.should.redirect;
 

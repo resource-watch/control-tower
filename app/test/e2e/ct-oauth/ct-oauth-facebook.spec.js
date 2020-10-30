@@ -4,7 +4,7 @@ const JWT = require('jsonwebtoken');
 const crypto = require('crypto');
 
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const { getTestAgent, closeTestAgent } = require('./../test-server');
+const { getTestAgent, closeTestAgent } = require('../test-server');
 const { setPluginSetting } = require('../utils/helpers');
 
 const should = chai.should();
@@ -27,16 +27,16 @@ describe('Facebook auth endpoint tests', () => {
         // We need to force-start the server, to ensure mongo has plugin info we can manipulate in the next instruction
         await getTestAgent(true);
 
-        await setPluginSetting('oauth', 'defaultApp', 'rw');
-        await setPluginSetting('oauth', 'thirdParty.rw.facebook.active', true);
+        await setPluginSetting('oauth', 'config.defaultApp', 'rw');
+        await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.active', true);
 
         if (!process.env.TEST_FACEBOOK_OAUTH2_APP_ID || !process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET) {
             skipTests = true;
-            await setPluginSetting('oauth', 'thirdParty.rw.facebook.clientID', 'TEST_FACEBOOK_OAUTH2_APP_ID');
-            await setPluginSetting('oauth', 'thirdParty.rw.facebook.clientSecret', 'TEST_FACEBOOK_OAUTH2_APP_SECRET');
+            await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientID', 'TEST_FACEBOOK_OAUTH2_APP_ID');
+            await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientSecret', 'TEST_FACEBOOK_OAUTH2_APP_SECRET');
         } else {
-            await setPluginSetting('oauth', 'thirdParty.rw.facebook.clientID', process.env.TEST_FACEBOOK_OAUTH2_APP_ID);
-            await setPluginSetting('oauth', 'thirdParty.rw.facebook.clientSecret', process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET);
+            await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientID', process.env.TEST_FACEBOOK_OAUTH2_APP_ID);
+            await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientSecret', process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET);
         }
 
         requester = await getTestAgent(true);
@@ -80,7 +80,6 @@ describe('Facebook auth endpoint tests', () => {
                 expires_in: 5183974
             });
 
-
         nock('https://graph.facebook.com')
             .get('/v7.0/me')
             .query({
@@ -100,7 +99,6 @@ describe('Facebook auth endpoint tests', () => {
                 },
                 email: 'john.doe@vizzuality.com'
             });
-
 
         await requester
             .get(`/auth`);
@@ -144,7 +142,6 @@ describe('Facebook auth endpoint tests', () => {
                 expires_in: 5183974
             });
 
-
         nock('https://graph.facebook.com')
             .get('/v7.0/me')
             .query({
@@ -165,11 +162,9 @@ describe('Facebook auth endpoint tests', () => {
                 email: 'john.doe@vizzuality.com'
             });
 
-
         nock('https://www.wikipedia.org')
             .get('/')
             .reply(200, 'ok');
-
 
         await requester
             .get(`/auth?callbackUrl=https://www.wikipedia.org`);
@@ -218,7 +213,6 @@ describe('Facebook auth endpoint tests', () => {
                 token_type: 'bearer',
                 expires_in: 5183974
             });
-
 
         nock('https://graph.facebook.com')
             .get('/v7.0/me')
@@ -309,7 +303,6 @@ describe('Facebook auth endpoint tests', () => {
                 first_name: 'John',
                 email: 'john.doe@vizzuality.com'
             });
-
 
         const response = await requester
             .get(`/auth/facebook/token?access_token=TEST_FACEBOOK_OAUTH2_ACCESS_TOKEN`);

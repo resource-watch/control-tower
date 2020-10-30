@@ -3,17 +3,18 @@ const logger = require('logger');
 const Router = require('koa-router');
 const passport = require('koa-passport');
 const { cloneDeep, omit } = require('lodash');
+const Verifier = require('apple-signin-verify-token');
 const authServiceFunc = require('./services/auth.service');
 const UnprocessableEntityError = require('./errors/unprocessableEntity.error');
 const UnauthorizedError = require('./errors/unauthorized.error');
 const UserTempSerializer = require('./serializers/user-temp.serializer');
 const UserSerializer = require('./serializers/user.serializer');
+const UserModel = require('./models/user.model');
 
 const serializeObjToQuery = (obj) => Object.keys(obj).reduce((a, k) => {
     a.push(`${k}=${encodeURIComponent(obj[k])}`);
     return a;
 }, []).join('&');
-
 
 module.exports = (plugin, connection, generalConfig) => {
     const ApiRouter = new Router({
@@ -72,6 +73,62 @@ module.exports = (plugin, connection, generalConfig) => {
         const facebookCallback = async (ctx, next) => {
             const app = getOriginApp(ctx, plugin);
             await passport.authenticate(`facebook:${app}`, {
+                failureRedirect: '/auth/fail',
+            })(ctx, next);
+        };
+
+        const apple = async (ctx) => {
+            const app = getOriginApp(ctx, plugin);
+            await passport.authenticate(`apple:${app}`)(ctx);
+        };
+
+        const appleToken = async (ctx, next) => {
+            const appName = getOriginApp(ctx, plugin);
+            const app = plugin.config.thirdParty[appName];
+
+            // eslint-disable-next-line camelcase
+            const { access_token } = ctx.request.query;
+
+            const jwtToken = await Verifier.verify(access_token);
+
+            if (!jwtToken.sub || jwtToken.aud !== app.apple.clientId) {
+                ctx.status = 401;
+                ctx.body = {
+                    errors: [{
+                        status: 401,
+                        detail: 'Invalid access token'
+                    }]
+                };
+            }
+
+            let user = await UserModel.findOne({
+                provider: 'apple',
+                providerId: jwtToken.sub,
+            }).exec();
+
+            if (!user) {
+                logger.info('[Auth router] User does not exist');
+                user = await new UserModel({
+                    email: jwtToken.email,
+                    provider: 'apple',
+                    providerId: jwtToken.sub
+                }).save();
+            } else if (jwtToken.email) {
+                logger.info('[Auth router] Updating email');
+                user.email = jwtToken.email;
+                await user.save();
+            }
+            logger.info('[passportService] Returning user');
+
+            // This places the user data in the ctx object as Passport would
+            ctx.req.user = user;
+
+            return next();
+        };
+
+        const appleCallback = async (ctx, next) => {
+            const app = getOriginApp(ctx, plugin);
+            await passport.authenticate(`apple:${app}`, {
                 failureRedirect: '/auth/fail',
             })(ctx, next);
         };
@@ -515,6 +572,10 @@ module.exports = (plugin, connection, generalConfig) => {
                 thirdParty.twitter = plugin.config.thirdParty[originApp].twitter.active;
             }
 
+            if (plugin.config.thirdParty && plugin.config.thirdParty[originApp] && plugin.config.thirdParty[originApp].apple && plugin.config.thirdParty[originApp].apple.active) {
+                thirdParty.apple = plugin.config.thirdParty[originApp].apple.active;
+            }
+
             if (plugin.config.thirdParty && plugin.config.thirdParty[originApp] && plugin.config.thirdParty[originApp].google && plugin.config.thirdParty[originApp].google.active) {
                 thirdParty.google = plugin.config.thirdParty[originApp].google.active;
             }
@@ -707,6 +768,9 @@ module.exports = (plugin, connection, generalConfig) => {
         return {
             twitter,
             twitterCallback,
+            apple,
+            appleToken,
+            appleCallback,
             google,
             googleToken,
             googleCallback,
@@ -864,6 +928,10 @@ module.exports = (plugin, connection, generalConfig) => {
 
     ApiRouter.get('/twitter', setCallbackUrl, API.twitter);
     ApiRouter.get('/twitter/callback', API.twitterCallback, API.updateApplications);
+
+    ApiRouter.get('/apple', setCallbackUrl, API.apple);
+    ApiRouter.post('/apple/callback', API.appleCallback, API.updateApplications);
+    ApiRouter.get('/apple/token', API.appleToken, API.generateJWT);
 
     ApiRouter.get('/google', setCallbackUrl, API.google);
     ApiRouter.get('/google/callback', API.googleCallback, API.updateApplications);

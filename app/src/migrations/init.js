@@ -134,6 +134,13 @@ module.exports = async function init() {
                     },
                 },
                 gfw: {
+                    apple: {
+                        active: false,
+                        clientId: process.env.APPLE_SERVICE_ID,
+                        teamId: process.env.APPLE_TEAM_ID,
+                        keyId: process.env.APPLE_KEY_ID,
+                        privateKeyString: process.env.APPLE_AUTH_KEY,
+                    },
                     twitter: {
                         active: false,
                         consumerKey: process.env.GFW_TWITTER_CONSUMER_KEY,
