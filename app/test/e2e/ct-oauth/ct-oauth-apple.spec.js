@@ -2,6 +2,9 @@
 const nock = require('nock');
 const chai = require('chai');
 const JWT = require('jsonwebtoken');
+const crypto = require('crypto');
+const { pem2jwk } = require('pem-jwk');
+const jwt = require('jsonwebtoken');
 
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const { getTestAgent, closeTestAgent } = require('../test-server');
@@ -209,31 +212,50 @@ describe('Apple auth endpoint tests', () => {
         const existingUser = await UserModel.findOne({ providerId: '000958.a4550a8804284886a5b5116a1c0351af.1425' }).exec();
         should.not.exist(existingUser);
 
-        const token = 'eyJraWQiOiJlWGF1bm1MIiwiYWxnIjoiUlMyNTYifQ.eyJpc3MiOiJodHRwczovL2FwcGxlaWQuYXBwbGUuY29tIiwiYXVkIjoib3JnLnJlc291cmNld2F0Y2guYXBpLmRldi5hdXRoIiwiZXhwIjoxNjA0MDQ4NDgzLCJpYXQiOjE2MDM5NjIwODMsInN1YiI6IjAwMDk1OC5hNDU1MGE4ODA0Mjg0ODg2YTViNTExNmExYzAzNTFhZi4xNDI1IiwiYXRfaGFzaCI6ImYwTS03OFVONThsRURsd1c5Wm5YZFEiLCJlbWFpbCI6ImRqOGU5OWczNG5AcHJpdmF0ZXJlbGF5LmFwcGxlaWQuY29tIiwiZW1haWxfdmVyaWZpZWQiOiJ0cnVlIiwiaXNfcHJpdmF0ZV9lbWFpbCI6InRydWUiLCJhdXRoX3RpbWUiOjE2MDM5NjIwNzAsIm5vbmNlX3N1cHBvcnRlZCI6dHJ1ZX0.cxbwCN4D_0Kwx0NDxUnj-CdP4hvmEJ1q7rHq89nY_hRnOofiohcSBsnTzY3cQvk9OyuDd4G9kWDdJO9wf6L3B3iPaqK5MDaUfcFAUOFaLwrJrivqvKDFcvISO_TkXh3x142XfrgGAbgh8SDlyPtaRVyhXRIfMuOXq8G8zJFlSWX-Mc_4i0GZRiJL-AFmJRj9snUX97LiIJeeEhEO6AtW44SxTSA64C77iQ-YIlf4IiFCoQfLL6D16eyzTlC9Qd_wPgUSL-3FoQe_BY9K_tjayIT_f2mOOEr-uj8FZU5hq9s_W_LVZsVUXGDxAZe4fdYVRi071gWmgr2OWuIaQ_ZTbQ';
+        const keys = crypto.generateKeyPairSync('rsa', {
+            modulusLength: 4096,
+            publicKeyEncoding: {
+                type: 'spki',
+                format: 'pem'
+            },
+            privateKeyEncoding: {
+                type: 'pkcs8',
+                format: 'pem'
+            }
+        });
+
+        const jwkKey = pem2jwk(keys.publicKey);
 
         nock('https://appleid.apple.com')
             .get('/auth/keys')
-            .times(3)
+            .times(2)
             .reply(200, {
                 keys: [
                     {
                         kty: 'RSA',
-                        kid: '86D88Kf',
+                        kid: '77D88Kf',
                         use: 'sig',
                         alg: 'RS256',
-                        n: 'iGaLqP6y-SJCCBq5Hv6pGDbG_SQ11MNjH7rWHcCFYz4hGwHC4lcSurTlV8u3avoVNM8jXevG1Iu1SY11qInqUvjJur--hghr1b56OPJu6H1iKulSxGjEIyDP6c5BdE1uwprYyr4IO9th8fOwCPygjLFrh44XEGbDIFeImwvBAGOhmMB2AD1n1KviyNsH0bEB7phQtiLk-ILjv1bORSRl8AK677-1T8isGfHKXGZ_ZGtStDe7Lu0Ihp8zoUt59kx2o9uWpROkzF56ypresiIl4WprClRCjz8x6cPZXU2qNWhu71TQvUFwvIvbkE1oYaJMb0jcOTmBRZA2QuYw-zHLwQ',
-                        e: 'AQAB'
-                    },
-                    {
-                        kty: 'RSA',
-                        kid: 'eXaunmL',
-                        use: 'sig',
-                        alg: 'RS256',
-                        n: '4dGQ7bQK8LgILOdLsYzfZjkEAoQeVC_aqyc8GC6RX7dq_KvRAQAWPvkam8VQv4GK5T4ogklEKEvj5ISBamdDNq1n52TpxQwI2EqxSk7I9fKPKhRt4F8-2yETlYvye-2s6NeWJim0KBtOVrk0gWvEDgd6WOqJl_yt5WBISvILNyVg1qAAM8JeX6dRPosahRVDjA52G2X-Tip84wqwyRpUlq2ybzcLh3zyhCitBOebiRWDQfG26EH9lTlJhll-p_Dg8vAXxJLIJ4SNLcqgFeZe4OfHLgdzMvxXZJnPp_VgmkcpUdRotazKZumj6dBPcXI_XID4Z4Z3OM1KrZPJNdUhxw',
-                        e: 'AQAB'
+                        n: jwkKey.n,
+                        e: jwkKey.e
                     }
                 ]
             });
+
+        const tokenContent = {
+            iss: 'https://appleid.apple.com',
+            aud: 'org.resourcewatch.api.dev.auth',
+            exp: Math.floor(Date.now() / 1000) + 100,
+            iat: 1603962083,
+            sub: '000958.a4550a8804284886a5b5116a1c0351af.1425',
+            at_hash: 'f0M-78UN58lEDlwW9ZnXdQ',
+            email: 'dj8e99g34n@privaterelay.appleid.com',
+            email_verified: 'true',
+            is_private_email: 'true',
+            auth_time: 1603962070,
+            nonce_supported: true
+        };
+        const token = jwt.sign(tokenContent, keys.privateKey, { algorithm: 'RS256' });
 
         const response = await requester
             .get(`/auth/apple/token`)
@@ -277,10 +299,23 @@ describe('Apple auth endpoint tests', () => {
         existingUser.should.have.property('providerId').and.equal('000958.a4550a8804284886a5b5116a1c0351af.1425');
         existingUser.should.have.property('userToken').and.equal(undefined);
 
-        const token = 'eyJraWQiOiJlWGF1bm1MIiwiYWxnIjoiUlMyNTYifQ.eyJpc3MiOiJodHRwczovL2FwcGxlaWQuYXBwbGUuY29tIiwiYXVkIjoib3JnLnJlc291cmNld2F0Y2guYXBpLmRldi5hdXRoIiwiZXhwIjoxNjA0MDQ4NDgzLCJpYXQiOjE2MDM5NjIwODMsInN1YiI6IjAwMDk1OC5hNDU1MGE4ODA0Mjg0ODg2YTViNTExNmExYzAzNTFhZi4xNDI1IiwiYXRfaGFzaCI6ImYwTS03OFVONThsRURsd1c5Wm5YZFEiLCJlbWFpbCI6ImRqOGU5OWczNG5AcHJpdmF0ZXJlbGF5LmFwcGxlaWQuY29tIiwiZW1haWxfdmVyaWZpZWQiOiJ0cnVlIiwiaXNfcHJpdmF0ZV9lbWFpbCI6InRydWUiLCJhdXRoX3RpbWUiOjE2MDM5NjIwNzAsIm5vbmNlX3N1cHBvcnRlZCI6dHJ1ZX0.cxbwCN4D_0Kwx0NDxUnj-CdP4hvmEJ1q7rHq89nY_hRnOofiohcSBsnTzY3cQvk9OyuDd4G9kWDdJO9wf6L3B3iPaqK5MDaUfcFAUOFaLwrJrivqvKDFcvISO_TkXh3x142XfrgGAbgh8SDlyPtaRVyhXRIfMuOXq8G8zJFlSWX-Mc_4i0GZRiJL-AFmJRj9snUX97LiIJeeEhEO6AtW44SxTSA64C77iQ-YIlf4IiFCoQfLL6D16eyzTlC9Qd_wPgUSL-3FoQe_BY9K_tjayIT_f2mOOEr-uj8FZU5hq9s_W_LVZsVUXGDxAZe4fdYVRi071gWmgr2OWuIaQ_ZTbQ';
+        const keys = crypto.generateKeyPairSync('rsa', {
+            modulusLength: 4096,
+            publicKeyEncoding: {
+                type: 'spki',
+                format: 'pem'
+            },
+            privateKeyEncoding: {
+                type: 'pkcs8',
+                format: 'pem'
+            }
+        });
+
+        const jwkKey = pem2jwk(keys.publicKey);
 
         nock('https://appleid.apple.com')
             .get('/auth/keys')
+            .times(2)
             .reply(200, {
                 keys: [
                     {
@@ -288,19 +323,26 @@ describe('Apple auth endpoint tests', () => {
                         kid: '86D88Kf',
                         use: 'sig',
                         alg: 'RS256',
-                        n: 'iGaLqP6y-SJCCBq5Hv6pGDbG_SQ11MNjH7rWHcCFYz4hGwHC4lcSurTlV8u3avoVNM8jXevG1Iu1SY11qInqUvjJur--hghr1b56OPJu6H1iKulSxGjEIyDP6c5BdE1uwprYyr4IO9th8fOwCPygjLFrh44XEGbDIFeImwvBAGOhmMB2AD1n1KviyNsH0bEB7phQtiLk-ILjv1bORSRl8AK677-1T8isGfHKXGZ_ZGtStDe7Lu0Ihp8zoUt59kx2o9uWpROkzF56ypresiIl4WprClRCjz8x6cPZXU2qNWhu71TQvUFwvIvbkE1oYaJMb0jcOTmBRZA2QuYw-zHLwQ',
-                        e: 'AQAB'
-                    },
-                    {
-                        kty: 'RSA',
-                        kid: 'eXaunmL',
-                        use: 'sig',
-                        alg: 'RS256',
-                        n: '4dGQ7bQK8LgILOdLsYzfZjkEAoQeVC_aqyc8GC6RX7dq_KvRAQAWPvkam8VQv4GK5T4ogklEKEvj5ISBamdDNq1n52TpxQwI2EqxSk7I9fKPKhRt4F8-2yETlYvye-2s6NeWJim0KBtOVrk0gWvEDgd6WOqJl_yt5WBISvILNyVg1qAAM8JeX6dRPosahRVDjA52G2X-Tip84wqwyRpUlq2ybzcLh3zyhCitBOebiRWDQfG26EH9lTlJhll-p_Dg8vAXxJLIJ4SNLcqgFeZe4OfHLgdzMvxXZJnPp_VgmkcpUdRotazKZumj6dBPcXI_XID4Z4Z3OM1KrZPJNdUhxw',
-                        e: 'AQAB'
+                        n: jwkKey.n,
+                        e: jwkKey.e
                     }
                 ]
             });
+
+        const tokenContent = {
+            iss: 'https://appleid.apple.com',
+            aud: 'org.resourcewatch.api.dev.auth',
+            exp: Math.floor(Date.now() / 1000) + 100,
+            iat: 1603962083,
+            sub: '000958.a4550a8804284886a5b5116a1c0351af.1425',
+            at_hash: 'f0M-78UN58lEDlwW9ZnXdQ',
+            email: 'dj8e99g34n@privaterelay.appleid.com',
+            email_verified: 'true',
+            is_private_email: 'true',
+            auth_time: 1603962070,
+            nonce_supported: true
+        };
+        const token = jwt.sign(tokenContent, keys.privateKey, { algorithm: 'RS256' });
 
         const response = await requester
             .get(`/auth/apple/token`)
