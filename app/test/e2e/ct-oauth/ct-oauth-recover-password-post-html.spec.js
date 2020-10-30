@@ -24,6 +24,7 @@ describe('OAuth endpoints tests - Recover password post - HTML version', () => {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
 
+        await setPluginSetting('oauth', 'config.defaultApp', 'rw');
         await setPluginSetting('oauth', 'config.local.confirmUrlRedirect', 'http://google.com');
         await setPluginSetting('oauth', 'config.applications.gfw.confirmUrlRedirect', 'https://www.globalforestwatch.org');
         await setPluginSetting('oauth', 'config.applications.rw.confirmUrlRedirect', 'https://resourcewatch.org');
