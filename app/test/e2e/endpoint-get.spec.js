@@ -12,7 +12,6 @@ chai.should();
 
 let requester;
 
-
 describe('Get endpoints', () => {
 
     before(async () => {

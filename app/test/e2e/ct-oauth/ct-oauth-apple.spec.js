@@ -12,17 +12,19 @@ const { expect } = chai;
 
 let requester;
 
-// https://github.com/mochajs/mocha/issues/2683
-let skipTests = false;
-
 nock.disableNetConnect();
 nock.enableNetConnect(process.env.HOST_IP);
 
 describe('Apple auth endpoint tests', () => {
 
-    before(async () => {
+    // eslint-disable-next-line func-names
+    before(async function () {
         if (process.env.NODE_ENV !== 'test') {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
+        }
+
+        if (!process.env.TEST_APPLE_CLIENT_ID || !process.env.TEST_APPLE_TEAM_ID || !process.env.TEST_APPLE_KEY_ID || !process.env.TEST_APPLE_PRIVATE_KEY_SECRET) {
+            this.skip();
         }
 
         // We need to force-start the server, to ensure mongo has plugin info we can manipulate in the next instruction
@@ -31,21 +33,13 @@ describe('Apple auth endpoint tests', () => {
         await setPluginSetting('oauth', 'config.defaultApp', 'rw');
         await setPluginSetting('oauth', 'config.thirdParty.rw.apple.active', true);
 
-        if (!process.env.TEST_APPLE_CLIENT_ID || !process.env.TEST_APPLE_TEAM_ID || !process.env.TEST_APPLE_KEY_ID || !process.env.TEST_APPLE_PRIVATE_KEY_SECRET) {
-            skipTests = true;
-            await setPluginSetting('oauth', 'config.thirdParty.rw.apple.clientId', 'TEST_APPLE_CLIENT_ID');
-            await setPluginSetting('oauth', 'config.thirdParty.rw.apple.teamId', 'TEST_APPLE_TEAM_ID');
-            await setPluginSetting('oauth', 'config.thirdParty.rw.apple.keyId', 'TEST_APPLE_KEY_ID');
-            await setPluginSetting('oauth', 'config.thirdParty.rw.apple.privateKeyString', 'TEST_APPLE_PRIVATE_KEY_SECRET');
-        } else {
-            await setPluginSetting('oauth', 'config.thirdParty.rw.apple.clientId', process.env.TEST_APPLE_CLIENT_ID);
-            await setPluginSetting('oauth', 'config.thirdParty.rw.apple.teamId', process.env.TEST_APPLE_TEAM_ID);
-            await setPluginSetting('oauth', 'config.thirdParty.rw.apple.keyId', process.env.TEST_APPLE_KEY_ID);
+        await setPluginSetting('oauth', 'config.thirdParty.rw.apple.clientId', process.env.TEST_APPLE_CLIENT_ID);
+        await setPluginSetting('oauth', 'config.thirdParty.rw.apple.teamId', process.env.TEST_APPLE_TEAM_ID);
+        await setPluginSetting('oauth', 'config.thirdParty.rw.apple.keyId', process.env.TEST_APPLE_KEY_ID);
 
-            const b64string = process.env.TEST_APPLE_PRIVATE_KEY_SECRET;
+        const b64string = process.env.TEST_APPLE_PRIVATE_KEY_SECRET;
 
-            await setPluginSetting('oauth', 'config.thirdParty.rw.apple.privateKeyString', Buffer.from(b64string, 'base64').toString());
-        }
+        await setPluginSetting('oauth', 'config.thirdParty.rw.apple.privateKeyString', Buffer.from(b64string, 'base64').toString());
 
         requester = await getTestAgent(true);
 
@@ -57,20 +51,12 @@ describe('Apple auth endpoint tests', () => {
     });
 
     it('Visiting /auth/apple while not being logged in should redirect to the login page', async () => {
-        if (skipTests) {
-            return;
-        }
-
         const response = await requester.get(`/auth/apple`).redirects(0);
         response.should.redirect;
         response.should.redirectTo(/^https:\/\/appleid\.apple\.com\/auth\/authorize/);
     });
 
     it('Visiting /auth/apple/callback with valid data should redirect to the login successful page', async () => {
-        if (skipTests) {
-            return;
-        }
-
         const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
         should.not.exist(missingUser);
 
@@ -111,10 +97,6 @@ describe('Apple auth endpoint tests', () => {
     });
 
     it('Visiting /auth/apple/callback while being logged in with a callbackUrl param should redirect to the callback URL page', async () => {
-        if (skipTests) {
-            return;
-        }
-
         const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
         should.not.exist(missingUser);
 
@@ -168,10 +150,6 @@ describe('Apple auth endpoint tests', () => {
     });
 
     it('Visiting /auth/apple/callback while being logged in with an updated callbackUrl param should redirect to the new callback URL page', async () => {
-        if (skipTests) {
-            return;
-        }
-
         const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
         should.not.exist(missingUser);
 
@@ -257,14 +235,6 @@ describe('Apple auth endpoint tests', () => {
                 ]
             });
 
-        // Nock: No match for request {
-        //   "method": "GET",
-        //   "url": "https://appleid.apple.com/auth/keys",
-        //   "headers": {
-        //     "accept": "application/json, text/plain, */*",
-        //     "user-agent": "axios/0.19.2"
-        //   }
-        // }
         const response = await requester
             .get(`/auth/apple/token`)
             .query({

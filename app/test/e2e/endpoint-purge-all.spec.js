@@ -14,7 +14,6 @@ let requester;
 nock.disableNetConnect();
 nock.enableNetConnect(process.env.HOST_IP);
 
-
 describe('Endpoint purge all', () => {
 
     before(async () => {
@@ -82,7 +81,6 @@ describe('Endpoint purge all', () => {
         await EndpointModel.deleteMany({}).exec();
         await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
-
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

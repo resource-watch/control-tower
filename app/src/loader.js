@@ -50,7 +50,6 @@ async function loadCronsPlugins() {
     });
 }
 
-
 function loadAPI(app, path, pathApi) {
     const routesFiles = fs.readdirSync(path);
     let existIndexRouter = false;

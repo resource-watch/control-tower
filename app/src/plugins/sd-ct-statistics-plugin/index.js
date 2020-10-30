@@ -16,7 +16,6 @@ function middleware(app, plugin, generalConfig) {
     app.use(statisticRouter(connection).middleware());
 }
 
-
 module.exports = {
     middleware,
     init,

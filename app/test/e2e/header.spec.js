@@ -9,7 +9,6 @@ chai.should();
 
 let requester;
 
-
 describe('Headers', () => {
     before(async () => {
         if (process.env.NODE_ENV !== 'test') {
@@ -18,7 +17,6 @@ describe('Headers', () => {
 
         requester = await getTestAgent();
     });
-
 
     it('Responses should not have restrictive CORS headers', async () => {
         const response = await requester

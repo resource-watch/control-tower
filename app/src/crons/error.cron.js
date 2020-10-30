@@ -2,7 +2,6 @@ const { CronJob } = require('cron');
 const logger = require('logger');
 const MicroserviceService = require('services/microservice.service');
 
-
 async function checkErrorMicroservices() {
     try {
         await MicroserviceService.checkErrorMicroservices();

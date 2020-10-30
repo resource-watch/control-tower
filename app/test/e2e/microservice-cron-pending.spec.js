@@ -334,7 +334,6 @@ describe('Microservice cron - Pending checking', () => {
         (await VersionModel.findOne({ name: appConstants.ENDPOINT_VERSION })).should.have.property('lastUpdated').and.equalTime(preVersion.lastUpdated);
     });
 
-
     afterEach(async () => {
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();

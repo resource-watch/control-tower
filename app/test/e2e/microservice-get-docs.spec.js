@@ -13,7 +13,6 @@ chai.should();
 
 let requester;
 
-
 describe('Microservices endpoints - Get docs', () => {
 
     before(async () => {

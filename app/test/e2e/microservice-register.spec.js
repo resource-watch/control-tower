@@ -17,7 +17,6 @@ chai.should();
 
 let requester;
 
-
 describe('Microservices endpoints', () => {
 
     before(async () => {
@@ -725,7 +724,6 @@ describe('Microservices endpoints', () => {
                 status: 200,
                 query: 1000
             });
-
 
         /* Adapter 2 microservice */
         nock('http://adapter-two:8002')

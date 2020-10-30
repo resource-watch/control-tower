@@ -18,7 +18,6 @@ const ALLOWED_HEADERS = [
     'host',
 ];
 
-
 const CACHE = {
     endpoints: [],
     version: null
@@ -83,7 +82,6 @@ class Dispatcher {
         logger.warn('Could not find filter value to filter', filter.name);
         return null;
     }
-
 
     static checkCompare(compare, dataFilter, condition = 'AND') {
         logger.debug('Check compare filter to filter', compare, 'and dataFilter', dataFilter);
@@ -403,7 +401,6 @@ class Dispatcher {
             }
 
             configRequest.multipart = true;
-
 
         }
         if (ctx.request.headers) {

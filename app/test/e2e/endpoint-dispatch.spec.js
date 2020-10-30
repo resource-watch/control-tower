@@ -90,7 +90,6 @@ describe('Endpoint dispatch tests', () => {
 
         const { token, user } = await createUserAndToken();
 
-
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', (body) => {
                 const decodedBody = hexToString(body);
@@ -154,7 +153,6 @@ describe('Endpoint dispatch tests', () => {
         await createEndpoint(changeMethod('PUT'));
 
         const { token, user } = await createUserAndToken();
-
 
         nock('http://mymachine:6001')
             .put('/api/v1/dataset', (body) => {
@@ -228,7 +226,6 @@ describe('Endpoint dispatch tests', () => {
         await createEndpoint(changeMethod('PATCH'));
 
         const { token, user } = await createUserAndToken();
-
 
         nock('http://mymachine:6001')
             .patch('/api/v1/dataset', (body) => {

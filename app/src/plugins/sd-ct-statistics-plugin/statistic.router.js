@@ -6,7 +6,6 @@ const ApiRouter = new Router({
     prefix: '/api/v1/statistic',
 });
 
-
 function getMiddleware() {
     class StatisticRouter {
 
@@ -113,7 +112,6 @@ function getMiddleware() {
             const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
             const lastWeek = new Date(lastWeekDate.getFullYear(), lastWeekDate.getMonth(), lastWeekDate.getDate(), 0, 0, 0);
             const tomorrow = new Date(tomorrowDate.getFullYear(), tomorrowDate.getMonth(), tomorrowDate.getDate(), 0, 0, 0);
-
 
             const count = await StatisticModel.count({
                 date: {

@@ -27,7 +27,6 @@ function middleware(app) {
     });
 }
 
-
 module.exports = {
     middleware,
     init,
