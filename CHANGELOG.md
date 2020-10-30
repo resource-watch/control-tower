@@ -1,3 +1,5 @@
+# v2.4.3
+
 ## 29/10/2020
 
 - Add support for "Sign in with Apple" 
