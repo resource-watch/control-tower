@@ -122,6 +122,7 @@ module.exports = (plugin, connection, generalConfig) => {
 
             // This places the user data in the ctx object as Passport would
             ctx.req.user = user;
+            ctx.status = 200;
 
             return next();
         };
