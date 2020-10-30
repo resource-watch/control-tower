@@ -41,5 +41,4 @@ const Microservice = new Schema({
     version: { type: Number, required: true },
 });
 
-
 module.exports = mongoose.model('Microservice', Microservice);

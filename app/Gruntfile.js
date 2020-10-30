@@ -7,7 +7,6 @@ module.exports = (grunt) => {
 
     grunt.initConfig({
 
-
         clean: {},
 
         express: {
@@ -105,7 +104,6 @@ module.exports = (grunt) => {
             }
         }
     });
-
 
     grunt.registerTask('unitTest', ['mochaTest:unit']);
 

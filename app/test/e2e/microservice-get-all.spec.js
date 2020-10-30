@@ -12,7 +12,6 @@ chai.should();
 
 let requester;
 
-
 describe('Microservices endpoints - Get all', () => {
 
     before(async () => {

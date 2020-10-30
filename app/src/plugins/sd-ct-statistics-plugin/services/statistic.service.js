@@ -93,7 +93,6 @@ class StatisticService {
                         model.redirectMethod = ctx.state.redirect.method;
                     }
 
-
                     logger.info('Saving statistic');
                     await new StatisticModel(model).save();
 

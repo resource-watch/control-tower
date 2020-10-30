@@ -11,17 +11,19 @@ const should = chai.should();
 
 let requester;
 
-// https://github.com/mochajs/mocha/issues/2683
-let skipTests = false;
-
 nock.disableNetConnect();
 nock.enableNetConnect(process.env.HOST_IP);
 
 describe('Facebook auth endpoint tests', () => {
 
-    before(async () => {
+    // eslint-disable-next-line func-names
+    before(async function () {
         if (process.env.NODE_ENV !== 'test') {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
+        }
+
+        if (!process.env.TEST_FACEBOOK_OAUTH2_APP_ID || !process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET) {
+            this.skip();
         }
 
         // We need to force-start the server, to ensure mongo has plugin info we can manipulate in the next instruction
@@ -30,18 +32,13 @@ describe('Facebook auth endpoint tests', () => {
         await setPluginSetting('oauth', 'config.defaultApp', 'rw');
         await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.active', true);
 
-        if (!process.env.TEST_FACEBOOK_OAUTH2_APP_ID || !process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET) {
-            skipTests = true;
-            await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientID', 'TEST_FACEBOOK_OAUTH2_APP_ID');
-            await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientSecret', 'TEST_FACEBOOK_OAUTH2_APP_SECRET');
-        } else {
-            await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientID', process.env.TEST_FACEBOOK_OAUTH2_APP_ID);
-            await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientSecret', process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET);
-        }
+        await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientID', process.env.TEST_FACEBOOK_OAUTH2_APP_ID);
+        await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientSecret', process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET);
 
         requester = await getTestAgent(true);
 
-        UserModel.deleteMany({}).exec();
+        UserModel.deleteMany({})
+            .exec();
     });
 
     beforeEach(async () => {
@@ -49,21 +46,15 @@ describe('Facebook auth endpoint tests', () => {
     });
 
     it('Visiting /auth/facebook while not being logged in should redirect to the login page', async () => {
-        if (skipTests) {
-            return;
-        }
-
-        const response = await requester.get(`/auth/facebook`).redirects(0);
+        const response = await requester.get(`/auth/facebook`)
+            .redirects(0);
         response.should.redirect;
         response.should.redirectTo(/^https:\/\/www\.facebook\.com\/v7\.0\/dialog\/oauth/);
     });
 
     it('Visiting /auth/facebook/callback while being logged in should redirect to the login successful page', async () => {
-        if (skipTests) {
-            return;
-        }
-
-        const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
+        const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
+            .exec();
         should.not.exist(missingUser);
 
         nock('https://graph.facebook.com')
@@ -110,22 +101,32 @@ describe('Facebook auth endpoint tests', () => {
         response.should.redirect;
         response.should.redirectTo(new RegExp(`/auth/success$`));
 
-        const confirmedUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
+        const confirmedUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
+            .exec();
         should.exist(confirmedUser);
-        confirmedUser.should.have.property('email').and.equal('john.doe@vizzuality.com');
-        confirmedUser.should.have.property('name').and.equal('John Doe');
-        confirmedUser.should.have.property('photo').and.equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
-        confirmedUser.should.have.property('role').and.equal('USER');
-        confirmedUser.should.have.property('provider').and.equal('facebook');
-        confirmedUser.should.have.property('providerId').and.equal('10216001184997572');
+        confirmedUser.should.have.property('email')
+            .and
+            .equal('john.doe@vizzuality.com');
+        confirmedUser.should.have.property('name')
+            .and
+            .equal('John Doe');
+        confirmedUser.should.have.property('photo')
+            .and
+            .equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
+        confirmedUser.should.have.property('role')
+            .and
+            .equal('USER');
+        confirmedUser.should.have.property('provider')
+            .and
+            .equal('facebook');
+        confirmedUser.should.have.property('providerId')
+            .and
+            .equal('10216001184997572');
     });
 
     it('Visiting /auth/facebook/callback while being logged in with a callbackUrl param should redirect to the callback URL page', async () => {
-        if (skipTests) {
-            return;
-        }
-
-        const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
+        const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
+            .exec();
         should.not.exist(missingUser);
 
         nock('https://graph.facebook.com')
@@ -182,22 +183,32 @@ describe('Facebook auth endpoint tests', () => {
         responseTwo.should.redirect;
         responseTwo.should.redirectTo('https://www.wikipedia.org/');
 
-        const confirmedUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
+        const confirmedUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
+            .exec();
         should.exist(confirmedUser);
-        confirmedUser.should.have.property('email').and.equal('john.doe@vizzuality.com');
-        confirmedUser.should.have.property('name').and.equal('John Doe');
-        confirmedUser.should.have.property('photo').and.equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
-        confirmedUser.should.have.property('role').and.equal('USER');
-        confirmedUser.should.have.property('provider').and.equal('facebook');
-        confirmedUser.should.have.property('providerId').and.equal('10216001184997572');
+        confirmedUser.should.have.property('email')
+            .and
+            .equal('john.doe@vizzuality.com');
+        confirmedUser.should.have.property('name')
+            .and
+            .equal('John Doe');
+        confirmedUser.should.have.property('photo')
+            .and
+            .equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
+        confirmedUser.should.have.property('role')
+            .and
+            .equal('USER');
+        confirmedUser.should.have.property('provider')
+            .and
+            .equal('facebook');
+        confirmedUser.should.have.property('providerId')
+            .and
+            .equal('10216001184997572');
     });
 
     it('Visiting /auth/facebook/callback while being logged in with an updated callbackUrl param should redirect to the new callback URL page', async () => {
-        if (skipTests) {
-            return;
-        }
-
-        const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
+        const missingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
+            .exec();
         should.not.exist(missingUser);
 
         nock('https://graph.facebook.com')
@@ -257,14 +268,27 @@ describe('Facebook auth endpoint tests', () => {
         responseTwo.should.redirect;
         responseTwo.should.redirectTo('https://www.wri.org/');
 
-        const confirmedUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
+        const confirmedUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
+            .exec();
         should.exist(confirmedUser);
-        confirmedUser.should.have.property('email').and.equal('john.doe@vizzuality.com');
-        confirmedUser.should.have.property('name').and.equal('John Doe');
-        confirmedUser.should.have.property('photo').and.equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
-        confirmedUser.should.have.property('role').and.equal('USER');
-        confirmedUser.should.have.property('provider').and.equal('facebook');
-        confirmedUser.should.have.property('providerId').and.equal('10216001184997572');
+        confirmedUser.should.have.property('email')
+            .and
+            .equal('john.doe@vizzuality.com');
+        confirmedUser.should.have.property('name')
+            .and
+            .equal('John Doe');
+        confirmedUser.should.have.property('photo')
+            .and
+            .equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
+        confirmedUser.should.have.property('role')
+            .and
+            .equal('USER');
+        confirmedUser.should.have.property('provider')
+            .and
+            .equal('facebook');
+        confirmedUser.should.have.property('providerId')
+            .and
+            .equal('10216001184997572');
     });
 
     it('Visiting /auth/facebook/token with a valid Facebook OAuth token should generate a new token', async () => {
@@ -277,17 +301,34 @@ describe('Facebook auth endpoint tests', () => {
             photo: 'https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260'
         }).save();
 
-        const existingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
+        const existingUser = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
+            .exec();
         should.exist(existingUser);
-        existingUser.should.have.property('email').and.equal('john.doe@vizzuality.com');
-        existingUser.should.have.property('name').and.equal('John Doe');
-        existingUser.should.have.property('photo').and.equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
-        existingUser.should.have.property('role').and.equal('USER');
-        existingUser.should.have.property('provider').and.equal('facebook');
-        existingUser.should.have.property('providerId').and.equal('10216001184997572');
-        existingUser.should.have.property('userToken').and.equal(undefined);
+        existingUser.should.have.property('email')
+            .and
+            .equal('john.doe@vizzuality.com');
+        existingUser.should.have.property('name')
+            .and
+            .equal('John Doe');
+        existingUser.should.have.property('photo')
+            .and
+            .equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
+        existingUser.should.have.property('role')
+            .and
+            .equal('USER');
+        existingUser.should.have.property('provider')
+            .and
+            .equal('facebook');
+        existingUser.should.have.property('providerId')
+            .and
+            .equal('10216001184997572');
+        existingUser.should.have.property('userToken')
+            .and
+            .equal(undefined);
 
-        const proof = crypto.createHmac('sha256', process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET || 'TEST_FACEBOOK_OAUTH2_APP_SECRET').update('TEST_FACEBOOK_OAUTH2_ACCESS_TOKEN').digest('hex');
+        const proof = crypto.createHmac('sha256', process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET || 'TEST_FACEBOOK_OAUTH2_APP_SECRET')
+            .update('TEST_FACEBOOK_OAUTH2_ACCESS_TOKEN')
+            .digest('hex');
 
         nock('https://graph.facebook.com')
             .get('/v2.6/me')
@@ -310,19 +351,37 @@ describe('Facebook auth endpoint tests', () => {
         response.status.should.equal(200);
         response.should.be.json;
         response.body.should.be.an('object');
-        response.body.should.have.property('token').and.be.a('string');
+        response.body.should.have.property('token')
+            .and
+            .be
+            .a('string');
 
         JWT.verify(response.body.token, process.env.JWT_SECRET);
 
-        const userWithToken = await UserModel.findOne({ email: 'john.doe@vizzuality.com' }).exec();
+        const userWithToken = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
+            .exec();
         should.exist(userWithToken);
-        userWithToken.should.have.property('email').and.equal('john.doe@vizzuality.com');
-        userWithToken.should.have.property('name').and.equal('John Doe');
-        userWithToken.should.have.property('photo').and.equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
-        userWithToken.should.have.property('role').and.equal('USER');
-        userWithToken.should.have.property('provider').and.equal('facebook');
-        userWithToken.should.have.property('providerId').and.equal('10216001184997572');
-        userWithToken.should.have.property('userToken').and.equal(response.body.token);
+        userWithToken.should.have.property('email')
+            .and
+            .equal('john.doe@vizzuality.com');
+        userWithToken.should.have.property('name')
+            .and
+            .equal('John Doe');
+        userWithToken.should.have.property('photo')
+            .and
+            .equal('https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=750&w=1260');
+        userWithToken.should.have.property('role')
+            .and
+            .equal('USER');
+        userWithToken.should.have.property('provider')
+            .and
+            .equal('facebook');
+        userWithToken.should.have.property('providerId')
+            .and
+            .equal('10216001184997572');
+        userWithToken.should.have.property('userToken')
+            .and
+            .equal(response.body.token);
     });
 
     afterEach(() => {
@@ -330,7 +389,8 @@ describe('Facebook auth endpoint tests', () => {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);
         }
 
-        UserModel.deleteMany({}).exec();
+        UserModel.deleteMany({})
+            .exec();
 
         closeTestAgent();
     });

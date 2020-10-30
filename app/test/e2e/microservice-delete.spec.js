@@ -12,7 +12,6 @@ chai.should();
 
 let requester;
 
-
 describe('Delete a microservice', () => {
 
     before(async () => {

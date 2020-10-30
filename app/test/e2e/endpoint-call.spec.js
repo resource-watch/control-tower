@@ -9,7 +9,6 @@ const { createUserAndToken } = require('./utils/helpers');
 
 let requester;
 
-
 describe('EndpointModel calls', () => {
 
     before(async () => {

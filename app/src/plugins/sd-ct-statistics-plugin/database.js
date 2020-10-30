@@ -11,7 +11,6 @@ function getConnection() {
     return connection;
 }
 
-
 module.exports = {
     init,
     getConnection,
