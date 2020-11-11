@@ -1,3 +1,7 @@
+## 11/11/2020
+
+- Add tests for twitter auth
+
 # v2.4.3
 
 ## 29/10/2020
