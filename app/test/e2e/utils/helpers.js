@@ -112,7 +112,7 @@ const createMicroserviceWithEndpoints = async (microserviceData) => {
 };
 
 const mockGetUserFromToken = (userProfile, token) => {
-    nock(process.env.CT_URL, { reqheaders: { authorization: `Bearer ${token}` } })
+    nock(process.env.AUTHORIZATION_URL, { reqheaders: { authorization: `Bearer ${token}` } })
         .get('/auth/user/me')
         .reply(200, userProfile);
 };

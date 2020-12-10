@@ -18,7 +18,7 @@ services:
       MONGO_PORT_27017_TCP_ADDR: mongo
       FASTLY_APIKEY: foo
       FASTLY_SERVICEID: bar
-      CT_URL: http://control-tower.gateway.svc.cluster.local:9000
+      AUTHORIZATION_URL: http://authorization.core.svc.cluster.local:9000
     command: test
     depends_on:
       - mongo

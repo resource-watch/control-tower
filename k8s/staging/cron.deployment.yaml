@@ -47,8 +47,8 @@ spec:
               value: app/src
             - name: PUBLIC_URL
               value: http://production-api.globalforestwatch.org
-            - name: CT_URL
-              value: http://control-tower.gateway.svc.cluster.local:9000
+            - name: AUTHORIZATION_URL
+              value: http://authorization.core.svc.cluster.local:9000
             - name: APP_NAME
               value: RW API
             - name: APP_LOGO

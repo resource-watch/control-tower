@@ -21,7 +21,7 @@ env:
     - PUBLIC_URL=http://localhost:9000
     - FASTLY_APIKEY=foo
     - FASTLY_SERVICEID=bar
-    - CT_URL=http://control-tower.gateway.svc.cluster.local:9000
+    - AUTHORIZATION_URL=http://authorization.core.svc.cluster.local:9000
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter

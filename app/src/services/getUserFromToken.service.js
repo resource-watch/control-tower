@@ -12,7 +12,7 @@ const getLoggedUser = async (ctx, next) => {
     try {
         const getUserDetailsRequestConfig = {
             method: 'GET',
-            baseURL: process.env.CT_URL,
+            baseURL: process.env.AUTHORIZATION_URL,
             url: `/auth/user/me`,
             headers: {
                 authorization: ctx.request.header.authorization
