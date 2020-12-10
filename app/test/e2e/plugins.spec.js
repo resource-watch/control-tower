@@ -1,10 +1,9 @@
 const nock = require('nock');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const PluginModel = require('models/plugin.model');
 const {
-    isAdminOnly, isTokenRequired, createUserAndToken, createPlugin
+    isAdminOnly, isTokenRequired, createPlugin, createUserAndToken, mockGetUserFromToken
 } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 let requester;
 
@@ -23,7 +22,9 @@ describe('Plugins calls', () => {
     it('Getting a list of plugins authenticated without ADMIN role should fail with a 403 error', async () => isAdminOnly(requester, 'get', 'plugin'));
 
     it('Getting a list of plugins should return the result by default', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester
             .get('/api/v1/plugin')
@@ -50,7 +51,10 @@ describe('Plugins calls', () => {
         const loadedPlugin = await PluginModel.findById(plugin._id.toString());
         loadedPlugin._id.toString().should.equal(plugin._id.toString());
 
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
+        mockGetUserFromToken(user, token);
 
         const newData = {
             active: false,
@@ -83,7 +87,6 @@ describe('Plugins calls', () => {
     });
 
     afterEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await PluginModel.deleteMany({ name: 'test plugin name' }).exec();
 
         if (!nock.isDone()) {

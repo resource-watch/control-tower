@@ -1,11 +1,10 @@
 const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const { getTestAgent, closeTestAgent } = require('./test-server');
-const { endpointTest, testFilter } = require('./test.constants');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const { endpointTest, testFilter } = require('./utils/test.constants');
 const {
-    createEndpoint, ensureCorrectError, updateVersion, getUserFromToken, createUserAndToken
+    createEndpoint, ensureCorrectError, updateVersion, createUserAndToken
 } = require('./utils/helpers');
 
 chai.should();
@@ -15,47 +14,6 @@ describe('Dispatch GET requests with filters', () => {
     before(async () => {
         requester = await getTestAgent();
     });
-
-    // TODO: This illustrates an issue where the user data is not being handled properly when generating the filter request. Probably should be fixed in the future.
-    // it('Endpoint with GET filter that expect user data, can be verified and matches return a 200 HTTP code (no filter value) - Null user is passed as query argument', async () => {
-    //     await updateVersion();
-    //     // eslint-disable-next-line no-useless-escape
-    //     await createEndpoint({
-    //         pathRegex: new RegExp('^/api/v1/dataset$'),
-    //         redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
-    //     });
-    //     await createEndpoint({
-    //         path: '/api/v1/test1/test',
-    //         redirect: [
-    //             {
-    //                 filters: null,
-    //                 method: 'GET',
-    //                 path: '/api/v1/test1/test',
-    //                 url: 'http://mymachine:6001'
-    //             }
-    //         ],
-    //     });
-    //
-    //     // this is where it's "failing": the generated filter request does not include the user.
-    //     createMockEndpointWithBody(`/api/v1/test1/test?loggedUser=${USERS.USER}`, {
-    //         response: { body: { data: { foo: 'bar' } } },
-    //         method: 'get'
-    //     });
-    //     createMockEndpointWithBody('/api/v1/dataset', {
-    //         body: {
-    //             foo: 'bar',
-    //             loggedUser: USERS.USER,
-    //             dataset: { body: { data: { foo: 'bar' } } },
-    //         }
-    //     });
-    //     const response = await microservice
-    //         .post('/api/v1/dataset')
-    //         .set('Authorization', `Bearer ${TOKENS.USER}`)
-    //         .send({ foo: 'bar' });
-    //
-    //     response.status.should.equal(200);
-    //     response.text.should.equal('ok');
-    // });
 
     it('Endpoint with GET filter that can be verified and matches return a 200 HTTP code (no filter value) - Null user is passed as query argument', async () => {
         await updateVersion();
@@ -79,11 +37,11 @@ describe('Dispatch GET requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .get('/api/v1/test1/test?loggedUser=null')
+            .get('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`)
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -123,11 +81,11 @@ describe('Dispatch GET requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .get('/api/v1/test1/test?loggedUser=null')
+            .get('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -161,11 +119,11 @@ describe('Dispatch GET requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`)
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -201,11 +159,11 @@ describe('Dispatch GET requests with filters', () => {
 
         // TODO: token should probably be passed to the filter request too
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -241,11 +199,11 @@ describe('Dispatch GET requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -281,7 +239,7 @@ describe('Dispatch GET requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { data: { test: 'bar' } });
 
         const response = await requester
@@ -317,7 +275,7 @@ describe('Dispatch GET requests with filters', () => {
 
         // TODO: token should probably be passed to the filter request too
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(404);
 
         const response = await requester
@@ -380,15 +338,14 @@ describe('Dispatch GET requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
         nock('http://mymachine:6001')
-            .get('/api/v1/test2/test?loggedUser=null')
+            .get('/api/v1/test2/test')
             .reply(200, { body: { data: { boo: 'tar' } } });
 
         const query = {
             dataset: JSON.stringify({ body: { data: { foo: 'bar' } } }),
-            loggedUser: await getUserFromToken(token),
             widget: JSON.stringify({ body: { data: { boo: 'tar' } } }),
             foo: 'bar'
         };
@@ -409,7 +366,6 @@ describe('Dispatch GET requests with filters', () => {
 
     afterEach(async () => {
         await EndpointModel.deleteMany({}).exec();
-        await UserModel.deleteMany({}).exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

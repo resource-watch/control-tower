@@ -2,12 +2,12 @@ const chai = require('chai');
 const nock = require('nock');
 const Endpoint = require('models/endpoint.model');
 const fs = require('fs');
-const { getTestAgent } = require('./test-server');
-const { testAppKey, endpointTest } = require('./test.constants');
+const { getTestAgent } = require('./utils/test-server');
+const { testAppKey, endpointTest } = require('./utils/test.constants');
 const {
-    createEndpoint, ensureCorrectError, updateVersion, createUserAndToken, hexToString
+    createEndpoint, ensureCorrectError, updateVersion, hexToString, createUserAndToken
 } = require('./utils/helpers');
-const { createMockEndpoint, createMockEndpointWithBody, createMockEndpointWithHeaders } = require('./mock');
+const { createMockEndpoint, createMockEndpointWithBody, createMockEndpointWithHeaders } = require('./utils/mock');
 
 chai.should();
 let microservice;
@@ -61,13 +61,10 @@ describe('Endpoint dispatch tests', () => {
         await updateVersion();
         await createEndpoint(changeMethod('POST'));
 
-        const { token, user } = await createUserAndToken();
+        const { token } = await createUserAndToken();
 
         nock('http://mymachine:6001')
-            .post('/api/v1/dataset', (body) => {
-                body.should.have.property('loggedUser').and.deep.include(user);
-                return true;
-            })
+            .post('/api/v1/dataset')
             .query({
                 test1: 'test',
                 test2: 'test'
@@ -88,15 +85,11 @@ describe('Endpoint dispatch tests', () => {
         await updateVersion();
         await createEndpoint(changeMethod('POST'));
 
-        const { token, user } = await createUserAndToken();
+        const { token } = await createUserAndToken();
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', (body) => {
                 const decodedBody = hexToString(body);
-
-                decodedBody.should.include('loggedUser');
-                // there's an extra field on the data, so we need to strip the last character (JSON object close) to have a match.
-                decodedBody.should.include(JSON.stringify(user).slice(0, -1));
 
                 decodedBody.should.include('name="foo"\r\n\r\nbar');
                 return true;
@@ -125,13 +118,10 @@ describe('Endpoint dispatch tests', () => {
         await updateVersion();
         await createEndpoint(changeMethod('PUT'));
 
-        const { token, user } = await createUserAndToken();
+        const { token } = await createUserAndToken();
 
         nock('http://mymachine:6001')
-            .put('/api/v1/dataset', (body) => {
-                body.should.have.property('loggedUser').and.deep.include(user);
-                return true;
-            })
+            .put('/api/v1/dataset')
             .query({
                 test1: 'test',
                 test2: 'test'
@@ -152,15 +142,11 @@ describe('Endpoint dispatch tests', () => {
         await updateVersion();
         await createEndpoint(changeMethod('PUT'));
 
-        const { token, user } = await createUserAndToken();
+        const { token } = await createUserAndToken();
 
         nock('http://mymachine:6001')
             .put('/api/v1/dataset', (body) => {
                 const decodedBody = hexToString(body);
-
-                decodedBody.should.include('loggedUser');
-                // there's an extra field on the data, so we need to strip the last character (JSON object close) to have a match.
-                decodedBody.should.include(JSON.stringify(user).slice(0, -1));
 
                 decodedBody.should.include('name="foo"\r\n\r\nbar');
                 return true;
@@ -188,7 +174,7 @@ describe('Endpoint dispatch tests', () => {
     it('External request\'s query params are passed along to the internal call on GET requests', async () => {
         await updateVersion();
         await createEndpoint(changeMethod('GET'));
-        createMockEndpoint('/api/v1/dataset?test1=test&test2=test&loggedUser=null', { method: 'get' });
+        createMockEndpoint('/api/v1/dataset?test1=test&test2=test', { method: 'get' });
         const result = await microservice.get('/api/v1/dataset').query({ test1: 'test', test2: 'test' });
         result.text.should.equal('ok');
         result.status.should.equal(200);
@@ -198,13 +184,10 @@ describe('Endpoint dispatch tests', () => {
         await updateVersion();
         await createEndpoint(changeMethod('PATCH'));
 
-        const { token, user } = await createUserAndToken();
+        const { token } = await createUserAndToken();
 
         nock('http://mymachine:6001')
-            .patch('/api/v1/dataset', (body) => {
-                body.should.have.property('loggedUser').and.deep.include(user);
-                return true;
-            })
+            .patch('/api/v1/dataset')
             .query({
                 test1: 'test',
                 test2: 'test'
@@ -225,15 +208,11 @@ describe('Endpoint dispatch tests', () => {
         await updateVersion();
         await createEndpoint(changeMethod('PATCH'));
 
-        const { token, user } = await createUserAndToken();
+        const { token } = await createUserAndToken();
 
         nock('http://mymachine:6001')
             .patch('/api/v1/dataset', (body) => {
                 const decodedBody = hexToString(body);
-
-                decodedBody.should.include('loggedUser');
-                // there's an extra field on the data, so we need to strip the last character (JSON object close) to have a match.
-                decodedBody.should.include(JSON.stringify(user).slice(0, -1));
 
                 decodedBody.should.include('name="foo"\r\n\r\nbar');
                 return true;
@@ -261,7 +240,7 @@ describe('Endpoint dispatch tests', () => {
     it('External request\'s query params are passed along to the internal call on DELETE requests', async () => {
         await updateVersion();
         await createEndpoint(changeMethod('DELETE'));
-        createMockEndpoint('/api/v1/dataset?test1=test&test2=test&loggedUser=null', { method: 'delete' });
+        createMockEndpoint('/api/v1/dataset?test1=test&test2=test', { method: 'delete' });
         const result = await microservice.delete('/api/v1/dataset').query({ test1: 'test', test2: 'test' });
         result.text.should.equal('ok');
         result.status.should.equal(200);
@@ -270,7 +249,7 @@ describe('Endpoint dispatch tests', () => {
     it('External request\'s body content should be absent the internal call on GET requests', async () => {
         await updateVersion();
         await createEndpoint(changeMethod('GET'));
-        createMockEndpoint('/api/v1/dataset?loggedUser=null', { method: 'get' });
+        createMockEndpoint('/api/v1/dataset', { method: 'get' });
         const result = await microservice.get('/api/v1/dataset').send({ test1: 'test', test2: 'test' });
         result.status.should.equal(200);
         result.text.should.equal('ok');
@@ -279,7 +258,7 @@ describe('Endpoint dispatch tests', () => {
     it('External request\'s body content should be absent the internal call on DELETE requests', async () => {
         await updateVersion();
         await createEndpoint(changeMethod('DELETE'));
-        createMockEndpoint('/api/v1/dataset?loggedUser=null', { method: 'delete' });
+        createMockEndpoint('/api/v1/dataset', { method: 'delete' });
         const result = await microservice.delete('/api/v1/dataset').send({ test1: 'test2' });
         result.status.should.equal(200);
         result.text.should.equal('ok');
@@ -288,7 +267,7 @@ describe('Endpoint dispatch tests', () => {
     it('External request\'s body content should be present the internal call on POST requests', async () => {
         await updateVersion();
         await createEndpoint();
-        createMockEndpointWithBody('/api/v1/dataset', { body: { test1: 'test2', loggedUser: null } });
+        createMockEndpointWithBody('/api/v1/dataset', { body: { test1: 'test2' } });
         const result = await microservice.post('/api/v1/dataset').send({ test1: 'test2' });
         result.status.should.equal(200);
         result.text.should.equal('ok');
@@ -297,7 +276,7 @@ describe('Endpoint dispatch tests', () => {
     it('External request\'s body content should be present the internal call on PATCH requests', async () => {
         await updateVersion();
         await createEndpoint(changeMethod('PATCH'));
-        createMockEndpointWithBody('/api/v1/dataset', { method: 'patch', body: { test1: 'test2', loggedUser: null } });
+        createMockEndpointWithBody('/api/v1/dataset', { method: 'patch', body: { test1: 'test2' } });
         const result = await microservice.patch('/api/v1/dataset').send({ test1: 'test2' });
         result.status.should.equal(200);
         result.text.should.equal('ok');
@@ -306,7 +285,7 @@ describe('Endpoint dispatch tests', () => {
     it('External request\'s body content should be present the internal call on PUT requests', async () => {
         await updateVersion();
         await createEndpoint(changeMethod('PUT'));
-        createMockEndpointWithBody('/api/v1/dataset', { method: 'put', body: { test1: 'test2', loggedUser: null } });
+        createMockEndpointWithBody('/api/v1/dataset', { method: 'put', body: { test1: 'test2' } });
         const result = await microservice.put('/api/v1/dataset').send({ test1: 'test2' });
         result.status.should.equal(200);
         result.text.should.equal('ok');

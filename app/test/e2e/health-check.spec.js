@@ -1,5 +1,5 @@
 const nock = require('nock');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 let requester;
 

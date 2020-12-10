@@ -1,11 +1,10 @@
 const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const { getTestAgent, closeTestAgent } = require('./test-server');
-const { endpointTest, testFilter } = require('./test.constants');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const { endpointTest, testFilter } = require('./utils/test.constants');
 const {
-    createEndpoint, updateVersion, getUserFromToken, createUserAndToken
+    createEndpoint, updateVersion, createUserAndToken
 } = require('./utils/helpers');
 
 chai.should();
@@ -45,11 +44,11 @@ describe('Dispatch internal requests', () => {
         });
 
         nock('http://mymachine:6001')
-            .get(`/api/v1/test1/test?loggedUser=null`)
+            .get(`/api/v1/test1/test`)
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .get(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -63,7 +62,6 @@ describe('Dispatch internal requests', () => {
 
     afterEach(async () => {
         await EndpointModel.deleteMany({}).exec();
-        await UserModel.deleteMany({}).exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

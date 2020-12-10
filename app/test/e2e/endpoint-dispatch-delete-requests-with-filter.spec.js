@@ -1,14 +1,20 @@
 const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const querystring = require('querystring');
-const { getTestAgent, closeTestAgent } = require('./test-server');
 const {
-    endpointTest, testFilter
-} = require('./test.constants');
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 const {
-    createEndpoint, ensureCorrectError, updateVersion, createUserAndToken, getUserFromToken
+    endpointTest,
+    testFilter
+} = require('./utils/test.constants');
+const {
+    createEndpoint,
+    ensureCorrectError,
+    updateVersion,
+    createUserAndToken
 } = require('./utils/helpers');
 
 chai.should();
@@ -21,7 +27,6 @@ nock.enableNetConnect(process.env.HOST_IP);
 describe('Dispatch DELETE requests with filters', () => {
 
     before(async () => {
-        await UserModel.deleteMany({}).exec();
 
         requester = await getTestAgent();
     });
@@ -54,7 +59,6 @@ describe('Dispatch DELETE requests with filters', () => {
     //     createMockEndpointWithBody('/api/v1/dataset', {
     //         body: {
     //             foo: 'bar',
-    //             loggedUser: USERS.USER,
     //             dataset: { body: { data: { foo: 'bar' } } },
     //         }
     //     });
@@ -73,7 +77,11 @@ describe('Dispatch DELETE requests with filters', () => {
         await createEndpoint({
             method: 'DELETE',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], method: 'DELETE', filters: testFilter({ foo: 'bar' }) }]
+            redirect: [{
+                ...endpointTest.redirect[0],
+                method: 'DELETE',
+                filters: testFilter({ foo: 'bar' })
+            }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
@@ -89,11 +97,11 @@ describe('Dispatch DELETE requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .delete('/api/v1/test1/test?loggedUser=null')
+            .delete('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`)
+            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -133,11 +141,15 @@ describe('Dispatch DELETE requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .delete('/api/v1/test1/test?loggedUser=null')
+            .delete('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .delete(`/api/v1/dataset`)
+            .query({
+                foo: 'bar',
+                dataset: JSON.stringify({ body: { data: { foo: 'bar' } } })
+            })
             .reply(200, 'ok');
 
         const response = await requester
@@ -155,7 +167,11 @@ describe('Dispatch DELETE requests with filters', () => {
         await createEndpoint({
             method: 'DELETE',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], method: 'DELETE', filters: testFilter({ foo: 'bar' }) }]
+            redirect: [{
+                ...endpointTest.redirect[0],
+                method: 'DELETE',
+                filters: testFilter({ foo: 'bar' })
+            }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
@@ -171,11 +187,11 @@ describe('Dispatch DELETE requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=null`)
+            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -194,7 +210,11 @@ describe('Dispatch DELETE requests with filters', () => {
         await createEndpoint({
             method: 'DELETE',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], method: 'DELETE', filters: testFilter({ foo: 'bar' }) }]
+            redirect: [{
+                ...endpointTest.redirect[0],
+                method: 'DELETE',
+                filters: testFilter({ foo: 'bar' })
+            }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
@@ -211,11 +231,15 @@ describe('Dispatch DELETE requests with filters', () => {
 
         // TODO: token should probably be passed to the filter request too
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .delete(`/api/v1/dataset`)
+            .query({
+                foo: 'bar',
+                dataset: JSON.stringify({ body: { data: { foo: 'bar' } } })
+            })
             .reply(200, 'ok');
 
         const response = await requester
@@ -235,7 +259,11 @@ describe('Dispatch DELETE requests with filters', () => {
         await createEndpoint({
             method: 'DELETE',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], method: 'DELETE', filters: testFilter({ foo: 'bar' }) }]
+            redirect: [{
+                ...endpointTest.redirect[0],
+                method: 'DELETE',
+                filters: testFilter({ foo: 'bar' })
+            }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
@@ -251,11 +279,11 @@ describe('Dispatch DELETE requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}&loggedUser=${await getUserFromToken(token)}`)
+            .delete(`/api/v1/dataset?foo=bar&dataset=${JSON.stringify({ body: { data: { foo: 'bar' } } })}`)
             .reply(200, 'ok');
 
         const response = await requester
@@ -275,7 +303,11 @@ describe('Dispatch DELETE requests with filters', () => {
         await createEndpoint({
             method: 'DELETE',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], method: 'DELETE', filters: testFilter({ test: 'test1' }) }]
+            redirect: [{
+                ...endpointTest.redirect[0],
+                method: 'DELETE',
+                filters: testFilter({ test: 'test1' })
+            }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
@@ -291,7 +323,7 @@ describe('Dispatch DELETE requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { data: { test: 'bar' } });
 
         const response = await requester
@@ -310,7 +342,10 @@ describe('Dispatch DELETE requests with filters', () => {
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
             method: 'DELETE',
-            redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ test: 'trest1' }) }]
+            redirect: [{
+                ...endpointTest.redirect[0],
+                filters: testFilter({ test: 'trest1' })
+            }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
@@ -327,7 +362,7 @@ describe('Dispatch DELETE requests with filters', () => {
 
         // TODO: token should probably be passed to the filter request too
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(404);
 
         const response = await requester
@@ -390,16 +425,15 @@ describe('Dispatch DELETE requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .delete('/api/v1/test2/test?loggedUser=null')
+            .delete('/api/v1/test2/test')
             .reply(200, { body: { data: { boo: 'tar' } } });
 
         const queryString = querystring.stringify({
             dataset: JSON.stringify({ body: { data: { foo: 'bar' } } }),
-            loggedUser: await getUserFromToken(token),
             widget: JSON.stringify({ body: { data: { boo: 'tar' } } }),
             foo: 'bar'
         });
@@ -418,8 +452,8 @@ describe('Dispatch DELETE requests with filters', () => {
     });
 
     afterEach(async () => {
-        await EndpointModel.deleteMany({}).exec();
-        await UserModel.deleteMany({}).exec();
+        await EndpointModel.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);
