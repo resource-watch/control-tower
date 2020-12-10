@@ -1,6 +1,7 @@
 ## 10/12/2020
 
 - Remove CT-oauth plugin
+- Remove filter functionality
 
 ## 11/11/2020
 

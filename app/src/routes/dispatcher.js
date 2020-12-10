@@ -4,7 +4,6 @@ const DispatcherService = require('services/dispatcher.service.js');
 const EndpointNotFound = require('errors/endpointNotFound');
 const NotAuthenticated = require('errors/notAuthenticated');
 const NotApplicationKey = require('errors/notApplicationKey');
-const FilterError = require('errors/filterError');
 const fs = require('fs');
 
 const router = new Router();
@@ -147,11 +146,6 @@ class DispatcherRouter {
             if (err instanceof EndpointNotFound) {
                 logger.info(`Endpoint not found: ${err.message}`);
                 ctx.throw(404, `Endpoint not found`);
-                return;
-            }
-            if (err instanceof FilterError) {
-                logger.info('Filter error', err);
-                ctx.throw(500, err.message);
                 return;
             }
             if (err instanceof NotAuthenticated) {
