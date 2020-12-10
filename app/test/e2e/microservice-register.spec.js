@@ -4,14 +4,13 @@ const chai = require('chai');
 
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const VersionModel = require('models/version.model');
 const appConstants = require('app.constants');
 
 chai.use(require('chai-datetime'));
 
 const { createMicroservice, createEndpoint } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 chai.should();
 
@@ -28,7 +27,6 @@ describe('Microservices endpoints', () => {
     });
 
     beforeEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
     });
@@ -796,7 +794,6 @@ describe('Microservices endpoints', () => {
     });
 
     afterEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
 

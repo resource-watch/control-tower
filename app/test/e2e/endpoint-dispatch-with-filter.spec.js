@@ -1,8 +1,8 @@
 const chai = require('chai');
 const nock = require('nock');
 const Endpoint = require('models/endpoint.model');
-const { getTestAgent } = require('./test-server');
-const { endpointTest, testFilter } = require('./test.constants');
+const { getTestAgent } = require('./utils/test-server');
+const { endpointTest, testFilter } = require('./utils/test.constants');
 const { createEndpoint, ensureCorrectError, updateVersion } = require('./utils/helpers');
 
 chai.should();
@@ -46,7 +46,7 @@ describe('Endpoint dispatch with filter tests', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { data: { test: 'bar' } });
 
         const result = await microservice.post('/api/v1/dataset').send({ test: 'bar' });
@@ -74,7 +74,7 @@ describe('Endpoint dispatch with filter tests', () => {
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(404);
 
         const result = await microservice.post('/api/v1/dataset').send({ test: 'bar' });

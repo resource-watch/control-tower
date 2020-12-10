@@ -2,11 +2,12 @@ const nock = require('nock');
 
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 
-const { getTestAgent, closeTestAgent } = require('./test-server');
-const { createUserAndToken, createEndpoint, setPluginSetting } = require('./utils/helpers');
-const { createMockEndpoint } = require('./mock');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    createUserAndToken, createEndpoint, setPluginSetting, mockGetUserFromToken
+} = require('./utils/helpers');
+const { createMockEndpoint } = require('./utils/mock');
 
 let requester;
 
@@ -85,13 +86,12 @@ describe('Read-only mode spec', () => {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
 
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
     });
 
     beforeEach(async () => {
-        await setPluginSetting('oauth', 'ordering', 1);
+        // await setPluginSetting('oauth', 'ordering', 1);
         await setPluginSetting('readOnly', 'ordering', 0);
         await setPluginSetting('readOnly', 'active', true);
         await setPluginSetting('readOnly', 'config.blacklist', []);
@@ -104,7 +104,7 @@ describe('Read-only mode spec', () => {
         await createCRUDEndpoints();
         requester = await getTestAgent(true);
 
-        createMockEndpoint('/api/v1/dataset?loggedUser=null', { method: 'get' });
+        createMockEndpoint('/api/v1/dataset', { method: 'get' });
         const getResult = await requester.get('/api/v1/dataset');
         getResult.status.should.equal(200);
         getResult.text.should.equal('ok');
@@ -161,7 +161,7 @@ describe('Read-only mode spec', () => {
         patchResult.status.should.equal(200);
         patchResult.text.should.equal('ok');
 
-        createMockEndpoint('/api/v1/dataset?loggedUser=null', { method: 'delete' });
+        createMockEndpoint('/api/v1/dataset', { method: 'delete' });
         const deleteResult = await requester.delete('/api/v1/dataset');
         deleteResult.status.should.equal(200);
         deleteResult.text.should.equal('ok');
@@ -170,7 +170,10 @@ describe('Read-only mode spec', () => {
     it('Applies the same read-only criteria for CT endpoints', async () => {
         requester = await getTestAgent(true);
 
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
+
         const getResult = await requester
             .get('/api/v1/microservice')
             .set('Authorization', `Bearer ${token}`);
@@ -190,31 +193,6 @@ describe('Read-only mode spec', () => {
         patchResult.text.should.equal('API under maintenance, please try again later.');
 
         const deleteResult = await requester.delete('/api/v1/microservice');
-        deleteResult.status.should.equal(503);
-        deleteResult.text.should.equal('API under maintenance, please try again later.');
-    });
-
-    it('Applies the same read-only criteria for CT authentication endpoints', async () => {
-        requester = await getTestAgent(true);
-
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
-        const getResult = await requester
-            .get('/auth/user')
-            .set('Authorization', `Bearer ${token}`);
-        getResult.status.should.equal(200);
-        getResult.body.should.have.property('data');
-
-        const postResult = await requester
-            .post('/auth/user')
-            .set('Authorization', `Bearer ${token}`);
-        postResult.status.should.equal(503);
-        postResult.text.should.equal('API under maintenance, please try again later.');
-
-        const patchResult = await requester.patch('/auth/user');
-        patchResult.status.should.equal(503);
-        patchResult.text.should.equal('API under maintenance, please try again later.');
-
-        const deleteResult = await requester.delete('/auth/user');
         deleteResult.status.should.equal(503);
         deleteResult.text.should.equal('API under maintenance, please try again later.');
     });
@@ -249,14 +227,13 @@ describe('Read-only mode spec', () => {
         patchResult.status.should.equal(200);
         patchResult.text.should.equal('ok');
 
-        createMockEndpoint('/api/v1/dataset?loggedUser=null', { method: 'delete' });
+        createMockEndpoint('/api/v1/dataset', { method: 'delete' });
         const deleteResult = await requester.delete('/api/v1/dataset');
         deleteResult.status.should.equal(200);
         deleteResult.text.should.equal('ok');
     });
 
     afterEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
 

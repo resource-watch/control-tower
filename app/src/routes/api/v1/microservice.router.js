@@ -10,6 +10,7 @@ const Utils = require('utils');
 const mongoose = require('mongoose');
 const MicroserviceSerializer = require('serializers/microservice.serializer');
 const pick = require('lodash/pick');
+const { getLoggedUser } = require('services/getUserFromToken.service');
 
 const router = new Router({
     prefix: '/microservice',
@@ -88,9 +89,9 @@ class MicroserviceRouter {
 }
 
 router.get('/status', MicroserviceRouter.getStatus);
-router.get('/', Utils.isLogged, Utils.isAdmin, MicroserviceRouter.getAll);
-router.get('/:id', Utils.isLogged, Utils.isAdmin, MicroserviceRouter.get);
+router.get('/', getLoggedUser, Utils.isLogged, Utils.isAdmin, MicroserviceRouter.getAll);
+router.get('/:id', getLoggedUser, Utils.isLogged, Utils.isAdmin, MicroserviceRouter.get);
 router.post('/', MicroserviceRouter.register);
-router.delete('/:id', Utils.isLogged, Utils.isAdmin, MicroserviceRouter.delete);
+router.delete('/:id', getLoggedUser, Utils.isLogged, Utils.isAdmin, MicroserviceRouter.delete);
 
 module.exports = router;

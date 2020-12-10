@@ -2,6 +2,7 @@ const Router = require('koa-router');
 const Plugin = require('models/plugin.model');
 const logger = require('logger');
 const Utils = require('utils');
+const { getLoggedUser } = require('services/getUserFromToken.service');
 
 const router = new Router({
     prefix: '/plugin',
@@ -39,7 +40,7 @@ class PluginRouter {
 
 }
 
-router.get('/', Utils.isLogged, Utils.isAdmin, PluginRouter.get);
-router.patch('/:id', Utils.isLogged, Utils.isAdmin, PluginRouter.update);
+router.get('/', getLoggedUser, Utils.isLogged, Utils.isAdmin, PluginRouter.get);
+router.patch('/:id', getLoggedUser, Utils.isLogged, Utils.isAdmin, PluginRouter.update);
 
 module.exports = router;

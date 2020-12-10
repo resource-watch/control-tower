@@ -65,7 +65,6 @@ class StatisticService {
                         time: Date.now() - first,
                         ip: ctx.headers['x-forwarded-for'],
                         anonymous: (!ctx.state.user && !ctx.req.user && !ctx.state.microservice),
-                        loggedUser: ctx.state.user || ctx.req.user || ctx.state.microservice,
                     };
                     if (ctx.state.redirect) {
                         model.endpointPath = ctx.state.redirect.endpoint.path;
@@ -85,7 +84,6 @@ class StatisticService {
                         time: Date.now() - first,
                         ip: ctx.headers['x-forwarded-for'],
                         anonymous: (!ctx.state.user && !ctx.req.user && !ctx.state.microservice),
-                        loggedUser: ctx.state.user || ctx.req.user || ctx.state.microservice
                     };
                     if (ctx.state.redirect) {
                         model.endpointPath = ctx.state.redirect.endpoint.path;

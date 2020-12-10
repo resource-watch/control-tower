@@ -1,3 +1,7 @@
+## 10/12/2020
+
+- Remove CT-oauth plugin
+
 ## 11/11/2020
 
 - Add tests for twitter auth

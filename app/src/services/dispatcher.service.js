@@ -25,19 +25,22 @@ const CACHE = {
 
 class Dispatcher {
 
-    static getLoggedUser(ctx) {
-        if (ctx.state) {
-            if (ctx.state.user) {
-                return ctx.state.user;
-            }
-            if (ctx.state.microservice) {
-                return ctx.state.microservice;
+    static hasLoggedUser(ctx) {
+        if (!ctx.header || !ctx.header.authorization) {
+            return false;
+        }
+
+        const parts = ctx.header.authorization.split(' ');
+
+        if (parts.length === 2) {
+            const scheme = parts[0];
+
+            if (/^Bearer$/i.test(scheme)) {
+                return true;
             }
         }
-        if (ctx.req && ctx.req.user) {
-            return ctx.req.user;
-        }
-        return null;
+
+        return false;
     }
 
     static async buildUrl(sourcePath, redirectEndpoint, endpoint) {
@@ -285,7 +288,7 @@ class Dispatcher {
 
         logger.info(`[DispatcherService - getRequest] Endpoint found. Path: ${endpoint.path} | Method: ${endpoint.method}`);
         logger.info('[DispatcherService - getRequest] Checking if authentication is necessary');
-        if (endpoint.authenticated && !Dispatcher.getLoggedUser(ctx)) {
+        if (endpoint.authenticated && !Dispatcher.hasLoggedUser(ctx)) {
             logger.info('[DispatcherService - getRequest] Authentication is needed but no user data was found in the request');
             throw new NotAuthenticated();
         }
@@ -343,8 +346,6 @@ class Dispatcher {
                 configRequest.body = ctx.request.body;
             }
         }
-        logger.debug('[DispatcherService - getRequest] Adding logged user if it is logged');
-        redirectEndpoint.data = { ...redirectEndpoint.data, loggedUser: Dispatcher.getLoggedUser(ctx), };
 
         if (redirectEndpoint.data) {
             logger.debug('[DispatcherService - getRequest] Adding data');
@@ -410,7 +411,6 @@ class Dispatcher {
         if (ctx.state && ctx.state.appKey) {
             configRequest.headers.app_key = JSON.stringify(ctx.state.appKey);
         }
-        configRequest.headers.user_key = JSON.stringify(Dispatcher.getLoggedUser(ctx));
 
         logger.debug('[DispatcherService - getRequest] Checking if is json or formdata request');
         if (configRequest.multipart) {

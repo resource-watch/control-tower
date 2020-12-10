@@ -1,9 +1,11 @@
 const nock = require('nock');
 const Microservice = require('models/microservice.model');
 const Endpoint = require('models/endpoint.model');
-const { endpointTest } = require('./test.constants');
-const { isTokenRequired, isAdminOnly, createUserAndToken } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { endpointTest } = require('./utils/test.constants');
+const {
+    isTokenRequired, isAdminOnly, createUserAndToken, mockGetUserFromToken
+} = require('./utils/helpers');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 let requester;
 
@@ -16,16 +18,25 @@ describe('GET Endpoints', () => {
         requester = await getTestAgent();
     });
 
+    beforeEach(async () => {
+        await Endpoint.deleteMany({}).exec();
+        await Microservice.deleteMany({}).exec();
+
+        if (!nock.isDone()) {
+            throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);
+        }
+    });
+
     it('Getting a list of endpoints without being authenticated should fail with a 401 error', () => {
         isTokenRequired(requester, 'get', 'plugin');
     });
 
-    it('Getting a list of endpoints authenticated without ADMIN role should fail with a 403 error', () => {
-        isAdminOnly(requester, 'get', 'plugin');
-    });
+    it('Getting a list of endpoints authenticated without ADMIN role should fail with a 403 error', async () => isAdminOnly(requester, 'get', 'plugin'));
 
     it('Getting a list of endpoints without creating microservice should return empty array', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester
             .get('/api/v1/endpoint')
@@ -36,7 +47,9 @@ describe('GET Endpoints', () => {
     });
 
     it('Getting a list of endpoints should return those endpoints (happy case)', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         await new Endpoint({ ...endpointTest, authenticated: true }).save();
 

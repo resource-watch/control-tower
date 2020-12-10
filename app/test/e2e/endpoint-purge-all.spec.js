@@ -3,12 +3,11 @@ const chai = require('chai');
 
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 
 chai.should();
 
-const { getTestAgent, closeTestAgent } = require('./test-server');
-const { createUserAndToken } = require('./utils/helpers');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const { createUserAndToken, mockGetUserFromToken } = require('./utils/helpers');
 
 let requester;
 nock.disableNetConnect();
@@ -41,7 +40,9 @@ describe('Endpoint purge all', () => {
     });
 
     it('Purging endpoints as USER should fail', async () => {
-        const { token } = await createUserAndToken({ role: 'USER' });
+        const { token, user } = await createUserAndToken({ role: 'USER' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester.delete(`/api/v1/endpoint/purge-all`)
             .set('Authorization', `Bearer ${token}`);
@@ -53,7 +54,9 @@ describe('Endpoint purge all', () => {
     });
 
     it('Purging endpoints as MANAGER should fail', async () => {
-        const { token } = await createUserAndToken({ role: 'MANAGER' });
+        const { token, user } = await createUserAndToken({ role: 'MANAGER' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester.delete(`/api/v1/endpoint/purge-all`)
             .set('Authorization', `Bearer ${token}`);
@@ -65,7 +68,9 @@ describe('Endpoint purge all', () => {
     });
 
     it('Purging endpoints as ADMIN should succeed (happy case)', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         nock('https://api.fastly.com')
             .post(`/service/${process.env.FASTLY_SERVICEID}/purge_all`)
@@ -79,7 +84,6 @@ describe('Endpoint purge all', () => {
 
     afterEach(async () => {
         await EndpointModel.deleteMany({}).exec();
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
 
         if (!nock.isDone()) {

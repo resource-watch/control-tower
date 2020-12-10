@@ -1,13 +1,12 @@
 const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 const {
     endpointTest, testFilter
-} = require('./test.constants');
+} = require('./utils/test.constants');
 const {
-    createEndpoint, ensureCorrectError, updateVersion, createUserAndToken, getUserFromToken
+    createEndpoint, ensureCorrectError, updateVersion, createUserAndToken
 } = require('./utils/helpers');
 
 chai.should();
@@ -15,8 +14,8 @@ let requester;
 
 describe('Dispatch POST requests with filters', () => {
     before(async () => {
-        await EndpointModel.deleteMany({}).exec();
-        await UserModel.deleteMany({}).exec();
+        await EndpointModel.deleteMany({})
+            .exec();
 
         requester = await getTestAgent();
     });
@@ -25,31 +24,22 @@ describe('Dispatch POST requests with filters', () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
+            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'GET',
-                    path: '/api/v1/test1/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'GET', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+            }],
         });
 
         nock('http://mymachine:6001')
-            .get('/api/v1/test1/test?loggedUser=null')
+            .get('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
-                foo: 'bar',
-                loggedUser: null,
-                dataset: { body: { data: { foo: 'bar' } } },
+                foo: 'bar', dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
 
@@ -108,31 +98,22 @@ describe('Dispatch POST requests with filters', () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
+            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'GET',
-                    path: '/api/v1/test1/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'GET', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+            }],
         });
 
         nock('http://mymachine:6001')
-            .get('/api/v1/test1/test?loggedUser=null')
+            .get('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
-                foo: 'bar',
-                loggedUser: await getUserFromToken(token, false),
-                dataset: { body: { data: { foo: 'bar' } } },
+                foo: 'bar', dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
 
@@ -149,31 +130,22 @@ describe('Dispatch POST requests with filters', () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
+            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'POST',
-                    path: '/api/v1/test1/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'POST', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+            }],
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
-                foo: 'bar',
-                loggedUser: null,
-                dataset: { body: { data: { foo: 'bar' } } },
+                foo: 'bar', dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
 
@@ -191,31 +163,22 @@ describe('Dispatch POST requests with filters', () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
+            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'POST',
-                    path: '/api/v1/test1/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'POST', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+            }],
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
-                foo: 'bar',
-                loggedUser: await getUserFromToken(token, false),
-                dataset: { body: { data: { foo: 'bar' } } },
+                foo: 'bar', dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
 
@@ -232,35 +195,27 @@ describe('Dispatch POST requests with filters', () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
+            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ foo: 'bar' }) }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'POST',
-                    path: '/api/v1/test1/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'POST', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+            }],
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
-                foo: 'bar',
-                loggedUser: null,
-                dataset: { body: { data: { foo: 'bar' } } },
+                foo: 'bar', dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
 
-        const response = await requester.post('/api/v1/dataset').send({ foo: 'bar' });
+        const response = await requester.post('/api/v1/dataset')
+            .send({ foo: 'bar' });
         response.status.should.equal(200);
         response.text.should.equal('ok');
     });
@@ -269,27 +224,21 @@ describe('Dispatch POST requests with filters', () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ test: 'test1' }) }]
+            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ test: 'test1' }) }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'POST',
-                    path: '/api/v1/test1/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'POST', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+            }],
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { data: { test: 'bar' } });
 
-        const response = await requester.post('/api/v1/dataset').send({ test: 'bar' });
+        const response = await requester.post('/api/v1/dataset')
+            .send({ test: 'bar' });
         ensureCorrectError(response, 'Endpoint not found', 404);
     });
 
@@ -297,27 +246,21 @@ describe('Dispatch POST requests with filters', () => {
         await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ test: 'trest1' }) }]
+            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0], filters: testFilter({ test: 'trest1' }) }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'POST',
-                    path: '/api/v1/test1/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'POST', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+            }],
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(404);
 
-        const response = await requester.post('/api/v1/dataset').send({ test: 'bar' });
+        const response = await requester.post('/api/v1/dataset')
+            .send({ test: 'bar' });
         ensureCorrectError(response, 'Endpoint not found', 404);
     });
 
@@ -326,71 +269,48 @@ describe('Dispatch POST requests with filters', () => {
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [
-                {
-                    ...endpointTest.redirect[0],
-                    filters: [
-                        testFilter({ foo: 'bar' }),
-                        {
-                            name: 'widget',
-                            path: '/api/v1/test2/test',
-                            pathRegex: new RegExp('/api/v1/test2/test'),
-                            method: 'GET',
-                            compare: { data: { boo: 'tar' } }
-                        }
-                    ]
-                }
-            ]
+            redirect: [{
+                ...endpointTest.redirect[0],
+                filters: [testFilter({ foo: 'bar' }), {
+                    name: 'widget', path: '/api/v1/test2/test', pathRegex: new RegExp('/api/v1/test2/test'), method: 'GET', compare: { data: { boo: 'tar' } }
+                }]
+            }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'POST',
-                    path: '/api/v1/test1/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'POST', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+            }],
         });
         await createEndpoint({
             method: 'GET',
             path: '/api/v1/test2/test',
-            redirect: [
-                {
-                    microservice: 'test1',
-                    filters: null,
-                    method: 'GET',
-                    path: '/api/v1/test2/test',
-                    url: 'http://mymachine:6001'
-                }
-            ],
+            redirect: [{
+                microservice: 'test1', filters: null, method: 'GET', path: '/api/v1/test2/test', url: 'http://mymachine:6001'
+            }],
         });
 
         nock('http://mymachine:6001')
-            .post('/api/v1/test1/test', { loggedUser: null })
+            .post('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
         nock('http://mymachine:6001')
-            .get('/api/v1/test2/test?loggedUser=null')
+            .get('/api/v1/test2/test')
             .reply(200, { body: { data: { boo: 'tar' } } });
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
-                foo: 'bar',
-                loggedUser: null,
-                dataset: { body: { data: { foo: 'bar' } } },
-                widget: { body: { data: { boo: 'tar' } } },
+                foo: 'bar', dataset: { body: { data: { foo: 'bar' } } }, widget: { body: { data: { boo: 'tar' } } },
             })
             .reply(200, 'ok');
 
-        const response = await requester.post('/api/v1/dataset').send({ foo: 'bar' });
+        const response = await requester.post('/api/v1/dataset')
+            .send({ foo: 'bar' });
         response.status.should.equal(200);
         response.text.should.equal('ok');
     });
 
     afterEach(async () => {
-        await EndpointModel.deleteMany({}).exec();
-        await UserModel.deleteMany({}).exec();
+        await EndpointModel.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

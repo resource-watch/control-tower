@@ -6,6 +6,7 @@ const logger = require('logger');
 const Utils = require('utils');
 const FastlyPurge = require('fastly-purge');
 const pick = require('lodash/pick');
+const { getLoggedUser } = require('services/getUserFromToken.service');
 
 const router = new Router({
     prefix: '/endpoint',
@@ -43,7 +44,7 @@ class EndpointRouter {
 
 }
 
-router.get('/', Utils.isLogged, Utils.isAdmin, EndpointRouter.getAll);
-router.delete('/purge-all', Utils.isLogged, Utils.isAdmin, EndpointRouter.purgeAll);
+router.get('/', getLoggedUser, Utils.isLogged, Utils.isAdmin, EndpointRouter.getAll);
+router.delete('/purge-all', getLoggedUser, Utils.isLogged, Utils.isAdmin, EndpointRouter.purgeAll);
 
 module.exports = router;

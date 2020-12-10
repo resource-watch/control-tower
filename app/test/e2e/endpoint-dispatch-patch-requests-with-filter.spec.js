@@ -1,13 +1,12 @@
 const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 const {
     endpointTest, testFilter
-} = require('./test.constants');
+} = require('./utils/test.constants');
 const {
-    createEndpoint, ensureCorrectError, updateVersion, getUserFromToken, createUserAndToken
+    createEndpoint, ensureCorrectError, updateVersion, createUserAndToken
 } = require('./utils/helpers');
 
 chai.should();
@@ -15,8 +14,6 @@ let requester;
 
 describe('Dispatch PATCH requests with filters', () => {
     before(async () => {
-        await UserModel.deleteMany({}).exec();
-
         requester = await getTestAgent();
     });
 
@@ -42,13 +39,12 @@ describe('Dispatch PATCH requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .get('/api/v1/test1/test?loggedUser=null')
+            .get('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
                 foo: 'bar',
-                loggedUser: null,
                 dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
@@ -126,13 +122,12 @@ describe('Dispatch PATCH requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .get('/api/v1/test1/test?loggedUser=null')
+            .get('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
                 foo: 'bar',
-                loggedUser: await getUserFromToken(token, false),
                 dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
@@ -168,13 +163,12 @@ describe('Dispatch PATCH requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .patch('/api/v1/test1/test', { loggedUser: null })
+            .patch('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
                 foo: 'bar',
-                loggedUser: null,
                 dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
@@ -211,13 +205,12 @@ describe('Dispatch PATCH requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .patch('/api/v1/test1/test', { loggedUser: null })
+            .patch('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
                 foo: 'bar',
-                loggedUser: await getUserFromToken(token, false),
                 dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
@@ -253,13 +246,12 @@ describe('Dispatch PATCH requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .patch('/api/v1/test1/test', { loggedUser: null })
+            .patch('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
                 foo: 'bar',
-                loggedUser: null,
                 dataset: { body: { data: { foo: 'bar' } } },
             })
             .reply(200, 'ok');
@@ -291,7 +283,7 @@ describe('Dispatch PATCH requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .patch('/api/v1/test1/test', { loggedUser: null })
+            .patch('/api/v1/test1/test')
             .reply(200, { data: { test: 'bar' } });
 
         const response = await requester.patch('/api/v1/dataset').send({ test: 'bar' });
@@ -320,7 +312,7 @@ describe('Dispatch PATCH requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .patch('/api/v1/test1/test', { loggedUser: null })
+            .patch('/api/v1/test1/test')
             .reply(404);
 
         const response = await requester.patch('/api/v1/dataset').send({ test: 'bar' });
@@ -376,17 +368,16 @@ describe('Dispatch PATCH requests with filters', () => {
         });
 
         nock('http://mymachine:6001')
-            .patch('/api/v1/test1/test', { loggedUser: null })
+            .patch('/api/v1/test1/test')
             .reply(200, { body: { data: { foo: 'bar' } } });
 
         nock('http://mymachine:6001')
-            .get('/api/v1/test2/test?loggedUser=null')
+            .get('/api/v1/test2/test')
             .reply(200, { body: { data: { boo: 'tar' } } });
 
         nock('http://mymachine:6001')
             .post('/api/v1/dataset', {
                 foo: 'bar',
-                loggedUser: null,
                 dataset: { body: { data: { foo: 'bar' } } },
                 widget: { body: { data: { boo: 'tar' } } }
             })
@@ -399,7 +390,6 @@ describe('Dispatch PATCH requests with filters', () => {
 
     afterEach(async () => {
         await EndpointModel.deleteMany({}).exec();
-        await UserModel.deleteMany({}).exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);
