@@ -74,8 +74,7 @@ describe('Delete a microservice', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -97,8 +96,7 @@ describe('Delete a microservice', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -190,14 +188,12 @@ describe('Delete a microservice', () => {
                         microservice: 'test-microservice-one',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }, {
                         microservice: 'test-microservice-two',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-two:8000',
-                        filters: null
+                        url: 'http://test-microservice-two:8000'
                     }
                 ],
                 version: 1,
@@ -220,8 +216,7 @@ describe('Delete a microservice', () => {
                         microservice: 'test-microservice-one',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -243,8 +238,7 @@ describe('Delete a microservice', () => {
                         microservice: 'test-microservice-two',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,

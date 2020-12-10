@@ -110,7 +110,6 @@ const endpointTest = {
     redirect: [
         {
             microservice: 'dataset',
-            filters: null,
             method: 'POST',
             path: '/api/v1/dataset',
             url: 'http://mymachine:6001'
@@ -119,20 +118,10 @@ const endpointTest = {
     version: 1
 };
 
-const testFilter = (compareData, additionalData) => ({
-    name: 'dataset',
-    path: '/api/v1/test1/test',
-    pathRegex: new RegExp('/api/v1/test1/test'),
-    method: 'POST',
-    compare: { data: compareData },
-    ...additionalData,
-});
-
 module.exports = {
     TOKENS,
     USERS,
     microserviceTest,
     endpointTest,
-    testAppKey,
-    testFilter
+    testAppKey
 };

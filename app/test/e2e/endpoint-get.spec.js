@@ -76,8 +76,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -99,8 +98,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -122,8 +120,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -160,8 +157,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -183,8 +179,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -206,8 +201,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -255,8 +249,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -278,8 +271,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -301,8 +293,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -350,8 +341,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -373,8 +363,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -396,8 +385,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -445,8 +433,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -468,8 +455,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -491,8 +477,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -540,8 +525,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -563,8 +547,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -586,8 +569,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -635,8 +617,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -658,8 +639,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -681,8 +661,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,

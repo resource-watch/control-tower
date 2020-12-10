@@ -20,35 +20,6 @@ const MICRO_STATUS_ERROR = 'error';
 
 class Microservice {
 
-    static getFilters(endpoint) {
-        logger.debug('Checking filters in endpoint', endpoint);
-        let filters = null;
-        if (endpoint.filters) {
-            for (let i = 0, { length } = endpoint.filters; i < length; i++) {
-                logger.debug(endpoint.filters[i]);
-                let pathKeys = [];
-                const pathRegex = pathToRegexp(endpoint.filters[i].path, pathKeys);
-                if (pathKeys && pathKeys.length > 0) {
-                    pathKeys = pathKeys.map((key) => key.name);
-                }
-                if (!filters) {
-                    filters = [];
-                }
-                filters.push({
-                    name: endpoint.filters[i].name,
-                    path: endpoint.filters[i].path,
-                    method: endpoint.filters[i].method,
-                    condition: endpoint.filters[i].condition,
-                    pathRegex,
-                    pathKeys,
-                    params: endpoint.filters[i].params,
-                    compare: endpoint.filters[i].compare,
-                });
-            }
-        }
-        return filters;
-    }
-
     /**
      * Creates an Endpoint model instance based on the array format data provided by a microservice
      * when confirming registration.
@@ -78,7 +49,6 @@ class Microservice {
             }).exec();
             if (!oldRedirect) {
                 logger.debug(`[MicroserviceService] Redirect doesn't exist`);
-                endpoint.redirect.filters = Microservice.getFilters(endpoint);
                 endpoint.redirect.microservice = microservice.name;
                 oldEndpoint.redirect.push(endpoint.redirect);
                 oldEndpoint.uncache = microservice.uncache;
@@ -94,7 +64,6 @@ class Microservice {
                         oldRedirect.cache = microservice.cache;
                         oldRedirect.redirect[i].method = endpoint.redirect.method;
                         oldRedirect.redirect[i].path = endpoint.redirect.path;
-                        oldRedirect.redirect[i].filters = Microservice.getFilters(endpoint);
                     }
                 }
                 oldEndpoint.updatedAt = new Date();
@@ -109,8 +78,6 @@ class Microservice {
                 pathKeys = pathKeys.map((key) => key.name);
             }
             logger.debug('[MicroserviceService] Saving new endpoint');
-            endpoint.redirect.filters = Microservice.getFilters(endpoint);
-            logger.debug('[MicroserviceService] filters', endpoint.redirect.filters);
             logger.debug('[MicroserviceService] regesx', pathRegex);
             endpoint.redirect.microservice = microservice.name;
             await new EndpointModel({
@@ -147,24 +114,6 @@ class Microservice {
         }
     }
 
-    static formatFilters(endpoint) {
-        if (!endpoint || !endpoint.filters) {
-            return null;
-        }
-
-        const filters = [];
-        filters.push({
-            name: endpoint.paramProvider || 'dataset',
-            path: endpoint.pathProvider || '/v1/dataset/:dataset',
-            method: 'GET',
-            params: {
-                dataset: 'dataset',
-            },
-            compare: endpoint.filters,
-        });
-        return filters;
-    }
-
     /**
      * Transform URLs from microservice info to the new format
      * This is a thin compatibility layer, I'm assuming, to support some sort of old MS spec format.
@@ -180,7 +129,6 @@ class Microservice {
                 path: endpoint.url,
                 method: endpoint.method,
                 redirect: endpoint.endpoints[0],
-                filters: Microservice.formatFilters(endpoint),
                 authenticated: endpoint.authenticated || false,
                 applicationRequired: endpoint.applicationRequired || false,
                 binary: endpoint.binary || false,

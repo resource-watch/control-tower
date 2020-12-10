@@ -83,7 +83,6 @@ describe('GET Endpoints', () => {
                 redirect: [
                     {
                         microservice: 'dataset',
-                        filters: null,
                         method: 'POST',
                         path: '/api/v1/dataset',
                         url: 'http://mymachine:6001'

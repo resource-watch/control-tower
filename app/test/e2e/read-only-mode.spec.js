@@ -18,7 +18,6 @@ const createCRUDEndpoints = async () => Promise.all([
         redirect: [
             {
                 microservice: 'dataset',
-                filters: null,
                 method: 'GET',
                 path: '/api/v1/dataset',
                 url: 'http://mymachine:6001'
@@ -31,7 +30,6 @@ const createCRUDEndpoints = async () => Promise.all([
         redirect: [
             {
                 microservice: 'dataset',
-                filters: null,
                 method: 'POST',
                 path: '/api/v1/dataset',
                 url: 'http://mymachine:6001'
@@ -44,7 +42,6 @@ const createCRUDEndpoints = async () => Promise.all([
         redirect: [
             {
                 microservice: 'dataset',
-                filters: null,
                 method: 'PUT',
                 path: '/api/v1/dataset',
                 url: 'http://mymachine:6001'
@@ -57,7 +54,6 @@ const createCRUDEndpoints = async () => Promise.all([
         redirect: [
             {
                 microservice: 'dataset',
-                filters: null,
                 method: 'PATCH',
                 path: '/api/v1/dataset',
                 url: 'http://mymachine:6001'
@@ -70,7 +66,6 @@ const createCRUDEndpoints = async () => Promise.all([
         redirect: [
             {
                 microservice: 'dataset',
-                filters: null,
                 method: 'DELETE',
                 path: '/api/v1/dataset',
                 url: 'http://mymachine:6001'
