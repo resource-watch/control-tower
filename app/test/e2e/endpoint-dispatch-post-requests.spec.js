@@ -62,7 +62,7 @@ describe('Dispatch POST requests', () => {
             }],
         });
 
-        nock('http://mymachine:6001')
+        nock('http://mymachine:6001', { reqheaders: { authorization: `Bearer ${token}` } })
             .post('/api/v1/dataset', {
                 foo: 'bar'
             })
@@ -72,6 +72,80 @@ describe('Dispatch POST requests', () => {
             .post('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
             .send({ foo: 'bar' });
+
+        response.status.should.equal(200);
+        response.text.should.equal('ok');
+    });
+
+    it('PATCH endpoint returns a 200 HTTP code - Strip loggedUser', async () => {
+        const { token } = await createUserAndToken({ role: 'USER' });
+
+        await updateVersion();
+        // eslint-disable-next-line no-useless-escape
+        await createEndpoint({
+            pathRegex: new RegExp('^/api/v1/dataset$'),
+            method: 'PATCH',
+            redirect: [{ ...endpointTest.redirect[0] }]
+        });
+        await createEndpoint({
+            path: '/api/v1/test1/test',
+            redirect: [
+                {
+                    microservice: 'test1',
+                    method: 'GET',
+                    path: '/api/v1/test1/test',
+                    url: 'http://mymachine:6001'
+                }
+            ],
+        });
+
+        nock('http://mymachine:6001', { reqheaders: { authorization: `Bearer ${token}` } })
+            .post('/api/v1/dataset', {
+                foo: 'bar',
+            })
+            .reply(200, 'ok');
+
+        const response = await requester
+            .patch('/api/v1/dataset')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ foo: 'bar', loggedUser: {} });
+
+        response.status.should.equal(200);
+        response.text.should.equal('ok');
+    });
+
+    it('POST endpoint returns a 200 HTTP code - Strip loggedUser', async () => {
+        const { token } = await createUserAndToken({ role: 'USER' });
+
+        await updateVersion();
+        // eslint-disable-next-line no-useless-escape
+        await createEndpoint({
+            pathRegex: new RegExp('^/api/v1/dataset$'),
+            method: 'POST',
+            redirect: [{ ...endpointTest.redirect[0] }]
+        });
+        await createEndpoint({
+            path: '/api/v1/test1/test',
+            redirect: [
+                {
+                    microservice: 'test1',
+                    method: 'GET',
+                    path: '/api/v1/test1/test',
+                    url: 'http://mymachine:6001'
+                }
+            ],
+        });
+
+        nock('http://mymachine:6001', { reqheaders: { authorization: `Bearer ${token}` } })
+            .post('/api/v1/dataset', {
+                foo: 'bar',
+            })
+            .reply(200, 'ok');
+
+        const response = await requester
+            .post('/api/v1/dataset')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ foo: 'bar', loggedUser: {} });
 
         response.status.should.equal(200);
         response.text.should.equal('ok');

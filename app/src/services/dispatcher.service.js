@@ -14,6 +14,7 @@ const ALLOWED_HEADERS = [
     'charset',
     'location',
     'host',
+    'authorization'
 ];
 
 const CACHE = {
@@ -241,6 +242,9 @@ class Dispatcher {
             if (ctx.request.query.app_key) {
                 delete ctx.request.query.app_key;
             }
+            if (ctx.request.query.loggedUser) {
+                delete ctx.request.query.loggedUser;
+            }
             configRequest.qs = ctx.request.query;
         }
 
@@ -253,6 +257,9 @@ class Dispatcher {
                 configRequest.body = ctx.request.body.fields;
             } else {
                 configRequest.body = ctx.request.body;
+            }
+            if (configRequest.body.loggedUser) {
+                delete configRequest.body.loggedUser;
             }
         }
 
