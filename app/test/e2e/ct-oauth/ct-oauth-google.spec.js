@@ -1,19 +1,23 @@
 const nock = require('nock');
 const chai = require('chai');
-const JWT = require('jsonwebtoken');
 const config = require('config');
+const JWT = require('jsonwebtoken');
+const chaiString = require('chai-string');
 const mongoose = require('mongoose');
 
 const PluginModel = require('models/plugin.model');
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 const authServiceFunc = require('plugins/sd-ct-oauth-plugin/services/auth.service');
 
-const { getTestAgent, closeTestAgent } = require('../test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('../test-server');
 const { setPluginSetting } = require('../utils/helpers');
 const mongooseOptions = require('../../../../config/mongoose');
 
 const should = chai.should();
-chai.use(require('chai-string'));
+chai.use(chaiString);
 
 let requester;
 let AuthService;
@@ -23,15 +27,18 @@ nock.enableNetConnect(process.env.HOST_IP);
 
 describe('Google auth endpoint tests', () => {
 
-    // eslint-disable-next-line func-names
-    before(async function () {
+    before(async () => {
         if (process.env.NODE_ENV !== 'test') {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
 
-        if (!process.env.TEST_GOOGLE_OAUTH2_CLIENT_ID) {
-            this.skip();
-        }
+        await UserModel.deleteMany({})
+            .exec();
+
+        nock.cleanAll();
+    });
+
+    beforeEach(async () => {
 
         // We need to force-start the server, to ensure mongo has plugin info we can manipulate in the next instruction
         await getTestAgent(true);
@@ -39,9 +46,7 @@ describe('Google auth endpoint tests', () => {
         await setPluginSetting('oauth', 'config.defaultApp', 'rw');
         await setPluginSetting('oauth', 'config.thirdParty.rw.google.active', true);
         await setPluginSetting('oauth', 'config.thirdParty.rw.google.clientSecret', 'TEST_GOOGLE_OAUTH2_CLIENT_SECRET');
-
-        nock.enableNetConnect(new RegExp(`(${process.env.HOST_IP}|accounts.google.com)`));
-        await setPluginSetting('oauth', 'config.thirdParty.rw.google.clientID', process.env.TEST_GOOGLE_OAUTH2_CLIENT_ID);
+        await setPluginSetting('oauth', 'config.thirdParty.rw.google.clientID', 'TEST_GOOGLE_OAUTH2_CLIENT_ID');
 
         requester = await getTestAgent(true);
 
@@ -55,10 +60,6 @@ describe('Google auth endpoint tests', () => {
         const mongoUri = process.env.CT_MONGO_URI || `mongodb://${config.get('mongodb.host')}:${config.get('mongodb.port')}/${config.get('mongodb.database')}`;
         const connection = mongoose.createConnection(mongoUri, mongooseOptions);
         AuthService = authServiceFunc(plugin, connection);
-    });
-
-    beforeEach(async () => {
-        requester = await getTestAgent(true);
     });
 
     it('Visiting /auth/google while not being logged in should redirect to the login page', async () => {
@@ -79,8 +80,8 @@ describe('Google auth endpoint tests', () => {
         nock('https://www.googleapis.com')
             .post('/oauth2/v4/token', {
                 grant_type: 'authorization_code',
-                redirect_uri: `${process.env.PUBLIC_URL}/auth/google/callback`,
-                client_id: process.env.TEST_GOOGLE_OAUTH2_CLIENT_ID,
+                redirect_uri: `${config.get('server.publicUrl')}/auth/google/callback`,
+                client_id: 'TEST_GOOGLE_OAUTH2_CLIENT_ID',
                 client_secret: 'TEST_GOOGLE_OAUTH2_CLIENT_SECRET',
                 code: 'TEST_GOOGLE_OAUTH2_CALLBACK_CODE'
             })
@@ -155,8 +156,8 @@ describe('Google auth endpoint tests', () => {
         nock('https://www.googleapis.com')
             .post('/oauth2/v4/token', {
                 grant_type: 'authorization_code',
-                redirect_uri: `${process.env.PUBLIC_URL}/auth/google/callback`,
-                client_id: process.env.TEST_GOOGLE_OAUTH2_CLIENT_ID,
+                redirect_uri: `${config.get('server.publicUrl')}/auth/google/callback`,
+                client_id: 'TEST_GOOGLE_OAUTH2_CLIENT_ID',
                 client_secret: 'TEST_GOOGLE_OAUTH2_CLIENT_SECRET',
                 code: 'TEST_GOOGLE_OAUTH2_CALLBACK_CODE'
             })
@@ -235,8 +236,8 @@ describe('Google auth endpoint tests', () => {
         nock('https://www.googleapis.com')
             .post('/oauth2/v4/token', {
                 grant_type: 'authorization_code',
-                redirect_uri: `${process.env.PUBLIC_URL}/auth/google/callback`,
-                client_id: process.env.TEST_GOOGLE_OAUTH2_CLIENT_ID,
+                redirect_uri: `${config.get('server.publicUrl')}/auth/google/callback`,
+                client_id: 'TEST_GOOGLE_OAUTH2_CLIENT_ID',
                 client_secret: 'TEST_GOOGLE_OAUTH2_CLIENT_SECRET',
                 code: 'TEST_GOOGLE_OAUTH2_CALLBACK_CODE'
             })
@@ -374,8 +375,8 @@ describe('Google auth endpoint tests', () => {
 
         JWT.verify(response.body.token, process.env.JWT_SECRET);
 
-        const decodedTokenData = JWT.decode(response.body.token, process.env.JWT_SECRET);
-        const isTokenRevoked = await AuthService.checkRevokedToken(null, decodedTokenData, response.body.token);
+        const decodedTokenData = JWT.verify(response.body.token, process.env.JWT_SECRET);
+        const isTokenRevoked = await AuthService.checkRevokedToken(null, decodedTokenData);
         isTokenRevoked.should.equal(false);
 
         const userWithToken = await UserModel.findOne({ email: 'john.doe@vizzuality.com' })
@@ -473,8 +474,8 @@ describe('Google auth endpoint tests', () => {
 
         JWT.verify(response.body.token, process.env.JWT_SECRET);
 
-        const decodedTokenData = JWT.decode(response.body.token, process.env.JWT_SECRET);
-        const isTokenRevoked = await AuthService.checkRevokedToken(null, decodedTokenData, response.body.token);
+        const decodedTokenData = JWT.verify(response.body.token, process.env.JWT_SECRET);
+        const isTokenRevoked = await AuthService.checkRevokedToken(null, decodedTokenData);
         isTokenRevoked.should.equal(false);
 
         const userWithToken = await UserModel.findOne({ _id: savedUser.id })

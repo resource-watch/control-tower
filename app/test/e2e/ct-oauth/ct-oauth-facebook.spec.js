@@ -2,9 +2,13 @@ const nock = require('nock');
 const chai = require('chai');
 const JWT = require('jsonwebtoken');
 const crypto = require('crypto');
+const config = require('config');
 
 const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const { getTestAgent, closeTestAgent } = require('../test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('../test-server');
 const { setPluginSetting } = require('../utils/helpers');
 
 const should = chai.should();
@@ -16,14 +20,9 @@ nock.enableNetConnect(process.env.HOST_IP);
 
 describe('Facebook auth endpoint tests', () => {
 
-    // eslint-disable-next-line func-names
-    before(async function () {
+    before(async () => {
         if (process.env.NODE_ENV !== 'test') {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
-        }
-
-        if (!process.env.TEST_FACEBOOK_OAUTH2_APP_ID || !process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET) {
-            this.skip();
         }
 
         // We need to force-start the server, to ensure mongo has plugin info we can manipulate in the next instruction
@@ -32,13 +31,12 @@ describe('Facebook auth endpoint tests', () => {
         await setPluginSetting('oauth', 'config.defaultApp', 'rw');
         await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.active', true);
 
-        await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientID', process.env.TEST_FACEBOOK_OAUTH2_APP_ID);
-        await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientSecret', process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET);
+        await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientID', 'TEST_FACEBOOK_OAUTH2_APP_ID');
+        await setPluginSetting('oauth', 'config.thirdParty.rw.facebook.clientSecret', 'TEST_FACEBOOK_OAUTH2_APP_SECRET');
 
         requester = await getTestAgent(true);
 
-        UserModel.deleteMany({})
-            .exec();
+        return UserModel.deleteMany({}).exec();
     });
 
     beforeEach(async () => {
@@ -60,9 +58,9 @@ describe('Facebook auth endpoint tests', () => {
         nock('https://graph.facebook.com')
             .post('/v7.0/oauth/access_token', {
                 grant_type: 'authorization_code',
-                redirect_uri: `${process.env.PUBLIC_URL}/auth/facebook/callback`,
-                client_id: process.env.TEST_FACEBOOK_OAUTH2_APP_ID,
-                client_secret: process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET,
+                redirect_uri: `${config.get('server.publicUrl')}/auth/facebook/callback`,
+                client_id: 'TEST_FACEBOOK_OAUTH2_APP_ID',
+                client_secret: 'TEST_FACEBOOK_OAUTH2_APP_SECRET',
                 code: 'TEST_FACEBOOK_OAUTH2_CALLBACK_CODE'
             })
             .reply(200, {
@@ -132,9 +130,9 @@ describe('Facebook auth endpoint tests', () => {
         nock('https://graph.facebook.com')
             .post('/v7.0/oauth/access_token', {
                 grant_type: 'authorization_code',
-                redirect_uri: `${process.env.PUBLIC_URL}/auth/facebook/callback`,
-                client_id: process.env.TEST_FACEBOOK_OAUTH2_APP_ID,
-                client_secret: process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET,
+                redirect_uri: `${config.get('server.publicUrl')}/auth/facebook/callback`,
+                client_id: 'TEST_FACEBOOK_OAUTH2_APP_ID',
+                client_secret: 'TEST_FACEBOOK_OAUTH2_APP_SECRET',
                 code: 'TEST_FACEBOOK_OAUTH2_CALLBACK_CODE'
             })
             .reply(200, {
@@ -167,8 +165,7 @@ describe('Facebook auth endpoint tests', () => {
             .get('/')
             .reply(200, 'ok');
 
-        await requester
-            .get(`/auth?callbackUrl=https://www.wikipedia.org`);
+        await requester.get(`/auth?callbackUrl=https://www.wikipedia.org`);
 
         const responseOne = await requester
             .get(`/auth/facebook/callback?code=TEST_FACEBOOK_OAUTH2_CALLBACK_CODE`)
@@ -177,9 +174,7 @@ describe('Facebook auth endpoint tests', () => {
         responseOne.should.redirect;
         responseOne.should.redirectTo(new RegExp(`/auth/success$`));
 
-        const responseTwo = await requester
-            .get('/auth/success');
-
+        const responseTwo = await requester.get('/auth/success');
         responseTwo.should.redirect;
         responseTwo.should.redirectTo('https://www.wikipedia.org/');
 
@@ -214,9 +209,9 @@ describe('Facebook auth endpoint tests', () => {
         nock('https://graph.facebook.com')
             .post('/v7.0/oauth/access_token', {
                 grant_type: 'authorization_code',
-                redirect_uri: `${process.env.PUBLIC_URL}/auth/facebook/callback`,
-                client_id: process.env.TEST_FACEBOOK_OAUTH2_APP_ID,
-                client_secret: process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET,
+                redirect_uri: `${config.get('server.publicUrl')}/auth/facebook/callback`,
+                client_id: 'TEST_FACEBOOK_OAUTH2_APP_ID',
+                client_secret: 'TEST_FACEBOOK_OAUTH2_APP_SECRET',
                 code: 'TEST_FACEBOOK_OAUTH2_CALLBACK_CODE'
             })
             .reply(200, {
@@ -326,7 +321,7 @@ describe('Facebook auth endpoint tests', () => {
             .and
             .equal(undefined);
 
-        const proof = crypto.createHmac('sha256', process.env.TEST_FACEBOOK_OAUTH2_APP_SECRET || 'TEST_FACEBOOK_OAUTH2_APP_SECRET')
+        const proof = crypto.createHmac('sha256', 'TEST_FACEBOOK_OAUTH2_APP_SECRET')
             .update('TEST_FACEBOOK_OAUTH2_ACCESS_TOKEN')
             .digest('hex');
 
@@ -345,9 +340,7 @@ describe('Facebook auth endpoint tests', () => {
                 email: 'john.doe@vizzuality.com'
             });
 
-        const response = await requester
-            .get(`/auth/facebook/token?access_token=TEST_FACEBOOK_OAUTH2_ACCESS_TOKEN`);
-
+        const response = await requester.get(`/auth/facebook/token?access_token=TEST_FACEBOOK_OAUTH2_ACCESS_TOKEN`);
         response.status.should.equal(200);
         response.should.be.json;
         response.body.should.be.an('object');
@@ -384,14 +377,14 @@ describe('Facebook auth endpoint tests', () => {
             .equal(response.body.token);
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);
         }
 
-        UserModel.deleteMany({})
+        await UserModel.deleteMany({})
             .exec();
 
-        closeTestAgent();
+        await closeTestAgent();
     });
 });
