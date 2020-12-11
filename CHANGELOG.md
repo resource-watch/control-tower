@@ -1,3 +1,5 @@
+# v2.4.4
+
 ## 11/12/2020
 
 - Serialize user in `/apple/token` endpoint to avoid mongoose data leakage.
