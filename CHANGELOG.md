@@ -3,6 +3,12 @@
 - Remove CT-oauth plugin
 - Remove filter functionality
 
+# v2.4.4
+
+## 11/12/2020
+
+- Serialize user in `/apple/token` endpoint to avoid mongoose data leakage.
+
 ## 11/11/2020
 
 - Add tests for twitter auth
