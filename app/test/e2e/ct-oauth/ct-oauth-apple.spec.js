@@ -269,12 +269,13 @@ describe('Apple auth endpoint tests', () => {
         response.body.should.have.property('token').and.be.a('string');
 
         JWT.verify(response.body.token, process.env.JWT_SECRET);
+        const tokenData = await JWT.decode(response.body.token, process.env.JWT_SECRET);
 
         const userWithToken = await UserModel.findOne({ providerId: '000958.a4550a8804284886a5b5116a1c0351af.1425' }).exec();
         should.exist(userWithToken);
-        userWithToken.should.have.property('email').and.equal('dj8e99g34n@privaterelay.appleid.com');
-        userWithToken.should.have.property('role').and.equal('USER');
-        userWithToken.should.have.property('provider').and.equal('apple');
+        userWithToken.should.have.property('email').and.equal('dj8e99g34n@privaterelay.appleid.com').and.equal(tokenData.email);
+        userWithToken.should.have.property('role').and.equal('USER').and.equal(tokenData.role);
+        userWithToken.should.have.property('provider').and.equal('apple').and.equal(tokenData.provider);
         userWithToken.should.have.property('providerId').and.equal('000958.a4550a8804284886a5b5116a1c0351af.1425');
         userWithToken.should.have.property('userToken').and.equal(response.body.token);
     });
@@ -356,12 +357,13 @@ describe('Apple auth endpoint tests', () => {
         response.body.should.have.property('token').and.be.a('string');
 
         JWT.verify(response.body.token, process.env.JWT_SECRET);
+        const tokenData = await JWT.decode(response.body.token, process.env.JWT_SECRET);
 
         const userWithToken = await UserModel.findOne({ email: 'dj8e99g34n@privaterelay.appleid.com' }).exec();
         should.exist(userWithToken);
-        userWithToken.should.have.property('email').and.equal('dj8e99g34n@privaterelay.appleid.com');
-        userWithToken.should.have.property('role').and.equal('USER');
-        userWithToken.should.have.property('provider').and.equal('apple');
+        userWithToken.should.have.property('email').and.equal('dj8e99g34n@privaterelay.appleid.com').and.equal(tokenData.email);
+        userWithToken.should.have.property('role').and.equal('USER').and.equal(tokenData.role);
+        userWithToken.should.have.property('provider').and.equal('apple').and.equal(tokenData.provider);
         userWithToken.should.have.property('providerId').and.equal('000958.a4550a8804284886a5b5116a1c0351af.1425');
         userWithToken.should.have.property('userToken').and.equal(response.body.token);
     });

@@ -121,7 +121,7 @@ module.exports = (plugin, connection, generalConfig) => {
             logger.info('[passportService] Returning user');
 
             // This places the user data in the ctx object as Passport would
-            ctx.req.user = user;
+            ctx.req.user = UserSerializer.serializeElement(user);
             ctx.status = 200;
 
             return next();
