@@ -72,18 +72,18 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: FASTLY_ENABLED
-                  name: mssecrets
+                  name: control-tower
             - name: FASTLY_APIKEY
               valueFrom:
                 secretKeyRef:
                   key: FASTLY_APIKEY
-                  name: mssecrets
+                  name: control-tower
                   optional: true
             - name: FASTLY_SERVICEID
               valueFrom:
                 secretKeyRef:
                   key: FASTLY_SERVICEID
-                  name: mssecrets
+                  name: control-tower
                   optional: true
           image: gfwdockerhub/control-tower
           imagePullPolicy: Always
