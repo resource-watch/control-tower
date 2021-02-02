@@ -221,7 +221,7 @@ spec:
             secretKeyRef:
               key: FASTLY_SERVICEID
               name: control-tower
-        image: vizzuality/control-tower
+        image: gfwdockerhub/control-tower
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
