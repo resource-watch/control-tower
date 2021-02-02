@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     name: control-tower-cron
   name: control-tower-cron
@@ -20,7 +19,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         name: control-tower-cron
     spec:
@@ -70,17 +68,24 @@ spec:
                 secretKeyRef:
                   key: JWT_SECRET
                   name: control-tower
+            - name: FASTLY_ENABLED
+              valueFrom:
+                secretKeyRef:
+                  key: FASTLY_ENABLED
+                  name: mssecrets
             - name: FASTLY_APIKEY
               valueFrom:
                 secretKeyRef:
                   key: FASTLY_APIKEY
-                  name: control-tower
+                  name: mssecrets
+                  optional: true
             - name: FASTLY_SERVICEID
               valueFrom:
                 secretKeyRef:
                   key: FASTLY_SERVICEID
-                  name: control-tower
-          image: vizzuality/control-tower
+                  name: mssecrets
+                  optional: true
+          image: gfwdockerhub/control-tower
           imagePullPolicy: Always
           name: control-tower-cron
           resources:
@@ -94,9 +99,8 @@ spec:
           terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       imagePullSecrets:
-          - name: regcred
+        - name: regcred
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
+      securityContext: { }
       terminationGracePeriodSeconds: 30
-status: {}
