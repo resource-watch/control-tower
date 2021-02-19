@@ -30,7 +30,7 @@ services:
     image: mongo:3.6.13
     container_name: control-tower-mongo
     ports:
-      - "27017"
+      - "27017:27017"
     volumes:
       - $HOME/docker/control-tower/mongodb:/data/db
     restart: always
@@ -38,5 +38,5 @@ services:
     image: redis
     container_name: control-tower-redis
     ports:
-      - "16379:6379"
+      - "6379:6379"
     restart: always

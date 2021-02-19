@@ -111,10 +111,13 @@ module.exports = (grunt) => {
 
     grunt.registerTask('test', ['e2eTest']);
 
+    grunt.loadNpmTasks('grunt-express-server');
+
     grunt.registerTask('serve', ['express:dev', 'watch']);
     grunt.registerTask('crons', ['express:cron', 'watch']);
 
     grunt.registerTask('default', 'serve');
 
     grunt.loadNpmTasks('grunt-simple-nyc');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 };
