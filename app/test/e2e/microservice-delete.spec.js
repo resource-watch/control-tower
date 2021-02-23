@@ -3,10 +3,11 @@ const chai = require('chai');
 
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 
-const { createUserAndToken, createMicroservice, createEndpoint } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const {
+    createUserAndToken, createMicroservice, createEndpoint, mockGetUserFromToken
+} = require('./utils/helpers');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 chai.should();
 
@@ -23,13 +24,14 @@ describe('Delete a microservice', () => {
     });
 
     beforeEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
     });
 
     it('Deleting a microservice should delete endpoints and the microservice document from the database (happy case)', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const testMicroserviceOne = {
             name: `test-microservice-one`,
@@ -72,8 +74,7 @@ describe('Delete a microservice', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -95,8 +96,7 @@ describe('Delete a microservice', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -117,7 +117,9 @@ describe('Delete a microservice', () => {
     });
 
     it('Deleting a microservice should delete exclusive endpoints and the microservice document from the database, but preserve shared endpoints without redirects', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const testMicroserviceOne = {
             name: `test-microservice-one`,
@@ -186,14 +188,12 @@ describe('Delete a microservice', () => {
                         microservice: 'test-microservice-one',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }, {
                         microservice: 'test-microservice-two',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-two:8000',
-                        filters: null
+                        url: 'http://test-microservice-two:8000'
                     }
                 ],
                 version: 1,
@@ -216,8 +216,7 @@ describe('Delete a microservice', () => {
                         microservice: 'test-microservice-one',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -239,8 +238,7 @@ describe('Delete a microservice', () => {
                         microservice: 'test-microservice-two',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -267,7 +265,6 @@ describe('Delete a microservice', () => {
     });
 
     afterEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
 

@@ -12,14 +12,13 @@ services:
       LOGGER_TYPE: console
       DEBUG: redis-cache-plugin
       NODE_PATH: app/src
-      EXEC_MIGRATION: 'true'
       JWT_SECRET: mysecret
       COOKIE_DOMAIN: mymachine
       PUBLIC_URL: http://localhost:9000
-      SPARKPOST_KEY: fakeSparkpostKey
       MONGO_PORT_27017_TCP_ADDR: mongo
       FASTLY_APIKEY: foo
       FASTLY_SERVICEID: bar
+      AUTHORIZATION_URL: http://authorization.core.svc.cluster.local:9000
     command: test
     depends_on:
       - mongo

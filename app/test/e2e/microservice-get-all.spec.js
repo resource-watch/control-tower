@@ -3,10 +3,9 @@ const chai = require('chai');
 
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 
-const { createUserAndToken, createMicroservice } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { createUserAndToken, createMicroservice, mockGetUserFromToken } = require('./utils/helpers');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 chai.should();
 
@@ -23,7 +22,6 @@ describe('Microservices endpoints - Get all', () => {
     });
 
     beforeEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
     });
@@ -34,7 +32,9 @@ describe('Microservices endpoints - Get all', () => {
     });
 
     it('Getting a list of microservices should return empty if no services are registered', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester
             .get(`/api/v1/microservice`)
@@ -81,7 +81,9 @@ describe('Microservices endpoints - Get all', () => {
         await createMicroservice(testMicroserviceOne);
         await createMicroservice(testMicroserviceTwo);
 
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester
             .get(`/api/v1/microservice`)
@@ -128,7 +130,9 @@ describe('Microservices endpoints - Get all', () => {
         const microserviceOne = await createMicroservice(testMicroserviceOne);
         await createMicroservice(testMicroserviceTwo);
 
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester
             .get(`/api/v1/microservice`)
@@ -177,7 +181,9 @@ describe('Microservices endpoints - Get all', () => {
         const microserviceOne = await createMicroservice(testMicroserviceOne);
         await createMicroservice(testMicroserviceTwo);
 
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester
             .get(`/api/v1/microservice`)
@@ -190,7 +196,6 @@ describe('Microservices endpoints - Get all', () => {
     });
 
     afterEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
 

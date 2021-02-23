@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     name: control-tower-cron
   name: control-tower-cron
@@ -20,7 +19,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         name: control-tower-cron
     spec:
@@ -45,12 +43,10 @@ spec:
               value: prod
             - name: NODE_PATH
               value: app/src
-            - name: BASICAUTH_USERNAME
-              value: vizzuality
-            - name: CONFIRM_URL_REDIRECT
-              value: http://www.globalforestwatch.org
             - name: PUBLIC_URL
               value: http://production-api.globalforestwatch.org
+            - name: AUTHORIZATION_URL
+              value: http://authorization.core.svc.cluster.local
             - name: APP_NAME
               value: RW API
             - name: APP_LOGO
@@ -72,131 +68,23 @@ spec:
                 secretKeyRef:
                   key: JWT_SECRET
                   name: control-tower
-            - name: GFW_TWITTER_CONSUMER_KEY
+            - name: FASTLY_ENABLED
               valueFrom:
                 secretKeyRef:
-                  key: GFW_TWITTER_CONSUMER_KEY
-                  name: control-tower
-            - name: GFW_TWITTER_CONSUMER_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: GFW_TWITTER_CONSUMER_SECRET
-                  name: control-tower
-            - name: GFW_FACEBOOK_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  key: GFW_FACEBOOK_CLIENT_ID
-                  name: control-tower
-            - name: GFW_FACEBOOK_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: GFW_FACEBOOK_CLIENT_SECRET
-                  name: control-tower
-            - name: GFW_GOOGLE_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  key: GFW_GOOGLE_CLIENT_ID
-                  name: control-tower
-            - name: GFW_GOOGLE_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: GFW_GOOGLE_CLIENT_SECRET
-                  name: control-tower
-            - name: RW_TWITTER_CONSUMER_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: RW_TWITTER_CONSUMER_KEY
-                  name: control-tower
-            - name: RW_TWITTER_CONSUMER_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: RW_TWITTER_CONSUMER_SECRET
-                  name: control-tower
-            - name: RW_FACEBOOK_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  key: RW_FACEBOOK_CLIENT_ID
-                  name: control-tower
-            - name: RW_FACEBOOK_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: RW_FACEBOOK_CLIENT_SECRET
-                  name: control-tower
-            - name: RW_GOOGLE_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  key: RW_GOOGLE_CLIENT_ID
-                  name: control-tower
-            - name: RW_GOOGLE_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: RW_GOOGLE_CLIENT_SECRET
-                  name: control-tower
-            - name: PREP_TWITTER_CONSUMER_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: PREP_TWITTER_CONSUMER_KEY
-                  name: control-tower
-            - name: PREP_TWITTER_CONSUMER_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: PREP_TWITTER_CONSUMER_SECRET
-                  name: control-tower
-            - name: PREP_FACEBOOK_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  key: PREP_FACEBOOK_CLIENT_ID
-                  name: control-tower
-            - name: PREP_FACEBOOK_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: PREP_FACEBOOK_CLIENT_SECRET
-                  name: control-tower
-            - name: PREP_GOOGLE_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  key: PREP_GOOGLE_CLIENT_ID
-                  name: control-tower
-            - name: PREP_GOOGLE_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: PREP_GOOGLE_CLIENT_SECRET
-                  name: control-tower
-            - name: BASICAUTH_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: BASICAUTH_PASSWORD
-                  name: control-tower
-            - name: SPARKPOST_KEY
-              valueFrom:
-                secretKeyRef:
-                  key: SPARKPOST_KEY
-                  name: control-tower
-            - name: INSTAPUSH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  key: INSTAPUSH_TOKEN
-                  name: control-tower
-            - name: INSTAPUSH_ID
-              valueFrom:
-                secretKeyRef:
-                  key: INSTAPUSH_ID
-                  name: control-tower
-            - name: INSTAPUSH_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: INSTAPUSH_SECRET
+                  key: FASTLY_ENABLED
                   name: control-tower
             - name: FASTLY_APIKEY
               valueFrom:
                 secretKeyRef:
                   key: FASTLY_APIKEY
                   name: control-tower
+                  optional: true
             - name: FASTLY_SERVICEID
               valueFrom:
                 secretKeyRef:
                   key: FASTLY_SERVICEID
                   name: control-tower
+                  optional: true
           image: gfwdockerhub/control-tower
           imagePullPolicy: Always
           name: control-tower-cron
@@ -211,9 +99,8 @@ spec:
           terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       imagePullSecrets:
-          - name: regcred
+        - name: regcred
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
+      securityContext: { }
       terminationGracePeriodSeconds: 30
-status: {}

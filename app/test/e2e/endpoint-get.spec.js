@@ -3,10 +3,11 @@ const chai = require('chai');
 
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 
-const { createUserAndToken, createMicroservice, createEndpoint } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const {
+    createUserAndToken, createMicroservice, createEndpoint, mockGetUserFromToken
+} = require('./utils/helpers');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 chai.should();
 
@@ -23,13 +24,14 @@ describe('Get endpoints', () => {
     });
 
     beforeEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
     });
 
     it('Getting endpoints for registered microservices should return a list of available endpoints (happy case)', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const testMicroserviceOne = {
             name: `test-microservice-one`,
@@ -74,8 +76,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -97,8 +98,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -120,8 +120,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -137,7 +136,10 @@ describe('Get endpoints', () => {
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - authenticated', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
+        mockGetUserFromToken(user, token);
 
         const endpointOne = await createEndpoint(
             {
@@ -155,8 +157,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -178,8 +179,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -201,8 +201,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -229,7 +228,10 @@ describe('Get endpoints', () => {
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - applicationRequired', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
+        mockGetUserFromToken(user, token);
 
         const endpointOne = await createEndpoint(
             {
@@ -247,8 +249,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -270,8 +271,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -293,8 +293,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -321,7 +320,10 @@ describe('Get endpoints', () => {
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - binary', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
+        mockGetUserFromToken(user, token);
 
         const endpointOne = await createEndpoint(
             {
@@ -339,8 +341,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -362,8 +363,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -385,8 +385,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -413,7 +412,10 @@ describe('Get endpoints', () => {
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - path', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
+        mockGetUserFromToken(user, token);
 
         const endpointOne = await createEndpoint(
             {
@@ -431,8 +433,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -454,8 +455,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -477,8 +477,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -505,7 +504,10 @@ describe('Get endpoints', () => {
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - method', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
+        mockGetUserFromToken(user, token);
 
         const endpointOne = await createEndpoint(
             {
@@ -523,8 +525,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -546,8 +547,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -569,8 +569,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -597,7 +596,10 @@ describe('Get endpoints', () => {
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - multiple filters use AND logic', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
+        mockGetUserFromToken(user, token);
 
         await createEndpoint(
             {
@@ -615,8 +617,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000',
-                        filters: []
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -638,8 +639,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -661,8 +661,7 @@ describe('Get endpoints', () => {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000',
-                        filters: null
+                        url: 'http://test-microservice-one:8000'
                     }
                 ],
                 version: 1,
@@ -689,7 +688,6 @@ describe('Get endpoints', () => {
     });
 
     afterEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
 

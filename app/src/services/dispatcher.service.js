@@ -6,9 +6,7 @@ const url = require('url');
 const EndpointNotFound = require('errors/endpointNotFound');
 const NotAuthenticated = require('errors/notAuthenticated');
 const NotApplicationKey = require('errors/notApplicationKey');
-const FilterError = require('errors/filterError');
 const pathToRegexp = require('path-to-regexp');
-const requestPromise = require('request-promise');
 const fs = require('fs');
 
 const ALLOWED_HEADERS = [
@@ -16,6 +14,7 @@ const ALLOWED_HEADERS = [
     'charset',
     'location',
     'host',
+    'authorization'
 ];
 
 const CACHE = {
@@ -25,19 +24,22 @@ const CACHE = {
 
 class Dispatcher {
 
-    static getLoggedUser(ctx) {
-        if (ctx.state) {
-            if (ctx.state.user) {
-                return ctx.state.user;
-            }
-            if (ctx.state.microservice) {
-                return ctx.state.microservice;
+    static hasLoggedUser(ctx) {
+        if (!ctx.header || !ctx.header.authorization) {
+            return false;
+        }
+
+        const parts = ctx.header.authorization.split(' ');
+
+        if (parts.length === 2) {
+            const scheme = parts[0];
+
+            if (/^Bearer$/i.test(scheme)) {
+                return true;
             }
         }
-        if (ctx.req && ctx.req.user) {
-            return ctx.req.user;
-        }
-        return null;
+
+        return false;
     }
 
     static async buildUrl(sourcePath, redirectEndpoint, endpoint) {
@@ -123,33 +125,6 @@ class Dispatcher {
         return false;
     }
 
-    static checkValidRedirects(redirects, filters) {
-        logger.debug('Checking redirects with filters');
-        const validRedirects = [];
-        for (let i = 0, { length } = redirects; i < length; i++) {
-            const redirect = redirects[i];
-            let valid = true;
-            if (redirect.filters) {
-                for (let j = 0, lengthRF = redirect.filters.length; j < lengthRF; j++) {
-                    const filterValue = Dispatcher.searchFilterValue(redirect.filters[j], filters);
-                    if (!filterValue || !Dispatcher.checkCompare(redirect.filters[j].compare, filterValue, redirect.filters[j].condition)) {
-                        logger.debug('Not valid filter');
-                        valid = false;
-                        break;
-                    }
-                    if (!redirect.data) {
-                        redirect.data = {};
-                    }
-                    redirect.data[redirect.filters[j].name] = filterValue;
-                }
-            }
-            if (valid) {
-                validRedirects.push(redirect);
-            }
-        }
-        return validRedirects;
-    }
-
     static cloneEndpoint(endpoint) {
         const newObject = { ...endpoint };
         newObject.redirect = [];
@@ -157,67 +132,6 @@ class Dispatcher {
             newObject.redirect.push({ ...endpoint.redirect[i] });
         }
         return newObject;
-    }
-
-    static async checkFilters(sourcePath, endpoint) {
-        logger.debug('[DispatcherService - checkFilters] Checking filters in endpoint', endpoint);
-        const newEndpoint = Dispatcher.cloneEndpoint(endpoint);
-        let filters = [];
-        for (let i = 0, { length } = newEndpoint.redirect; i < length; i++) {
-            if (newEndpoint.redirect[i].filters) {
-                filters = filters.concat(newEndpoint.redirect[i].filters);
-            }
-        }
-        if (!filters || filters.length === 0) {
-            logger.debug('[DispatcherService - checkFilters] Doesn\'t contain filters. All redirect are valid');
-            return newEndpoint;
-        }
-        logger.debug('[DispatcherService - checkFilters] Obtaining data to check filters');
-        const promisesRequest = [];
-        let filter = null;
-        let path = null;
-        for (let i = 0, { length } = filters; i < length; i++) {
-            filter = filters[i];
-            path = await Dispatcher.buildPathFilter(sourcePath, filter, newEndpoint);
-            const request = await Dispatcher.getRequest({
-                request: {
-                    url: path,
-                    method: filter.method,
-                    body: {},
-                },
-            });
-            logger.debug('[DispatcherService - checkFilters] Config request', request);
-            request.configRequest.json = true;
-            promisesRequest.push(requestPromise(request.configRequest));
-
-        }
-        if (!promisesRequest || promisesRequest.length === 0) {
-            return newEndpoint;
-        }
-        try {
-            logger.debug('[DispatcherService - checkFilters] Doing requests');
-            const results = await Promise.all(promisesRequest);
-            // TODO: Add support for several filter in each newEndpoint
-            for (let i = 0, { length } = results; i < length; i++) {
-                if (results[i].statusCode === 200) {
-                    filters[i].result = {
-                        data: results[i].body,
-                        correct: true,
-                    };
-                } else {
-                    filters[i].result = {
-                        correct: false,
-                    };
-                }
-            }
-            logger.debug('[DispatcherService - checkFilters] Checking valid filters');
-            const validRedirects = Dispatcher.checkValidRedirects(newEndpoint.redirect, filters);
-            newEndpoint.redirect = validRedirects;
-        } catch (err) {
-            logger.error(err);
-            throw new FilterError('Error resolving filters');
-        }
-        return newEndpoint;
     }
 
     static getHeadersFromRequest(headers) {
@@ -277,7 +191,7 @@ class Dispatcher {
         logger.info(`[DispatcherService - getRequest] Searching endpoint where redirect url ${ctx.request.url}
             and method ${ctx.request.method}`);
         const parsedUrl = url.parse(ctx.request.url);
-        let endpoint = await Dispatcher.getEndpoint(parsedUrl.pathname, ctx.request.method);
+        const endpoint = await Dispatcher.getEndpoint(parsedUrl.pathname, ctx.request.method);
 
         if (!endpoint) {
             throw new EndpointNotFound(`${parsedUrl.pathname} not found`);
@@ -285,7 +199,7 @@ class Dispatcher {
 
         logger.info(`[DispatcherService - getRequest] Endpoint found. Path: ${endpoint.path} | Method: ${endpoint.method}`);
         logger.info('[DispatcherService - getRequest] Checking if authentication is necessary');
-        if (endpoint.authenticated && !Dispatcher.getLoggedUser(ctx)) {
+        if (endpoint.authenticated && !Dispatcher.hasLoggedUser(ctx)) {
             logger.info('[DispatcherService - getRequest] Authentication is needed but no user data was found in the request');
             throw new NotAuthenticated();
         }
@@ -295,7 +209,6 @@ class Dispatcher {
             throw new NotApplicationKey('Required app_key');
         }
         let redirectEndpoint = null;
-        endpoint = await Dispatcher.checkFilters(parsedUrl.pathname, endpoint);
         if (endpoint && endpoint.redirect.length === 0) {
             logger.error('[DispatcherService - getRequest] No redirects exist');
             throw new EndpointNotFound(`${parsedUrl.pathname} not found`);
@@ -329,6 +242,9 @@ class Dispatcher {
             if (ctx.request.query.app_key) {
                 delete ctx.request.query.app_key;
             }
+            if (ctx.request.query.loggedUser) {
+                delete ctx.request.query.loggedUser;
+            }
             configRequest.qs = ctx.request.query;
         }
 
@@ -342,9 +258,10 @@ class Dispatcher {
             } else {
                 configRequest.body = ctx.request.body;
             }
+            if (configRequest.body.loggedUser) {
+                delete configRequest.body.loggedUser;
+            }
         }
-        logger.debug('[DispatcherService - getRequest] Adding logged user if it is logged');
-        redirectEndpoint.data = { ...redirectEndpoint.data, loggedUser: Dispatcher.getLoggedUser(ctx), };
 
         if (redirectEndpoint.data) {
             logger.debug('[DispatcherService - getRequest] Adding data');
@@ -410,7 +327,6 @@ class Dispatcher {
         if (ctx.state && ctx.state.appKey) {
             configRequest.headers.app_key = JSON.stringify(ctx.state.appKey);
         }
-        configRequest.headers.user_key = JSON.stringify(Dispatcher.getLoggedUser(ctx));
 
         logger.debug('[DispatcherService - getRequest] Checking if is json or formdata request');
         if (configRequest.multipart) {

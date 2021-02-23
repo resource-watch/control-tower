@@ -2,10 +2,9 @@ const logger = require('logger');
 const nock = require('nock');
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const { microserviceTest } = require('./test.constants');
+const { microserviceTest } = require('./utils/test.constants');
 const { isTokenRequired, isAdminOnly, createUserAndToken } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 let requester;
 
@@ -71,7 +70,6 @@ describe('Microservice status calls', () => {
     afterEach(async () => {
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
-        await UserModel.deleteMany({}).exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

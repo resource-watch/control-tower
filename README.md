@@ -143,21 +143,7 @@ Core Variables
 - PORT => The port where control-tower listens for requests. Defaults to 9000 when not set.
 - NODE_ENV => Environment variable of nodejs. Required.
 - NODE_PATH => Required value. Always set it to 'app/src'.
-
-OAuth Variables
-
-- JWT_SECRET				=> The secret used to generate JWT tokens. It's a required field if the JWT feature in the auth-plugin is active. The JWT feature is active by default.
-- TWITTER_CONSUMER_KEY		=> Twitter OAuth consumer key. If's a required field if the Twitter feature in the auth-plugin is active. It's not active by default.
-- TWITTER_CONSUMER_SECRET	=> Twitter OAuth consumer secret. If's a required field if the Twitter feature in the auth-plugin is active. It's not active by default.
-- GOOGLE_CLIENT_ID			=> Google+ OAuth client ID. If's a required field if the Google feature in the auth-plugin is active. It's not active by default.
-- GOOGLE_CLIENT_SECRET		=> Google+ OAuth client secret. If's a required field if the Google feature in the auth-plugin is active. It's not active by default.
-- FACEBOOK_CLIENT_ID		=> Facebook OAuth client ID. If's a required field if the Facebook feature in the auth-plugin is active. It's not active by default.
-- FACEBOOK_CLIENT_SECRET	=> Facebook OAuth client secret. If's a required field if the Facebook feature in the auth-plugin is active. It's not active by default.
-- SPARKPOST_KEY				=> Key to send mails with Sparkpost. It's a required field if you offer a local OAuth provider.
-- CONFIRM_URL_REDIRECT		=> URL to redirect users whenever they activate their account. It's a required field if you offer a local OAuth provider.
 - PUBLIC_URL				=> Base Application URL. It must be the public domain of your Control Tower instance, and it's used to compose account links. It you are offering a local OAuth provider it's a required field. This URL also needs to be configured as an acceptable callback on the OAuth provider settings.
-- BASICAUTH_USERNAME		=> Basic authentication's username. Required if you activate basic auth.
-- BASICAUTH_PASSWORD		=> Basic authentication's password. Required if you activate basic auth.
 
 Redis Cache variables
 
@@ -168,18 +154,6 @@ Mongo session variables
 
 - COOKIE_DOMAIN => Session domain for cookies. Required field if you activate the sessionMongo plugin.
 - SESSION_KEY	=> Key to cipher the cookies.  Required field if you activate the sessionMongo plugin.
-
-Live cron variables
-
-- INSTAPUSH_TOKEN	=> Instapush token for sending alerts to mobile devices with the Live cron. It's required if you activate Live cron.
-- INSTAPUSH_ID		=> Instapush ID for sending alerts to mobile devices with the Live cron. It's required if you activate Live cron.
-- INSTAPUSH_SECRET	=> Instapush secret for sending alerts to mobile devices with the Live cron. It's required if you activate Live cron.
-
-Variables used for testing environments only:
-
-- TEST_GOOGLE_OAUTH2_CLIENT_ID => Google OAuth2 API client ID
-- TEST_FACEBOOK_OAUTH2_APP_ID => Facebook OAuth app ID
-- TEST_FACEBOOK_OAUTH2_APP_SECRET => Facebook OAuth app secret
 
 
 ### Audit and statistics
@@ -194,21 +168,6 @@ Actions going through Control Tower are logged on the `statistics` (sorry about 
   "errorCode": null,
   "time": 348,
   "ip": "123.123.123.123",
-  "loggedUser": {
-    "iat": 1542063295,
-    "createdAt": 1542063295822,
-    "extraUserData": {
-      "apps": [
-        "gfw",
-        "forest-atlas",
-        "rw"
-      ]
-    },
-    "email": "john@doe.org",
-    "provider": "local",
-    "role": "ADMIN",
-    "id": "796512a56dfc643722bdd02ab"
-  },
   "endpointPath": "/v1/dataset/:dataset/layer/:layer",
   "redirectUrl": "http://layer.default.svc.cluster.local:6000/api/v1/dataset/1234/layer/5678",
   "redirectMethod": "DELETE",

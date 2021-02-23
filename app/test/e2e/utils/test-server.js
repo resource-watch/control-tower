@@ -20,7 +20,7 @@ exports.getTestAgent = async function getTestAgent(forceNew = false) {
     }
 
     // eslint-disable-next-line global-require
-    const serverPromise = require('../../src/app');
+    const serverPromise = require('../../../src/app');
     const { server } = await serverPromise();
     requester = chai.request.agent(server);
 
@@ -33,7 +33,7 @@ exports.getTestServer = async function getTestServer() {
     }
 
     // eslint-disable-next-line global-require
-    const serverPromise = require('../../src/app');
+    const serverPromise = require('../../../src/app');
     const { server } = await serverPromise();
     requester = chai.request(server).keepOpen();
 

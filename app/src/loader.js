@@ -21,7 +21,11 @@ async function loadPlugins(app) {
     plugins.forEach((plugin) => {
         try {
             logger.info(`Loading ${plugin.name} plugin`);
-            require(plugin.mainFile).middleware(app, plugin, generalConfig);
+            if (fs.existsSync(`${__dirname}/${plugin.mainFile}.js`)) {
+                require(plugin.mainFile).middleware(app, plugin, generalConfig);
+            } else {
+                logger.warn(`Could not load plugin because file ${__dirname}/${plugin.mainFile}.js does not exist`);
+            }
         } catch (e) {
             logger.error(e);
             throw e;

@@ -1,5 +1,6 @@
 const Plugin = require('models/plugin.model');
 const mongoose = require('mongoose');
+const nock = require('nock');
 const config = require('config');
 const { ObjectId } = require('mongoose').Types;
 const MicroserviceModel = require('models/microservice.model');
@@ -8,10 +9,8 @@ const VersionModel = require('models/version.model');
 const appConstants = require('app.constants');
 const JWT = require('jsonwebtoken');
 const { promisify } = require('util');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
-const TempUserModel = require('plugins/sd-ct-oauth-plugin/models/user-temp.model');
 const PluginModel = require('models/plugin.model');
-const { endpointTest } = require('../test.constants');
+const { endpointTest } = require('./test.constants');
 const mongooseOptions = require('../../../../config/mongoose');
 
 const mongoUri = process.env.CT_MONGO_URI || `mongodb://${config.get('mongodb.host')}:${config.get('mongodb.port')}/${config.get('mongodb.database')}`;
@@ -43,11 +42,9 @@ const createUser = (userData) => ({
 
 const createTokenForUser = (tokenData) => promisify(JWT.sign)(tokenData, process.env.JWT_SECRET);
 
-const createUserInDB = async (userData) => {
-    // eslint-disable-next-line no-undef
-    const user = await new UserModel(createUser(userData)).save();
-
-    return {
+const createUserAndToken = async (userData) => {
+    const user = createUser(userData);
+    const userForToken = {
         id: user._id.toString(),
         role: user.role,
         provider: user.provider,
@@ -57,11 +54,8 @@ const createUserInDB = async (userData) => {
         photo: user.photo,
         name: user.name
     };
-};
 
-const createUserAndToken = async (userData) => {
-    const user = await createUserInDB(userData);
-    const token = await createTokenForUser(user);
+    const token = await createTokenForUser(userForToken);
 
     return { user, token };
 };
@@ -79,20 +73,6 @@ const createPlugin = async (pluginData) => (PluginModel({
     active: false,
     config: {},
     ...pluginData
-}).save());
-
-const createTempUser = async (userData) => (TempUserModel({
-    _id: new ObjectId(),
-    email: `${getUUID()}@control-tower.com`,
-    password: '$password.hash',
-    salt: '$password.salt',
-    extraUserData: {
-        apps: []
-    },
-    createdAt: '2019-02-12T10:27:24.001Z',
-    role: 'USER',
-    confirmationToken: getUUID(),
-    ...userData
 }).save());
 
 const createMicroservice = async (microserviceData) => (MicroserviceModel({
@@ -131,9 +111,18 @@ const createMicroserviceWithEndpoints = async (microserviceData) => {
     return { microservice, endpoints };
 };
 
+const mockGetUserFromToken = (userProfile, token) => {
+    nock(process.env.AUTHORIZATION_URL, { reqheaders: { authorization: `Bearer ${token}` } })
+        .get('/auth/user/me')
+        .reply(200, userProfile);
+};
+
 const isAdminOnly = async (requester, method, url) => {
-    const { token: managerToken } = await createUserAndToken({ role: 'MANAGER' });
-    const { token: userToken } = await createUserAndToken({ role: 'USER' });
+    const { token: managerToken, user: managerUser } = await createUserAndToken({ role: 'MANAGER' });
+    const { token: userToken, user: userUser } = await createUserAndToken({ role: 'USER' });
+
+    mockGetUserFromToken(managerUser, managerToken);
+    mockGetUserFromToken(userUser, userToken);
 
     const request = (token) => requester[method](`/api/v1/${url}`)
         .set('Authorization', `Bearer ${token}`);
@@ -213,13 +202,12 @@ module.exports = {
     ensureCorrectError,
     createEndpoint,
     createUserAndToken,
-    createUserInDB,
     createPlugin,
     createMicroservice,
     createMicroserviceWithEndpoints,
-    createTempUser,
     getUserFromToken,
     isTokenRequired,
     isAdminOnly,
-    ensureHasPaginationElements
+    ensureHasPaginationElements,
+    mockGetUserFromToken
 };

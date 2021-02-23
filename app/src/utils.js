@@ -1,12 +1,16 @@
 const logger = require('logger');
 
 function getUser(ctx) {
-    return ctx.req.user || ctx.state.user;
+    return ctx.req.loggedUser || ctx.state.user;
+}
+
+function hasUser(ctx) {
+    return ctx.header && ctx.header.authorization;
 }
 
 async function isLogged(ctx, next) {
     logger.debug('Checking if user is logged');
-    if (getUser(ctx)) {
+    if (hasUser(ctx)) {
         await next();
     } else {
         logger.debug('Not logged');

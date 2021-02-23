@@ -4,10 +4,9 @@ const mongoose = require('mongoose');
 
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const UserModel = require('plugins/sd-ct-oauth-plugin/models/user.model');
 
-const { createUserAndToken, createMicroservice } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./test-server');
+const { createUserAndToken, createMicroservice, mockGetUserFromToken } = require('./utils/helpers');
+const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 chai.should();
 
@@ -24,7 +23,6 @@ describe('Microservices endpoints - Get by id', () => {
     });
 
     beforeEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
     });
@@ -35,7 +33,9 @@ describe('Microservices endpoints - Get by id', () => {
     });
 
     it('Getting a microservice by an invalid id should return a 404', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester
             .get(`/api/v1/microservice/abcd`)
@@ -47,7 +47,9 @@ describe('Microservices endpoints - Get by id', () => {
     });
 
     it('Getting a microservice by id should return 404 if the microservice doesn\'t exist', async () => {
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const id = mongoose.Types.ObjectId();
         const response = await requester
@@ -79,7 +81,9 @@ describe('Microservices endpoints - Get by id', () => {
 
         const microservice = await createMicroservice(testMicroserviceOne);
 
-        const { token } = await createUserAndToken({ role: 'ADMIN' });
+        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+
+        mockGetUserFromToken(user, token);
 
         const response = await requester
             .get(`/api/v1/microservice/${microservice.id}`)
@@ -91,7 +95,6 @@ describe('Microservices endpoints - Get by id', () => {
     });
 
     afterEach(async () => {
-        await UserModel.deleteMany({}).exec();
         await MicroserviceModel.deleteMany({}).exec();
         await EndpointModel.deleteMany({}).exec();
 

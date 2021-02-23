@@ -15,7 +15,6 @@ const Statistic = new Schema({
     errorCode: { type: Number, required: false },
     ip: { type: String, required: false, trim: true },
     anonymous: { type: Boolean, required: true, default: true },
-    loggedUser: { type: Schema.Types.Mixed },
     geo: {
         _id: false,
         city: { type: String, required: false, trim: true },
