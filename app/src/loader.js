@@ -5,6 +5,7 @@ const { join } = require('path');
 const mount = require('koa-mount');
 const path = require('path');
 const MicroserviceService = require('services/microservice.service');
+const Dispatcher = require('services/dispatcher.service');
 
 const routersPath = `${__dirname}/routes`;
 const microservicesPath = join(`${__dirname}/../..`, `microservices`);
@@ -22,6 +23,8 @@ function loadMicroservices(microservicesDirPath) {
 
         MicroserviceService.register(name, microserviceUrl.toString(), microservice.endpoints);
     });
+
+    Dispatcher.reloadEndpoints();
 }
 
 function loadAPI(app, routersPath, pathApi) {

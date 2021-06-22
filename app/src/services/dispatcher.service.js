@@ -52,8 +52,7 @@ class Dispatcher {
     static async getEndpoint(pathname, method) {
         logger.info(`[DispatcherService - getEndpoint] Searching for endpoint with path ${pathname} and method ${method}`);
         if (!CACHE.endpoints || CACHE.endpoints.length === 0) {
-            logger.fatal('[DispatcherService - getEndpoint] Endpoints cache is empty');
-            return null;
+            Dispatcher.reloadEndpoints();
         }
         logger.debug('[DispatcherService - getEndpoint] Searching endpoints cache');
         const endpoint = CACHE.endpoints.find((endpointData) => {

@@ -1,0 +1,93 @@
+{
+  "port": 30546,
+  "endpoints": [
+    {
+      "path": "/v1/layer",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/layer"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/layer"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/layer"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/layer/:layer"
+      }
+    },
+    {
+      "path": "/v1/layer/:layer",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/layer/:layer"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/dataset/:dataset/layer/:layer"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/:dataset/layer/:layer"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/:dataset/layer"
+      }
+    },
+    {
+      "path": "/v1/layer/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/layer/find-by-ids"
+      }
+    },
+    {
+      "path": "/v1/layer/change-environment/:dataset/:env",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/layer/change-environment/:dataset/:env"
+      }
+    },
+    {
+      "path": "/v1/layer/:layer/expire-cache",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/layer/:layer/expire-cache"
+      }
+    }
+  ]
+}
