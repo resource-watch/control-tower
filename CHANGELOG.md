@@ -17,7 +17,7 @@
 
 ## 29/10/2020
 
-- Add support for "Sign in with Apple" 
+- Add support for "Sign in with Apple"
 
 # v2.4.2
 
@@ -29,7 +29,8 @@
 
 ## 13/07/2020
 
-- Update version used of Facebook Graph API to 7.0 in Facebook OAuth. [GTC-654](https://gfw.atlassian.net/browse/GTC-654)
+- Update version used of Facebook Graph API to 7.0 in Facebook
+  OAuth. [GTC-654](https://gfw.atlassian.net/browse/GTC-654)
 - Security updates for `handlebars` and `websocket-extensions` NPM packages.
 
 # 2.4.0
@@ -89,11 +90,12 @@
 ## 27/01/2020
 
 - Update `passport-facebook` NPM package version to its latest version.
-- Add and use `fromEmail` field on oauth plugin configuration (inside each application) as the name of the sender for auth-related emails.
+- Add and use `fromEmail` field on oauth plugin configuration (inside each application) as the name of the sender for
+  auth-related emails.
 - Change callback URL logic so that priority is:
-  - Query param
-  - Session
-  - Referrer
+    - Query param
+    - Session
+    - Referrer
 - Refactor tests to (even) better handle redirect cases
 - Refactor tests to better handle redirect cases
 - Add pagination to GET users

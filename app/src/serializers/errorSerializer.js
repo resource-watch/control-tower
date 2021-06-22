@@ -20,7 +20,8 @@ class ErrorSerializer {
             source: {
                 parameter: keys[0],
             },
-            code: message.replace(/ /g, '_').toLowerCase(),
+            code: message.replace(/ /g, '_')
+                .toLowerCase(),
             title: message,
             detail: data[keys[0]],
         };

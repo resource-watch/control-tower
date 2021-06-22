@@ -35,7 +35,8 @@ exports.getTestServer = async function getTestServer() {
     // eslint-disable-next-line global-require
     const serverPromise = require('../../../src/app');
     const { server } = await serverPromise();
-    requester = chai.request(server).keepOpen();
+    requester = chai.request(server)
+        .keepOpen();
 
     return requester;
 };

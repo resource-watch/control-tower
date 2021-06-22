@@ -5,14 +5,29 @@ const fs = require('fs');
 const { getTestAgent } = require('./utils/test-server');
 const { endpointTest } = require('./utils/test.constants');
 const {
-    createEndpoint, ensureCorrectError, updateVersion, hexToString, createUserAndToken
+    createEndpoint,
+    ensureCorrectError,
+
+    hexToString,
+    createUserAndToken
 } = require('./utils/helpers');
-const { createMockEndpoint, createMockEndpointWithBody, createMockEndpointWithHeaders } = require('./utils/mock');
+const {
+    createMockEndpoint,
+    createMockEndpointWithBody,
+    createMockEndpointWithHeaders
+} = require('./utils/mock');
 
 chai.should();
 let microservice;
 
-const changeMethod = (method) => ({ ...endpointTest, method, redirect: [{ ...endpointTest.redirect[0], method }] });
+const changeMethod = (method) => ({
+    ...endpointTest,
+    method,
+    redirect: [{
+        ...endpointTest.redirect[0],
+        method
+    }]
+});
 
 describe('Endpoint dispatch tests', () => {
     before(async () => {
@@ -20,14 +35,14 @@ describe('Endpoint dispatch tests', () => {
     });
 
     it('Created endpoint without redirects should return a 404 HTTP code with a "Endpoint not found" message', async () => {
-        await updateVersion();
+
         await createEndpoint({ redirect: [] });
         const result = await microservice.post('/api/v1/dataset');
         ensureCorrectError(result, 'Endpoint not found', 404);
     });
 
     it('Created endpoint should return a 200 HTTP code', async () => {
-        await updateVersion();
+
         await createEndpoint();
         createMockEndpoint('/api/v1/dataset');
         const result = await microservice.post('/api/v1/dataset');
@@ -36,7 +51,7 @@ describe('Endpoint dispatch tests', () => {
     });
 
     it('External request\'s query params are passed along to the internal call on POST requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('POST'));
 
         const { token } = await createUserAndToken();
@@ -53,14 +68,17 @@ describe('Endpoint dispatch tests', () => {
             .post('/api/v1/dataset')
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${token}`)
-            .query({ test1: 'test', test2: 'test' });
+            .query({
+                test1: 'test',
+                test2: 'test'
+            });
 
         result.text.should.equal('ok');
         result.status.should.equal(200);
     });
 
     it('External request\'s query params, files and post fields are passed along to the internal call on POST requests with multipart content type', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('POST'));
 
         const { token } = await createUserAndToken();
@@ -84,7 +102,10 @@ describe('Endpoint dispatch tests', () => {
             .post('/api/v1/dataset')
             .set('Content-Type', 'multipart/form-data')
             .set('Authorization', `Bearer ${token}`)
-            .query({ test1: 'test', test2: 'test' })
+            .query({
+                test1: 'test',
+                test2: 'test'
+            })
             .field('foo', 'bar')
             .attach('image', fileData, 'sample.png');
 
@@ -93,7 +114,7 @@ describe('Endpoint dispatch tests', () => {
     });
 
     it('External request\'s query params are passed along to the internal call on PUT requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('PUT'));
 
         const { token } = await createUserAndToken();
@@ -110,14 +131,17 @@ describe('Endpoint dispatch tests', () => {
             .put('/api/v1/dataset')
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${token}`)
-            .query({ test1: 'test', test2: 'test' });
+            .query({
+                test1: 'test',
+                test2: 'test'
+            });
 
         result.text.should.equal('ok');
         result.status.should.equal(200);
     });
 
     it('External request\'s query params, files and post fields are passed along to the internal call on PUT requests with multipart content type', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('PUT'));
 
         const { token } = await createUserAndToken();
@@ -141,7 +165,10 @@ describe('Endpoint dispatch tests', () => {
             .put('/api/v1/dataset')
             .set('Content-Type', 'multipart/form-data')
             .set('Authorization', `Bearer ${token}`)
-            .query({ test1: 'test', test2: 'test' })
+            .query({
+                test1: 'test',
+                test2: 'test'
+            })
             .field('foo', 'bar')
             .attach('image', fileData, 'sample.png');
 
@@ -150,16 +177,20 @@ describe('Endpoint dispatch tests', () => {
     });
 
     it('External request\'s query params are passed along to the internal call on GET requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('GET'));
         createMockEndpoint('/api/v1/dataset?test1=test&test2=test', { method: 'get' });
-        const result = await microservice.get('/api/v1/dataset').query({ test1: 'test', test2: 'test' });
+        const result = await microservice.get('/api/v1/dataset')
+            .query({
+                test1: 'test',
+                test2: 'test'
+            });
         result.text.should.equal('ok');
         result.status.should.equal(200);
     });
 
     it('External request\'s query params are passed along to the internal call on PATCH requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('PATCH'));
 
         const { token } = await createUserAndToken();
@@ -176,14 +207,17 @@ describe('Endpoint dispatch tests', () => {
             .patch('/api/v1/dataset')
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${token}`)
-            .query({ test1: 'test', test2: 'test' });
+            .query({
+                test1: 'test',
+                test2: 'test'
+            });
 
         result.text.should.equal('ok');
         result.status.should.equal(200);
     });
 
     it('External request\'s query params, files and post fields are passed along to the internal call on PATCH requests with multipart content type', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('PATCH'));
 
         const { token } = await createUserAndToken();
@@ -207,7 +241,10 @@ describe('Endpoint dispatch tests', () => {
             .patch('/api/v1/dataset')
             .set('Content-Type', 'multipart/form-data')
             .set('Authorization', `Bearer ${token}`)
-            .query({ test1: 'test', test2: 'test' })
+            .query({
+                test1: 'test',
+                test2: 'test'
+            })
             .field('foo', 'bar')
             .attach('image', fileData, 'sample.png');
 
@@ -216,62 +253,86 @@ describe('Endpoint dispatch tests', () => {
     });
 
     it('External request\'s query params are passed along to the internal call on DELETE requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('DELETE'));
         createMockEndpoint('/api/v1/dataset?test1=test&test2=test', { method: 'delete' });
-        const result = await microservice.delete('/api/v1/dataset').query({ test1: 'test', test2: 'test' });
+        const result = await microservice.delete('/api/v1/dataset')
+            .query({
+                test1: 'test',
+                test2: 'test'
+            });
         result.text.should.equal('ok');
         result.status.should.equal(200);
     });
 
     it('External request\'s body content should be absent the internal call on GET requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('GET'));
         createMockEndpoint('/api/v1/dataset', { method: 'get' });
-        const result = await microservice.get('/api/v1/dataset').send({ test1: 'test', test2: 'test' });
+        const result = await microservice.get('/api/v1/dataset')
+            .send({
+                test1: 'test',
+                test2: 'test'
+            });
         result.status.should.equal(200);
         result.text.should.equal('ok');
     });
 
     it('External request\'s body content should be absent the internal call on DELETE requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('DELETE'));
         createMockEndpoint('/api/v1/dataset', { method: 'delete' });
-        const result = await microservice.delete('/api/v1/dataset').send({ test1: 'test2' });
+        const result = await microservice.delete('/api/v1/dataset')
+            .send({ test1: 'test2' });
         result.status.should.equal(200);
         result.text.should.equal('ok');
     });
 
     it('External request\'s body content should be present the internal call on POST requests', async () => {
-        await updateVersion();
+
         await createEndpoint();
         createMockEndpointWithBody('/api/v1/dataset', { body: { test1: 'test2' } });
-        const result = await microservice.post('/api/v1/dataset').send({ test1: 'test2' });
+        const result = await microservice.post('/api/v1/dataset')
+            .send({ test1: 'test2' });
         result.status.should.equal(200);
         result.text.should.equal('ok');
     });
 
     it('External request\'s body content should be present the internal call on PATCH requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('PATCH'));
-        createMockEndpointWithBody('/api/v1/dataset', { method: 'patch', body: { test1: 'test2' } });
-        const result = await microservice.patch('/api/v1/dataset').send({ test1: 'test2' });
+        createMockEndpointWithBody('/api/v1/dataset', {
+            method: 'patch',
+            body: { test1: 'test2' }
+        });
+        const result = await microservice.patch('/api/v1/dataset')
+            .send({ test1: 'test2' });
         result.status.should.equal(200);
         result.text.should.equal('ok');
     });
 
     it('External request\'s body content should be present the internal call on PUT requests', async () => {
-        await updateVersion();
+
         await createEndpoint(changeMethod('PUT'));
-        createMockEndpointWithBody('/api/v1/dataset', { method: 'put', body: { test1: 'test2' } });
-        const result = await microservice.put('/api/v1/dataset').send({ test1: 'test2' });
+        createMockEndpointWithBody('/api/v1/dataset', {
+            method: 'put',
+            body: { test1: 'test2' }
+        });
+        const result = await microservice.put('/api/v1/dataset')
+            .send({ test1: 'test2' });
         result.status.should.equal(200);
         result.text.should.equal('ok');
     });
 
     it('Forwarding an external POST request to an internal GET request should work as intended (happy case)', async () => {
-        await updateVersion();
-        await createEndpoint({ ...endpointTest, redirect: [{ ...endpointTest.redirect[0], method: 'get' }] });
+
+        await createEndpoint({
+            ...endpointTest,
+            redirect: [{
+                ...endpointTest.redirect[0],
+                method: 'get'
+            }]
+        });
         createMockEndpoint('/api/v1/dataset', { method: 'get' });
         const result = await microservice.post('/api/v1/dataset');
         result.status.should.equal(200);
@@ -279,16 +340,17 @@ describe('Endpoint dispatch tests', () => {
     });
 
     it('External request\'s headers should be present the internal request', async () => {
-        await updateVersion();
+
         await createEndpoint();
         createMockEndpointWithHeaders('/api/v1/dataset', { headers: { location: 'test2' } });
-        const result = await microservice.post('/api/v1/dataset').set('location', 'test2');
+        const result = await microservice.post('/api/v1/dataset')
+            .set('location', 'test2');
         result.status.should.equal(200);
         result.text.should.equal('ok');
     });
 
     it('External stream requests are supported', async () => {
-        await updateVersion();
+
         await createEndpoint({ binary: true });
         createMockEndpoint('/api/v1/dataset');
         const result = await microservice.post('/api/v1/dataset');
@@ -296,7 +358,7 @@ describe('Endpoint dispatch tests', () => {
     });
 
     it('Endpoint with pathRegex are matched to external requests and return a 200 HTTP code (positive test)', async () => {
-        await updateVersion();
+
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({ pathRegex: new RegExp('^/api/v1/dataset/[0-9]*$') });
         createMockEndpoint('/api/v1/dataset');
@@ -306,7 +368,7 @@ describe('Endpoint dispatch tests', () => {
     });
 
     it('Endpoint with pathRegex are not matched to external requests and return a 404 HTTP code (negative test)', async () => {
-        await updateVersion();
+
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({ pathRegex: new RegExp('^/api/v1/dataset/[0-9]*$') });
         const result = await microservice.post('/api/v1/dataset/sadasd');
@@ -314,7 +376,8 @@ describe('Endpoint dispatch tests', () => {
     });
 
     afterEach(async () => {
-        await Endpoint.deleteMany({}).exec();
+        await Endpoint.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

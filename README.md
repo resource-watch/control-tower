@@ -1,20 +1,22 @@
-# Control Tower API Gateway - Resource Watch 
+# Control Tower API Gateway - Resource Watch
 
 [![Build Status](https://travis-ci.com/resource-watch/control-tower.svg?branch=dev)](https://travis-ci.com/resource-watch/control-tower)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6998e7a532fb2d138ca3/test_coverage)](https://codeclimate.com/github/resource-watch/control-tower/test_coverage)
 
 ## Dependencies
 
-Control Tower is built using [Node.js](https://nodejs.org/en/), and can be executed either natively or using Docker, each of which has its own set of requirements.
+Control Tower is built using [Node.js](https://nodejs.org/en/), and can be executed either natively or using Docker,
+each of which has its own set of requirements.
 
 Native execution requires:
+
 - [Node.js](https://nodejs.org/en/)
 - [Yarn](https://yarnpkg.com/)
 - [MongoDB](https://www.mongodb.com/)
 - [Redis](https://redis.io/)
 
-
 Execution using Docker requires:
+
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
@@ -30,22 +32,29 @@ After that, follow one of the instructions below:
 
 ### Using native execution
 
-1 - Set up your environment variables. See `dev.env.sample` for a list of variables you should set, which are described in detail in [this section](#environment-variables) of the documentation. Native execution will NOT load the `dev.env` file content, so you need to use another way to define those values
+1 - Set up your environment variables. See `dev.env.sample` for a list of variables you should set, which are described
+in detail in [this section](#environment-variables) of the documentation. Native execution will NOT load the `dev.env`
+file content, so you need to use another way to define those values
 
 2 - Install node dependencies using Yarn:
+
 ```
 yarn install
 ```
 
 3 - Start the application server:
+
 ```
 yarn start
 ```
-Control Tower should now be up and accessible. To confirm, open [http://localhost:9000](http://localhost:9000/) (assuming the default settings) on your browser, which should show a 404 'Endpoint not found' message.
+
+Control Tower should now be up and accessible. To confirm, open [http://localhost:9000](http://localhost:9000/) (
+assuming the default settings) on your browser, which should show a 404 'Endpoint not found' message.
 
 ### Using Docker
 
-1 - Create and complete your `dev.env` file with your configuration. The meaning of the variables is available in this [section](#documentation-environment-variables). You can find an example `dev.env.sample` file in the project root.
+1 - Create and complete your `dev.env` file with your configuration. The meaning of the variables is available in
+this [section](#documentation-environment-variables). You can find an example `dev.env.sample` file in the project root.
 
 2 - Execute the following command to run Control tower:
 
@@ -53,14 +62,15 @@ Control Tower should now be up and accessible. To confirm, open [http://localhos
 ./controlTower.sh develop
 ```
 
-
-3 - It's recommended to add the following line to your `/etc/hosts` (if you are in Windows, the hosts file is located in `c:\Windows\System32\Drivers\etc\hosts` and you'll need to 'Run as administrator' your editor):
+3 - It's recommended to add the following line to your `/etc/hosts` (if you are in Windows, the hosts file is located
+in `c:\Windows\System32\Drivers\etc\hosts` and you'll need to 'Run as administrator' your editor):
 
 ```
 mymachine   <yourIP>
 ```
 
-Control Tower should now be up and accessible. To confirm, open [http://mymachine:9000](http://mymachine:9000/) on your browser, which should show a 404 'Endpoint not found' message.
+Control Tower should now be up and accessible. To confirm, open [http://mymachine:9000](http://mymachine:9000/) on your
+browser, which should show a 404 'Endpoint not found' message.
 
 ## Testing
 
@@ -84,13 +94,18 @@ Follow the instruction above for setting up the runtime environment for Docker e
 
 ### OAuth tests
 
-Some tests require real OAuth credentials to be set as environment variables, as it's currently not possible to mock all requests using the mocking library this project employs. The test code is built to detect the presence of these configuration values, and bypass these tests should the variables below not be present.
+Some tests require real OAuth credentials to be set as environment variables, as it's currently not possible to mock all
+requests using the mocking library this project employs. The test code is built to detect the presence of these
+configuration values, and bypass these tests should the variables below not be present.
 
-Additionally, as these tests cause external services to use the callback URLs, the `PUBLIC_URL` env variable needs to be set to `http://localhost:9000`, otherwise the external services will refuse to callback, and the tests will fail.
+Additionally, as these tests cause external services to use the callback URLs, the `PUBLIC_URL` env variable needs to be
+set to `http://localhost:9000`, otherwise the external services will refuse to callback, and the tests will fail.
 
 #### Google OAuth tests
 
-You can get the values to those variables at the [Google APIs page](https://console.developers.google.com/apis/credentials?project=resource-watch&authuser=0&folder&organizationId).
+You can get the values to those variables at
+the [Google APIs page](https://console.developers.google.com/apis/credentials?project=resource-watch&authuser=0&folder&organizationId)
+.
 
 - TEST_GOOGLE_OAUTH2_CLIENT_ID => Google OAuth2 API client ID
 
@@ -143,7 +158,9 @@ Core Variables
 - PORT => The port where control-tower listens for requests. Defaults to 9000 when not set.
 - NODE_ENV => Environment variable of nodejs. Required.
 - NODE_PATH => Required value. Always set it to 'app/src'.
-- PUBLIC_URL				=> Base Application URL. It must be the public domain of your Control Tower instance, and it's used to compose account links. It you are offering a local OAuth provider it's a required field. This URL also needs to be configured as an acceptable callback on the OAuth provider settings.
+- PUBLIC_URL => Base Application URL. It must be the public domain of your Control Tower instance, and it's used to
+  compose account links. It you are offering a local OAuth provider it's a required field. This URL also needs to be
+  configured as an acceptable callback on the OAuth provider settings.
 
 Redis Cache variables
 
@@ -153,12 +170,12 @@ Redis Cache variables
 Mongo session variables
 
 - COOKIE_DOMAIN => Session domain for cookies. Required field if you activate the sessionMongo plugin.
-- SESSION_KEY	=> Key to cipher the cookies.  Required field if you activate the sessionMongo plugin.
-
+- SESSION_KEY => Key to cipher the cookies. Required field if you activate the sessionMongo plugin.
 
 ### Audit and statistics
 
-Actions going through Control Tower are logged on the `statistics` (sorry about the typo) table, with the following format:
+Actions going through Control Tower are logged on the `statistics` (sorry about the typo) table, with the following
+format:
 
 ```json
 {
@@ -182,7 +199,8 @@ Actions going through Control Tower are logged on the `statistics` (sorry about 
 }
 ```
 
-There's currently no UI to review this data, but MongoDB queries are your friends. Keep in mind that this is a very large table, so expensive operations like sorting on unfiltered will take some time.
+There's currently no UI to review this data, but MongoDB queries are your friends. Keep in mind that this is a very
+large table, so expensive operations like sorting on unfiltered will take some time.
 
 ### Plugins
 
@@ -191,7 +209,6 @@ TODO
 ### Crons
 
 TODO
-
 
 ## Contributing
 

@@ -3,13 +3,13 @@ const { ObjectId } = require('mongoose').Types;
 const DispatcherService = require('services/dispatcher.service');
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const VersionModel = require('models/version.model');
-const appConstants = require('app.constants');
 const JWT = require('jsonwebtoken');
 const { promisify } = require('util');
 const { endpointTest } = require('./test.constants');
 
-const getUUID = () => Math.random().toString(36).substring(7);
+const getUUID = () => Math.random()
+    .toString(36)
+    .substring(7);
 
 const hexToString = (hex) => {
     let str = '';
@@ -52,7 +52,10 @@ const createUserAndToken = async (userData) => {
 
     const token = await createTokenForUser(userForToken);
 
-    return { user, token };
+    return {
+        user,
+        token
+    };
 };
 
 const getUserFromToken = async (token, isString = true) => {
@@ -66,7 +69,8 @@ const createMicroservice = async (microserviceData) => (MicroserviceModel({
     version: 1,
     endpoints: [],
     ...microserviceData
-}).save());
+})
+    .save());
 
 const createEndpoint = async (endpoint) => {
     const endpointModel = await new EndpointModel({ ...endpointTest, ...endpoint }).save();
@@ -96,7 +100,10 @@ const createMicroserviceWithEndpoints = async (microserviceData) => {
 
     await Promise.all(endpoints);
 
-    return { microservice, endpoints };
+    return {
+        microservice,
+        endpoints
+    };
 };
 
 const mockGetUserFromToken = (userProfile, token) => {
@@ -106,8 +113,14 @@ const mockGetUserFromToken = (userProfile, token) => {
 };
 
 const isAdminOnly = async (requester, method, url) => {
-    const { token: managerToken, user: managerUser } = await createUserAndToken({ role: 'MANAGER' });
-    const { token: userToken, user: userUser } = await createUserAndToken({ role: 'USER' });
+    const {
+        token: managerToken,
+        user: managerUser
+    } = await createUserAndToken({ role: 'MANAGER' });
+    const {
+        token: userToken,
+        user: userUser
+    } = await createUserAndToken({ role: 'USER' });
 
     mockGetUserFromToken(managerUser, managerToken);
     mockGetUserFromToken(userUser, userToken);
@@ -117,7 +130,9 @@ const isAdminOnly = async (requester, method, url) => {
 
     const validate = (res) => {
         res.status.should.equal(403);
-        res.body.errors[0].should.have.property('detail').and.equal('Not authorized');
+        res.body.errors[0].should.have.property('detail')
+            .and
+            .equal('Not authorized');
     };
 
     const responses = await Promise.all([request(userToken), request(managerToken)]);
@@ -127,42 +142,71 @@ const isAdminOnly = async (requester, method, url) => {
 const isTokenRequired = async (requester, method, url) => {
     const response = await requester[method](`/api/v1/${url}`);
 
-    response.body.errors[0].should.have.property('detail').and.equal('Not authenticated');
+    response.body.errors[0].should.have.property('detail')
+        .and
+        .equal('Not authenticated');
     response.status.should.equal(401);
 };
 
 const ensureCorrectError = ({ body }, errMessage, expectedStatus) => {
-    body.should.have.property('errors').and.be.an('array');
-    body.errors[0].should.have.property('detail').and.equal(errMessage);
-    body.errors[0].should.have.property('status').and.equal(expectedStatus);
+    body.should.have.property('errors')
+        .and
+        .be
+        .an('array');
+    body.errors[0].should.have.property('detail')
+        .and
+        .equal(errMessage);
+    body.errors[0].should.have.property('status')
+        .and
+        .equal(expectedStatus);
 };
 
 const ensureHasPaginationElements = (response) => {
-    response.body.should.have.property('meta').and.be.an('object');
-    response.body.meta.should.have.property('total-pages').and.be.a('number');
-    response.body.meta.should.have.property('total-items').and.be.a('number');
-    response.body.meta.should.have.property('size').and.equal(10);
+    response.body.should.have.property('meta')
+        .and
+        .be
+        .an('object');
+    response.body.meta.should.have.property('total-pages')
+        .and
+        .be
+        .a('number');
+    response.body.meta.should.have.property('total-items')
+        .and
+        .be
+        .a('number');
+    response.body.meta.should.have.property('size')
+        .and
+        .equal(10);
 
-    response.body.should.have.property('links').and.be.an('object');
-    response.body.links.should.have.property('self').and.be.a('string');
-    response.body.links.should.have.property('first').and.be.a('string');
-    response.body.links.should.have.property('last').and.be.a('string');
-    response.body.links.should.have.property('prev').and.be.a('string');
-    response.body.links.should.have.property('next').and.be.a('string');
+    response.body.should.have.property('links')
+        .and
+        .be
+        .an('object');
+    response.body.links.should.have.property('self')
+        .and
+        .be
+        .a('string');
+    response.body.links.should.have.property('first')
+        .and
+        .be
+        .a('string');
+    response.body.links.should.have.property('last')
+        .and
+        .be
+        .a('string');
+    response.body.links.should.have.property('prev')
+        .and
+        .be
+        .a('string');
+    response.body.links.should.have.property('next')
+        .and
+        .be
+        .a('string');
 };
-
-const updateVersion = () => VersionModel.updateOne({
-    name: appConstants.ENDPOINT_VERSION,
-}, {
-    $set: {
-        lastUpdated: new Date(),
-    }
-});
 
 module.exports = {
     hexToString,
     createUser,
-    updateVersion,
     getUUID,
     ensureCorrectError,
     createEndpoint,

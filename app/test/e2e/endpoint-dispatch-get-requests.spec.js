@@ -1,10 +1,15 @@
 const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 const { endpointTest } = require('./utils/test.constants');
 const {
-    createEndpoint, updateVersion, createUserAndToken
+    createEndpoint,
+
+    createUserAndToken
 } = require('./utils/helpers');
 
 chai.should();
@@ -16,12 +21,15 @@ describe('Dispatch GET requests', () => {
     });
 
     it('GET endpoint returns a 200 HTTP code - No user', async () => {
-        await updateVersion();
+
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             method: 'GET',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{ ...endpointTest.redirect[0], method: 'GET' }]
+            redirect: [{
+                ...endpointTest.redirect[0],
+                method: 'GET'
+            }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
@@ -50,7 +58,6 @@ describe('Dispatch GET requests', () => {
     it('GET endpoint returns a 200 HTTP code - USER user', async () => {
         const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             method: 'GET',
@@ -89,7 +96,6 @@ describe('Dispatch GET requests', () => {
     it('GET endpoint returns a 200 HTTP code - Strip loggedUser', async () => {
         // const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             method: 'GET',
@@ -124,7 +130,8 @@ describe('Dispatch GET requests', () => {
     });
 
     afterEach(async () => {
-        await EndpointModel.deleteMany({}).exec();
+        await EndpointModel.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

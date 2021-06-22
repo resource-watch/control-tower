@@ -4,8 +4,15 @@ const chai = require('chai');
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
 
-const { createUserAndToken, createMicroservice, mockGetUserFromToken } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    createUserAndToken,
+    createMicroservice,
+    mockGetUserFromToken
+} = require('./utils/helpers');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 
 chai.should();
 
@@ -22,8 +29,10 @@ describe('Microservices endpoints - Get all', () => {
     });
 
     beforeEach(async () => {
-        await MicroserviceModel.deleteMany({}).exec();
-        await EndpointModel.deleteMany({}).exec();
+        await MicroserviceModel.deleteMany({})
+            .exec();
+        await EndpointModel.deleteMany({})
+            .exec();
     });
 
     it('Getting a list of microservices without being authenticated should fail', async () => {
@@ -32,7 +41,10 @@ describe('Microservices endpoints - Get all', () => {
     });
 
     it('Getting a list of microservices should return empty if no services are registered', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -41,7 +53,10 @@ describe('Microservices endpoints - Get all', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(200);
-        response.body.should.be.an('array').and.have.lengthOf(0);
+        response.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(0);
     });
 
     it('Getting a list of microservices should return a microservice list (happy case)', async () => {
@@ -81,7 +96,10 @@ describe('Microservices endpoints - Get all', () => {
         await createMicroservice(testMicroserviceOne);
         await createMicroservice(testMicroserviceTwo);
 
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -90,7 +108,10 @@ describe('Microservices endpoints - Get all', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(200);
-        response.body.should.be.an('array').and.have.lengthOf(2);
+        response.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(2);
     });
 
     it('Getting a list of microservices filtered by url should return the microservices that match that url', async () => {
@@ -130,7 +151,10 @@ describe('Microservices endpoints - Get all', () => {
         const microserviceOne = await createMicroservice(testMicroserviceOne);
         await createMicroservice(testMicroserviceTwo);
 
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -140,13 +164,20 @@ describe('Microservices endpoints - Get all', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(200);
-        response.body.should.be.an('array').and.have.lengthOf(1);
-        response.body[0].should.have.property('_id').and.equal(microserviceOne.id);
+        response.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(1);
+        response.body[0].should.have.property('_id')
+            .and
+            .equal(microserviceOne.id);
     });
 
     afterEach(async () => {
-        await MicroserviceModel.deleteMany({}).exec();
-        await EndpointModel.deleteMany({}).exec();
+        await MicroserviceModel.deleteMany({})
+            .exec();
+        await EndpointModel.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

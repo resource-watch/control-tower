@@ -1,12 +1,17 @@
 const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 const {
     endpointTest
 } = require('./utils/test.constants');
 const {
-    createEndpoint, updateVersion, createUserAndToken
+    createEndpoint,
+
+    createUserAndToken
 } = require('./utils/helpers');
 
 chai.should();
@@ -18,7 +23,7 @@ describe('Dispatch PATCH requests', () => {
     });
 
     it('PATCH endpoint returns a 200 HTTP code - No user', async () => {
-        await updateVersion();
+
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
@@ -54,7 +59,6 @@ describe('Dispatch PATCH requests', () => {
     it('PATCH endpoint returns a 200 HTTP code - USER user', async () => {
         const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
@@ -91,7 +95,6 @@ describe('Dispatch PATCH requests', () => {
     it('PATCH endpoint returns a 200 HTTP code - Strip loggedUser', async () => {
         const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
@@ -119,14 +122,18 @@ describe('Dispatch PATCH requests', () => {
         const response = await requester
             .patch('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
-            .send({ foo: 'bar', loggedUser: {} });
+            .send({
+                foo: 'bar',
+                loggedUser: {}
+            });
 
         response.status.should.equal(200);
         response.text.should.equal('ok');
     });
 
     afterEach(async () => {
-        await EndpointModel.deleteMany({}).exec();
+        await EndpointModel.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

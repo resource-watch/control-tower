@@ -6,8 +6,14 @@ const EndpointModel = require('models/endpoint.model');
 
 chai.should();
 
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
-const { createUserAndToken, mockGetUserFromToken } = require('./utils/helpers');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
+const {
+    createUserAndToken,
+    mockGetUserFromToken
+} = require('./utils/helpers');
 
 let requester;
 nock.disableNetConnect();
@@ -26,21 +32,33 @@ describe('Endpoint purge all', () => {
 
         requester = await getTestAgent();
 
-        MicroserviceModel.deleteMany({}).exec();
-        EndpointModel.deleteMany({}).exec();
+        MicroserviceModel.deleteMany({})
+            .exec();
+        EndpointModel.deleteMany({})
+            .exec();
     });
 
     it('Purging endpoints without being logged in should fail', async () => {
         const response = await requester.delete(`/api/v1/endpoint/purge-all`);
 
         response.status.should.equal(401);
-        response.body.should.have.property('errors').and.be.an('array');
-        response.body.errors[0].should.have.property('status').and.equal(401);
-        response.body.errors[0].should.have.property('detail').and.equal('Not authenticated');
+        response.body.should.have.property('errors')
+            .and
+            .be
+            .an('array');
+        response.body.errors[0].should.have.property('status')
+            .and
+            .equal(401);
+        response.body.errors[0].should.have.property('detail')
+            .and
+            .equal('Not authenticated');
     });
 
     it('Purging endpoints as USER should fail', async () => {
-        const { token, user } = await createUserAndToken({ role: 'USER' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'USER' });
 
         mockGetUserFromToken(user, token);
 
@@ -48,13 +66,21 @@ describe('Endpoint purge all', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(403);
-        response.body.should.have.property('errors').and.be.an('array');
+        response.body.should.have.property('errors')
+            .and
+            .be
+            .an('array');
         response.body.errors[0].status.should.equal(403);
-        response.body.errors[0].should.have.property('detail').and.equal(`Not authorized`);
+        response.body.errors[0].should.have.property('detail')
+            .and
+            .equal(`Not authorized`);
     });
 
     it('Purging endpoints as MANAGER should fail', async () => {
-        const { token, user } = await createUserAndToken({ role: 'MANAGER' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'MANAGER' });
 
         mockGetUserFromToken(user, token);
 
@@ -62,13 +88,21 @@ describe('Endpoint purge all', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(403);
-        response.body.should.have.property('errors').and.be.an('array');
+        response.body.should.have.property('errors')
+            .and
+            .be
+            .an('array');
         response.body.errors[0].status.should.equal(403);
-        response.body.errors[0].should.have.property('detail').and.equal(`Not authorized`);
+        response.body.errors[0].should.have.property('detail')
+            .and
+            .equal(`Not authorized`);
     });
 
     it('Purging endpoints as ADMIN should succeed (happy case)', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -83,8 +117,10 @@ describe('Endpoint purge all', () => {
     });
 
     afterEach(async () => {
-        await EndpointModel.deleteMany({}).exec();
-        await MicroserviceModel.deleteMany({}).exec();
+        await EndpointModel.deleteMany({})
+            .exec();
+        await MicroserviceModel.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

@@ -52,7 +52,8 @@ class DispatcherRouter {
         if (ctx.state) {
             if (ctx.state.user) {
                 return ctx.state.user;
-            } if (ctx.state.microservice) {
+            }
+            if (ctx.state.microservice) {
                 return ctx.state.microservice;
             }
         }
@@ -97,7 +98,8 @@ class DispatcherRouter {
                     ctx.response.status = response.statusCode;
                     ctx.set(getHeadersFromResponse(response));
                 });
-                ctx.body = req.on('error', ctx.onerror.bind(ctx)).pipe(passThrough());
+                ctx.body = req.on('error', ctx.onerror.bind(ctx))
+                    .pipe(passThrough());
             } else {
                 const result = await requestPromise(configRequest);
                 // set headers

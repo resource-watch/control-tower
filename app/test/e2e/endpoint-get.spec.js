@@ -5,9 +5,15 @@ const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
 
 const {
-    createUserAndToken, createMicroservice, createEndpoint, mockGetUserFromToken
+    createUserAndToken,
+    createMicroservice,
+    createEndpoint,
+    mockGetUserFromToken
 } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 
 chai.should();
 
@@ -24,12 +30,17 @@ describe('Get endpoints', () => {
     });
 
     beforeEach(async () => {
-        await MicroserviceModel.deleteMany({}).exec();
-        await EndpointModel.deleteMany({}).exec();
+        await MicroserviceModel.deleteMany({})
+            .exec();
+        await EndpointModel.deleteMany({})
+            .exec();
     });
 
     it('Getting endpoints for registered microservices should return a list of available endpoints (happy case)', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -120,11 +131,17 @@ describe('Get endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(200);
-        response.body.should.be.an('array').and.have.lengthOf(3);
+        response.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(3);
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - binary', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
         mockGetUserFromToken(user, token);
@@ -190,8 +207,14 @@ describe('Get endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         responseOne.status.should.equal(200);
-        responseOne.body.should.be.an('array').and.have.lengthOf(1);
-        responseOne.body.map((element) => element._id).should.have.members([endpointTwo._id.toString()]);
+        responseOne.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(1);
+        responseOne.body.map((element) => element._id)
+            .should
+            .have
+            .members([endpointTwo._id.toString()]);
 
         const responseTwo = await requester
             .get(`/api/v1/endpoint`)
@@ -199,12 +222,21 @@ describe('Get endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         responseTwo.status.should.equal(200);
-        responseTwo.body.should.be.an('array').and.have.lengthOf(2);
-        responseTwo.body.map((element) => element._id).should.have.members([endpointOne._id.toString(), endpointThree._id.toString()]);
+        responseTwo.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(2);
+        responseTwo.body.map((element) => element._id)
+            .should
+            .have
+            .members([endpointOne._id.toString(), endpointThree._id.toString()]);
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - path', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
         mockGetUserFromToken(user, token);
@@ -270,8 +302,14 @@ describe('Get endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         responseOne.status.should.equal(200);
-        responseOne.body.should.be.an('array').and.have.lengthOf(1);
-        responseOne.body.map((element) => element._id).should.have.members([endpointOne._id.toString()]);
+        responseOne.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(1);
+        responseOne.body.map((element) => element._id)
+            .should
+            .have
+            .members([endpointOne._id.toString()]);
 
         const responseTwo = await requester
             .get(`/api/v1/endpoint`)
@@ -279,12 +317,21 @@ describe('Get endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         responseTwo.status.should.equal(200);
-        responseTwo.body.should.be.an('array').and.have.lengthOf(1);
-        responseTwo.body.map((element) => element._id).should.have.members([endpointThree._id.toString()]);
+        responseTwo.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(1);
+        responseTwo.body.map((element) => element._id)
+            .should
+            .have
+            .members([endpointThree._id.toString()]);
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - method', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
         mockGetUserFromToken(user, token);
@@ -350,8 +397,14 @@ describe('Get endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         responseOne.status.should.equal(200);
-        responseOne.body.should.be.an('array').and.have.lengthOf(1);
-        responseOne.body.map((element) => element._id).should.have.members([endpointTwo._id.toString()]);
+        responseOne.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(1);
+        responseOne.body.map((element) => element._id)
+            .should
+            .have
+            .members([endpointTwo._id.toString()]);
 
         const responseTwo = await requester
             .get(`/api/v1/endpoint`)
@@ -359,12 +412,21 @@ describe('Get endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         responseTwo.status.should.equal(200);
-        responseTwo.body.should.be.an('array').and.have.lengthOf(2);
-        responseTwo.body.map((element) => element._id).should.have.members([endpointOne._id.toString(), endpointThree._id.toString()]);
+        responseTwo.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(2);
+        responseTwo.body.map((element) => element._id)
+            .should
+            .have
+            .members([endpointOne._id.toString(), endpointThree._id.toString()]);
     });
 
     it('Getting endpoints with filter should return a list of endpoints that match the filter - multiple filters use AND logic', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
         mockGetUserFromToken(user, token);
@@ -426,26 +488,46 @@ describe('Get endpoints', () => {
 
         const responseOne = await requester
             .get(`/api/v1/endpoint`)
-            .query({ method: 'POST', path: '/v1/testTwo' })
+            .query({
+                method: 'POST',
+                path: '/v1/testTwo'
+            })
             .set('Authorization', `Bearer ${token}`);
 
         responseOne.status.should.equal(200);
-        responseOne.body.should.be.an('array').and.have.lengthOf(1);
-        responseOne.body.map((element) => element._id).should.have.members([endpointTwo._id.toString()]);
+        responseOne.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(1);
+        responseOne.body.map((element) => element._id)
+            .should
+            .have
+            .members([endpointTwo._id.toString()]);
 
         const responseTwo = await requester
             .get(`/api/v1/endpoint`)
-            .query({ method: 'GET', path: '/v1/testThree' })
+            .query({
+                method: 'GET',
+                path: '/v1/testThree'
+            })
             .set('Authorization', `Bearer ${token}`);
 
         responseTwo.status.should.equal(200);
-        responseTwo.body.should.be.an('array').and.have.lengthOf(1);
-        responseTwo.body.map((element) => element._id).should.have.members([endpointThree._id.toString()]);
+        responseTwo.body.should.be.an('array')
+            .and
+            .have
+            .lengthOf(1);
+        responseTwo.body.map((element) => element._id)
+            .should
+            .have
+            .members([endpointThree._id.toString()]);
     });
 
     afterEach(async () => {
-        await MicroserviceModel.deleteMany({}).exec();
-        await EndpointModel.deleteMany({}).exec();
+        await MicroserviceModel.deleteMany({})
+            .exec();
+        await EndpointModel.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

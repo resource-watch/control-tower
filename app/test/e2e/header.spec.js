@@ -3,7 +3,10 @@ const chai = require('chai');
 const Microservice = require('models/microservice.model');
 const Endpoint = require('models/endpoint.model');
 const { TOKENS } = require('./utils/test.constants');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 
 chai.should();
 
@@ -33,8 +36,10 @@ describe('Headers', () => {
     });
 
     after(() => {
-        Microservice.deleteMany({}).exec();
-        Endpoint.deleteMany({}).exec();
+        Microservice.deleteMany({})
+            .exec();
+        Endpoint.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

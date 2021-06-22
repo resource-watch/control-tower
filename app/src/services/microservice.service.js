@@ -1,8 +1,6 @@
 const logger = require('logger');
-const appConstants = require('app.constants');
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const VersionModel = require('models/version.model');
 const crypto = require('crypto');
 const pathToRegexp = require('path-to-regexp');
 
@@ -17,24 +15,24 @@ class Microservice {
      * @param version
      * @returns {Promise<void>}
      */
-    static async saveEndpoint(endpoint, microservice, version) {
-        logger.info(`[MicroserviceService] Saving endpoint ${endpoint.path} with version ${version}`);
+    static async saveEndpoint(endpoint, microservice) {
+        logger.info(`[MicroserviceService] Saving endpoint ${endpoint.path}`);
         logger.debug(`[MicroserviceService] Searching if path ${endpoint.path} exists in endpoints`);
         endpoint.redirect.url = microservice.url;
         // searching
         const oldEndpoint = await EndpointModel.findOne({
             path: endpoint.path,
             method: endpoint.method,
-            version
-        }).exec();
+        })
+            .exec();
         if (oldEndpoint) {
             logger.debug(`[MicroserviceService] Path ${endpoint.path} exists. Checking if redirect with url ${endpoint.redirect.url} exists.`);
             const oldRedirect = await EndpointModel.findOne({
                 path: endpoint.path,
                 method: endpoint.method,
                 'redirect.url': endpoint.redirect.url,
-                version,
-            }).exec();
+            })
+                .exec();
             if (!oldRedirect) {
                 logger.debug(`[MicroserviceService] Redirect doesn't exist`);
                 endpoint.redirect.microservice = microservice.name;
@@ -71,7 +69,6 @@ class Microservice {
                 pathKeys,
                 binary: endpoint.binary,
                 redirect: [endpoint.redirect],
-                version
             }).save();
         }
     }
@@ -82,14 +79,13 @@ class Microservice {
      *
      * @param microservice
      * @param info
-     * @param version
      * @returns {Promise<void>}
      */
-    static async saveEndpointsForMicroservice(microservice, endpoints, version) {
+    static async saveEndpointsForMicroservice(microservice, endpoints) {
         logger.info(`[MicroserviceService - saveEndpointsForMicroservice] Saving endpoints for microservice ${microservice.name}`);
         if (endpoints && endpoints.length > 0) {
             for (let i = 0, { length } = endpoints; i < length; i++) {
-                await Microservice.saveEndpoint(endpoints[i], microservice, version);
+                await Microservice.saveEndpoint(endpoints[i], microservice);
             }
         }
     }
@@ -105,18 +101,17 @@ class Microservice {
      * Returns a boolean describing whether or not it was able to successfully contact the microservice at the announces URL.
      *
      * @param microservice
-     * @param version
      * @returns {Promise<boolean>}
      */
-    static async getMicroserviceInfo(microservice, version, endpoints) {
-        logger.info(`[MicroserviceService - getMicroserviceInfo] Obtaining info of the microservice with name ${microservice.name} and version ${version}`);
+    static async getMicroserviceInfo(microservice, endpoints) {
+        logger.info(`[MicroserviceService - getMicroserviceInfo] Obtaining info of the microservice with name ${microservice.name}`);
 
         microservice.endpoints = endpoints;
         microservice.updatedAt = Date.now();
 
         logger.info(`[MicroserviceService - getMicroserviceInfo] Microservice info ready for microservice ${microservice.name}, saving...`);
         await microservice.save();
-        await Microservice.saveEndpointsForMicroservice(microservice, endpoints, version);
+        await Microservice.saveEndpointsForMicroservice(microservice, endpoints);
         return true;
     }
 
@@ -135,17 +130,10 @@ class Microservice {
      */
     static async register(name, url, endpoints) {
         try {
-            const versionFound = await VersionModel.findOne({
-                name: appConstants.ENDPOINT_VERSION,
-            });
-            const { version } = versionFound;
-            const existingVersion = versionFound;
-
             logger.info(`[MicroserviceRouter] Registering new microservice with name ${name} and url ${url}`);
             logger.debug('[MicroserviceRouter] Search if microservice already exist');
             const existingMicroservice = await MicroserviceModel.findOne({
                 url,
-                version,
             });
             let micro = null;
             if (existingMicroservice) {
@@ -166,21 +154,17 @@ class Microservice {
                     micro = await new MicroserviceModel({
                         name,
                         url,
-                        token: crypto.randomBytes(20).toString('hex'),
-                        version,
+                        token: crypto.randomBytes(20)
+                            .toString('hex'),
                     }).save();
 
                 }
                 logger.debug(`[MicroserviceRouter] Creating microservice`);
 
-                const correct = await Microservice.getMicroserviceInfo(micro, version, endpoints);
+                const correct = await Microservice.getMicroserviceInfo(micro, endpoints);
                 if (correct) {
                     logger.info(`[MicroserviceRouter] Microservice ${micro.name} was reached successfully, setting status to 'active'`);
                     await micro.save();
-                    if (existingVersion) {
-                        existingVersion.lastUpdated = new Date();
-                        await existingVersion.save();
-                    }
                     logger.info(`[MicroserviceRouter] Microservice ${micro.name} activated successfully.`);
                 } else {
                     logger.warn(`[MicroserviceRouter] Microservice ${micro.name} could not be reached on announced URL.`);
@@ -213,7 +197,8 @@ class Microservice {
             const endpoint = await EndpointModel.findOne({
                 method: microservice.endpoints[i].method,
                 path: microservice.endpoints[i].path
-            }).exec();
+            })
+                .exec();
 
             if (endpoint) {
                 const redirects = endpoint.redirect.filter((redirect) => redirect.url !== microservice.url);

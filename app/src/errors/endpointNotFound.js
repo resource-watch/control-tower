@@ -7,4 +7,5 @@ class EndpointNotFound extends Error {
     }
 
 }
+
 module.exports = EndpointNotFound;

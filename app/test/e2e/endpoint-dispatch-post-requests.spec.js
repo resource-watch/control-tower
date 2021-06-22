@@ -1,12 +1,17 @@
 const chai = require('chai');
 const nock = require('nock');
 const EndpointModel = require('models/endpoint.model');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 const {
     endpointTest
 } = require('./utils/test.constants');
 const {
-    createEndpoint, updateVersion, createUserAndToken
+    createEndpoint,
+
+    createUserAndToken
 } = require('./utils/helpers');
 
 chai.should();
@@ -21,15 +26,19 @@ describe('Dispatch POST requests', () => {
     });
 
     it('POST endpoint returns a 200 HTTP code - No user', async () => {
-        await updateVersion();
+
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0] }]
+            pathRegex: new RegExp('^/api/v1/dataset$'),
+            redirect: [{ ...endpointTest.redirect[0] }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
             redirect: [{
-                microservice: 'test1', method: 'GET', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+                microservice: 'test1',
+                method: 'GET',
+                path: '/api/v1/test1/test',
+                url: 'http://mymachine:6001'
             }],
         });
 
@@ -50,15 +59,18 @@ describe('Dispatch POST requests', () => {
     it('POST endpoint returns a 200 HTTP code - USER user', async () => {
         const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
-            pathRegex: new RegExp('^/api/v1/dataset$'), redirect: [{ ...endpointTest.redirect[0] }]
+            pathRegex: new RegExp('^/api/v1/dataset$'),
+            redirect: [{ ...endpointTest.redirect[0] }]
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
             redirect: [{
-                microservice: 'test1', method: 'GET', path: '/api/v1/test1/test', url: 'http://mymachine:6001'
+                microservice: 'test1',
+                method: 'GET',
+                path: '/api/v1/test1/test',
+                url: 'http://mymachine:6001'
             }],
         });
 
@@ -80,7 +92,6 @@ describe('Dispatch POST requests', () => {
     it('PATCH endpoint returns a 200 HTTP code - Strip loggedUser', async () => {
         const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
@@ -108,7 +119,10 @@ describe('Dispatch POST requests', () => {
         const response = await requester
             .patch('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
-            .send({ foo: 'bar', loggedUser: {} });
+            .send({
+                foo: 'bar',
+                loggedUser: {}
+            });
 
         response.status.should.equal(200);
         response.text.should.equal('ok');
@@ -117,7 +131,6 @@ describe('Dispatch POST requests', () => {
     it('POST endpoint returns a 200 HTTP code - Strip loggedUser', async () => {
         const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
@@ -145,7 +158,10 @@ describe('Dispatch POST requests', () => {
         const response = await requester
             .post('/api/v1/dataset')
             .set('Authorization', `Bearer ${token}`)
-            .send({ foo: 'bar', loggedUser: {} });
+            .send({
+                foo: 'bar',
+                loggedUser: {}
+            });
 
         response.status.should.equal(200);
         response.text.should.equal('ok');

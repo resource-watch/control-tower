@@ -3,9 +3,14 @@ const Microservice = require('models/microservice.model');
 const Endpoint = require('models/endpoint.model');
 const { endpointTest } = require('./utils/test.constants');
 const {
-    isTokenRequired, createUserAndToken, mockGetUserFromToken
+    isTokenRequired,
+    createUserAndToken,
+    mockGetUserFromToken
 } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 
 let requester;
 
@@ -19,8 +24,10 @@ describe('GET Endpoints', () => {
     });
 
     beforeEach(async () => {
-        await Endpoint.deleteMany({}).exec();
-        await Microservice.deleteMany({}).exec();
+        await Endpoint.deleteMany({})
+            .exec();
+        await Microservice.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);
@@ -32,7 +39,10 @@ describe('GET Endpoints', () => {
     });
 
     it('Getting a list of endpoints without creating microservice should return empty array', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -41,11 +51,16 @@ describe('GET Endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(200);
-        response.body.should.be.an('array').and.lengthOf(0);
+        response.body.should.be.an('array')
+            .and
+            .lengthOf(0);
     });
 
     it('Getting a list of endpoints should return those endpoints (happy case)', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -56,13 +71,22 @@ describe('GET Endpoints', () => {
             .set('Authorization', `Bearer ${token}`);
 
         resEndpoints.status.should.equal(200);
-        resEndpoints.body.should.be.an('array').and.length.above(0);
+        resEndpoints.body.should.be.an('array')
+            .and
+            .length
+            .above(0);
 
         delete resEndpoints.body[0]._id;
         delete resEndpoints.body[0].redirect[0]._id;
 
-        resEndpoints.body[0].should.have.property('createdAt').and.be.a('string');
-        resEndpoints.body[0].should.have.property('updatedAt').and.be.a('string');
+        resEndpoints.body[0].should.have.property('createdAt')
+            .and
+            .be
+            .a('string');
+        resEndpoints.body[0].should.have.property('updatedAt')
+            .and
+            .be
+            .a('string');
 
         delete resEndpoints.body[0].createdAt;
         delete resEndpoints.body[0].updatedAt;
@@ -88,8 +112,10 @@ describe('GET Endpoints', () => {
     });
 
     afterEach(() => {
-        Microservice.deleteMany({}).exec();
-        Endpoint.deleteMany({}).exec();
+        Microservice.deleteMany({})
+            .exec();
+        Endpoint.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

@@ -10,7 +10,7 @@ const {
 } = require('./utils/test.constants');
 const {
     createEndpoint,
-    updateVersion,
+
     createUserAndToken
 } = require('./utils/helpers');
 
@@ -29,7 +29,6 @@ describe('Dispatch DELETE requests', () => {
     });
 
     it('DELETE endpoint returns a 200 HTTP code - No user', async () => {
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             method: 'DELETE',
@@ -64,7 +63,6 @@ describe('Dispatch DELETE requests', () => {
     it('DELETE endpoint returns a 200 HTTP code - USER user', async () => {
         const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             method: 'DELETE',
@@ -104,7 +102,6 @@ describe('Dispatch DELETE requests', () => {
     it('DELETE endpoint returns a 200 HTTP code - Strip loggedUser', async () => {
         // const { token } = await createUserAndToken({ role: 'USER' });
 
-        await updateVersion();
         // eslint-disable-next-line no-useless-escape
         await createEndpoint({
             method: 'DELETE',

@@ -90,11 +90,15 @@ async function init() {
             app.use(koaSimpleHealthCheck());
 
             loader.loadRoutes(app);
-            app.use(require('routes/dispatcher.js').middleware()); // eslint-disable-line global-require
+            app.use(require('routes/dispatcher.js')
+                .middleware()); // eslint-disable-line global-require
 
             const server = app.listen(process.env.PORT);
             logger.info('Server started in ', process.env.PORT);
-            resolve({ app, server });
+            resolve({
+                app,
+                server
+            });
         }
 
         logger.info(`Connecting to MongoDB URL ${mongoUri}`);

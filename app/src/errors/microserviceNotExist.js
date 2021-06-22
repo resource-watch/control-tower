@@ -7,4 +7,5 @@ class MicroserviceNotExist extends Error {
     }
 
 }
+
 module.exports = MicroserviceNotExist;

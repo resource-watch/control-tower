@@ -5,8 +5,15 @@ const mongoose = require('mongoose');
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
 
-const { createUserAndToken, createMicroservice, mockGetUserFromToken } = require('./utils/helpers');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    createUserAndToken,
+    createMicroservice,
+    mockGetUserFromToken
+} = require('./utils/helpers');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 
 chai.should();
 
@@ -23,8 +30,10 @@ describe('Microservices endpoints - Get by id', () => {
     });
 
     beforeEach(async () => {
-        await MicroserviceModel.deleteMany({}).exec();
-        await EndpointModel.deleteMany({}).exec();
+        await MicroserviceModel.deleteMany({})
+            .exec();
+        await EndpointModel.deleteMany({})
+            .exec();
     });
 
     it('Getting a microservice by id without being authenticated should fail', async () => {
@@ -33,7 +42,10 @@ describe('Microservices endpoints - Get by id', () => {
     });
 
     it('Getting a microservice by an invalid id should return a 404', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -42,12 +54,22 @@ describe('Microservices endpoints - Get by id', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(404);
-        response.body.should.have.property('errors').and.be.an('array').and.length(1);
-        response.body.errors[0].should.have.property('detail').and.equal('Could not find a microservice with id abcd');
+        response.body.should.have.property('errors')
+            .and
+            .be
+            .an('array')
+            .and
+            .length(1);
+        response.body.errors[0].should.have.property('detail')
+            .and
+            .equal('Could not find a microservice with id abcd');
     });
 
     it('Getting a microservice by id should return 404 if the microservice doesn\'t exist', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -57,8 +79,15 @@ describe('Microservices endpoints - Get by id', () => {
             .set('Authorization', `Bearer ${token}`);
 
         response.status.should.equal(404);
-        response.body.should.have.property('errors').and.be.an('array').and.length(1);
-        response.body.errors[0].should.have.property('detail').and.equal(`Could not find a microservice with id ${id}`);
+        response.body.should.have.property('errors')
+            .and
+            .be
+            .an('array')
+            .and
+            .length(1);
+        response.body.errors[0].should.have.property('detail')
+            .and
+            .equal(`Could not find a microservice with id ${id}`);
     });
 
     it('Getting a microservice by id should return a microservice list (happy case)', async () => {
@@ -81,7 +110,10 @@ describe('Microservices endpoints - Get by id', () => {
 
         const microservice = await createMicroservice(testMicroserviceOne);
 
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
+        const {
+            token,
+            user
+        } = await createUserAndToken({ role: 'ADMIN' });
 
         mockGetUserFromToken(user, token);
 
@@ -91,12 +123,19 @@ describe('Microservices endpoints - Get by id', () => {
 
         response.status.should.equal(200);
         response.body.should.have.property('data');
-        response.body.data.should.be.an('object').and.have.property('id').and.equal(microservice.id);
+        response.body.data.should.be.an('object')
+            .and
+            .have
+            .property('id')
+            .and
+            .equal(microservice.id);
     });
 
     afterEach(async () => {
-        await MicroserviceModel.deleteMany({}).exec();
-        await EndpointModel.deleteMany({}).exec();
+        await MicroserviceModel.deleteMany({})
+            .exec();
+        await EndpointModel.deleteMany({})
+            .exec();
 
         if (!nock.isDone()) {
             throw new Error(`Not all nock interceptors were used: ${nock.pendingMocks()}`);

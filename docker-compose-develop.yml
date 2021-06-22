@@ -12,7 +12,7 @@ services:
       - mongo
       - redis
     volumes:
-#      - ./app:/opt/control-tower/app
+      #      - ./app:/opt/control-tower/app
       - /var/run/docker.sock:/var/run/docker.sock
 
   # varnish:

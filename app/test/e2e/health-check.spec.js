@@ -1,5 +1,8 @@
 const nock = require('nock');
-const { getTestAgent, closeTestAgent } = require('./utils/test-server');
+const {
+    getTestAgent,
+    closeTestAgent
+} = require('./utils/test-server');
 
 let requester;
 
@@ -17,7 +20,10 @@ describe('GET healthcheck', () => {
             .get('/healthcheck');
 
         response.status.should.equal(200);
-        response.body.should.be.an('object').and.have.property('uptime');
+        response.body.should.be.an('object')
+            .and
+            .have
+            .property('uptime');
     });
 
     afterEach(() => {

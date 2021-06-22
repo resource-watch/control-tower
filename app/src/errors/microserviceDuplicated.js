@@ -7,4 +7,5 @@ class MicroserviceDuplicated extends Error {
     }
 
 }
+
 module.exports = MicroserviceDuplicated;
