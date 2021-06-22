@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "NODE_PATH=app/src DEBUG=oauth-plugin,statistics-plugin,redis-cache-plugin grunt --gruntfile app/Gruntfile.js | bunyan",
     "run": "NODE_PATH=app/src DEBUG=oauth-plugin,statistics-plugin,redis-cache-plugin node app/index.js | bunyan",
-    "cron": "NODE_PATH=app/src DEBUG=oauth-plugin,statistics-plugin,redis-cache-plugin node app/index-crons.js | bunyan",
     "test": "NODE_PATH=app/src node $NODE_DEBUG_OPTION ./node_modules/.bin/grunt --gruntfile app/Gruntfile.js e2eTest",
     "coverage": "NODE_PATH=app/src node $NODE_DEBUG_OPTION ./node_modules/.bin/grunt --gruntfile app/Gruntfile.js nyc",
     "start": "NODE_PATH=app/src node $NODE_DEBUG_OPTION app/index"
@@ -50,7 +49,6 @@
     "axios": "^0.21.1",
     "bunyan": "^1.8.1",
     "config": "^1.21.0",
-    "cron": "^1.1.0",
     "dotenv": "^2.0.0",
     "fastly-purge": "1.0.1",
     "geoip-lite": "^1.1.8",

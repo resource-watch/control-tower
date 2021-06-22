@@ -1,7 +1,4 @@
-const Plugin = require('models/plugin.model');
-const mongoose = require('mongoose');
 const nock = require('nock');
-const config = require('config');
 const { ObjectId } = require('mongoose').Types;
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
@@ -9,11 +6,8 @@ const VersionModel = require('models/version.model');
 const appConstants = require('app.constants');
 const JWT = require('jsonwebtoken');
 const { promisify } = require('util');
-const PluginModel = require('models/plugin.model');
 const { endpointTest } = require('./test.constants');
-const mongooseOptions = require('../../../../config/mongoose');
 
-const mongoUri = process.env.CT_MONGO_URI || `mongodb://${config.get('mongodb.host')}:${config.get('mongodb.port')}/${config.get('mongodb.database')}`;
 const getUUID = () => Math.random().toString(36).substring(7);
 
 const hexToString = (hex) => {
@@ -64,16 +58,6 @@ const getUserFromToken = async (token, isString = true) => {
     const userData = await promisify(JWT.verify)(token, process.env.JWT_SECRET);
     return isString ? JSON.stringify(userData) : userData;
 };
-
-const createPlugin = async (pluginData) => (PluginModel({
-    name: 'test plugin name',
-    description: 'test plugin description',
-    mainFile: 'test plugin main file',
-    cronFile: 'test plugin cron file',
-    active: false,
-    config: {},
-    ...pluginData
-}).save());
 
 const createMicroservice = async (microserviceData) => (MicroserviceModel({
     name: 'test microservice name',
@@ -171,38 +155,14 @@ const updateVersion = () => VersionModel.updateOne({
     }
 });
 
-async function setPluginSetting(pluginName, settingKey, settingValue) {
-    return new Promise((resolve, reject) => {
-        async function onDbReady(err) {
-            if (err) {
-                reject(new Error(err));
-            }
-
-            const plugin = await Plugin.findOne({ name: pluginName }).exec();
-            if (!plugin) {
-                reject(new Error(`Plugin '${pluginName}' could not be found.`));
-            }
-
-            const newConfig = {};
-            newConfig[settingKey] = settingValue;
-
-            return Plugin.updateOne({ name: pluginName }, { $set: newConfig }).exec().then(resolve);
-        }
-
-        mongoose.connect(mongoUri, mongooseOptions, onDbReady);
-    });
-}
-
 module.exports = {
     hexToString,
     createUser,
-    setPluginSetting,
     updateVersion,
     getUUID,
     ensureCorrectError,
     createEndpoint,
     createUserAndToken,
-    createPlugin,
     createMicroservice,
     createMicroserviceWithEndpoints,
     getUserFromToken,

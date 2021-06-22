@@ -10,10 +10,8 @@ const convert = require('koa-convert');
 const sleep = require('sleep');
 const cors = require('@koa/cors');
 const koaSimpleHealthCheck = require('koa-simple-healthcheck');
+const ErrorSerializer = require('serializers/errorSerializer');
 const mongooseOptions = require('../../config/mongoose');
-
-// const nock = require('nock');
-// nock.recorder.rec();
 
 const mongoUri = process.env.CT_MONGO_URI || `mongodb://${config.get('mongodb.host')}:${config.get('mongodb.port')}/${config.get('mongodb.database')}`;
 
@@ -53,19 +51,41 @@ async function init() {
             }
 
             logger.info('Executing migration...');
-            try {
-                await require('migrations/init')(); // eslint-disable-line global-require
-            } catch (Err) {
-                logger.error(Err);
-            }
 
             const app = new Koa();
+
+            // catch errors and send in jsonapi standard. Always return vnd.api+json
+            app.use(async (ctx, next) => {
+                try {
+                    await next();
+                } catch (inErr) {
+                    let error = inErr;
+                    try {
+                        error = JSON.parse(inErr);
+                    } catch (e) {
+                        logger.debug('Could not parse error message - is it JSON?: ', inErr);
+                        error = inErr;
+                    }
+                    ctx.status = error.status || ctx.status || 500;
+                    if (ctx.status >= 500) {
+                        logger.error(error);
+                    } else {
+                        logger.info(error);
+                    }
+
+                    ctx.body = ErrorSerializer.serializeError(ctx.status, error.message);
+                    if (process.env.NODE_ENV === 'prod' && ctx.status === 500) {
+                        ctx.body = 'Unexpected error';
+                    }
+                    ctx.response.type = 'application/vnd.api+json';
+                }
+            });
+
             app.use(cors({
                 credentials: true
             }));
 
             app.use(convert(koaBodyMiddleware));
-            await loader.loadPlugins(app);
             app.use(koaLogger());
             app.use(koaSimpleHealthCheck());
 

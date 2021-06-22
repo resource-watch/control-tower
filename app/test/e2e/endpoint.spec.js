@@ -3,7 +3,7 @@ const Microservice = require('models/microservice.model');
 const Endpoint = require('models/endpoint.model');
 const { endpointTest } = require('./utils/test.constants');
 const {
-    isTokenRequired, isAdminOnly, createUserAndToken, mockGetUserFromToken
+    isTokenRequired, createUserAndToken, mockGetUserFromToken
 } = require('./utils/helpers');
 const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
@@ -30,8 +30,6 @@ describe('GET Endpoints', () => {
     it('Getting a list of endpoints without being authenticated should fail with a 401 error', () => {
         isTokenRequired(requester, 'get', 'plugin');
     });
-
-    it('Getting a list of endpoints authenticated without ADMIN role should fail with a 403 error', async () => isAdminOnly(requester, 'get', 'plugin'));
 
     it('Getting a list of endpoints without creating microservice should return empty array', async () => {
         const { token, user } = await createUserAndToken({ role: 'ADMIN' });

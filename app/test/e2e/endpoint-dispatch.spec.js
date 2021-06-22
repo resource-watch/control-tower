@@ -3,7 +3,7 @@ const nock = require('nock');
 const Endpoint = require('models/endpoint.model');
 const fs = require('fs');
 const { getTestAgent } = require('./utils/test-server');
-const { testAppKey, endpointTest } = require('./utils/test.constants');
+const { endpointTest } = require('./utils/test.constants');
 const {
     createEndpoint, ensureCorrectError, updateVersion, hexToString, createUserAndToken
 } = require('./utils/helpers');
@@ -46,15 +46,6 @@ describe('Endpoint dispatch tests', () => {
         await createEndpoint({ applicationRequired: true });
         const result = await microservice.post('/api/v1/dataset');
         ensureCorrectError(result, 'Required app_key', 401);
-    });
-
-    it('Created endpoint with applicationRequired and send app_key should return a 200 HTTP code', async () => {
-        await updateVersion();
-        await createEndpoint({ applicationRequired: true });
-        createMockEndpoint('/api/v1/dataset');
-        const result = await microservice.post('/api/v1/dataset').query({ app_key: testAppKey });
-        result.status.should.equal(200);
-        result.text.should.equal('ok');
     });
 
     it('External request\'s query params are passed along to the internal call on POST requests', async () => {

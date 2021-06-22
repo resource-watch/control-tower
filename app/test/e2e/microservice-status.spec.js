@@ -3,7 +3,7 @@ const nock = require('nock');
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
 const { microserviceTest } = require('./utils/test.constants');
-const { isTokenRequired, isAdminOnly, createUserAndToken } = require('./utils/helpers');
+const { createUserAndToken } = require('./utils/helpers');
 const { getTestAgent, closeTestAgent } = require('./utils/test-server');
 
 let requester;
@@ -34,10 +34,6 @@ describe('Microservice status calls', () => {
 
         requester = await getTestAgent();
     });
-
-    it('Getting a list of statuses without being authenticated should fail with a 401 error', async () => isTokenRequired(requester, 'get', 'plugin'));
-
-    it('Getting a list of statuses authenticated without ADMIN role should fail with a 403 error', async () => isAdminOnly(requester, 'get', 'plugin'));
 
     it('Getting a list of statuses with created microservice should return empty array', async () => {
         const { token } = await createUserAndToken({ role: 'ADMIN' });
