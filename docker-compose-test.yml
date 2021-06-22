@@ -10,7 +10,6 @@ services:
       SESSION_KEY: test
       PORT: 9000
       LOGGER_TYPE: console
-      DEBUG: redis-cache-plugin
       NODE_PATH: app/src
       JWT_SECRET: mysecret
       COOKIE_DOMAIN: mymachine

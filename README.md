@@ -1,6 +1,8 @@
-# Control Tower API Gateway - Resource Watch
+# Control Tower API Gateway
 
-[![Build Status](https://travis-ci.com/resource-watch/control-tower.svg?branch=dev)](https://travis-ci.com/resource-watch/control-tower)
+A development-only API Gateway tool 
+
+[![Build Status](https://travis-ci.com/resource-watch/control-tower.svg?branch=main)](https://travis-ci.com/resource-watch/control-tower)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/6998e7a532fb2d138ca3/test_coverage)](https://codeclimate.com/github/resource-watch/control-tower/test_coverage)
 
 ## Dependencies
@@ -13,7 +15,6 @@ Native execution requires:
 - [Node.js](https://nodejs.org/en/)
 - [Yarn](https://yarnpkg.com/)
 - [MongoDB](https://www.mongodb.com/)
-- [Redis](https://redis.io/)
 
 Execution using Docker requires:
 
@@ -92,27 +93,6 @@ Follow the instruction above for setting up the runtime environment for Docker e
 ./controlTower.sh test
 ```
 
-### OAuth tests
-
-Some tests require real OAuth credentials to be set as environment variables, as it's currently not possible to mock all
-requests using the mocking library this project employs. The test code is built to detect the presence of these
-configuration values, and bypass these tests should the variables below not be present.
-
-Additionally, as these tests cause external services to use the callback URLs, the `PUBLIC_URL` env variable needs to be
-set to `http://localhost:9000`, otherwise the external services will refuse to callback, and the tests will fail.
-
-#### Google OAuth tests
-
-You can get the values to those variables at
-the [Google APIs page](https://console.developers.google.com/apis/credentials?project=resource-watch&authuser=0&folder&organizationId)
-.
-
-- TEST_GOOGLE_OAUTH2_CLIENT_ID => Google OAuth2 API client ID
-
-#### Facebook OAuth tests
-
-- TEST_FACEBOOK_OAUTH2_APP_ID => Facebook OAuth app ID
-- TEST_FACEBOOK_OAUTH2_APP_SECRET => Facebook OAuth app secret
 
 ## Documentation
 
@@ -127,54 +107,6 @@ Core Variables
 - PUBLIC_URL => Base Application URL. It must be the public domain of your Control Tower instance, and it's used to
   compose account links. It you are offering a local OAuth provider it's a required field. This URL also needs to be
   configured as an acceptable callback on the OAuth provider settings.
-
-Redis Cache variables
-
-- REDIS_PORT_6379_TCP_ADDR => Redis DB host. Required if you activate the Redis cache plugin.
-- REDIS_PORT_6379_TCP_PORT => Redis DB port. Required if you activate the Redis cache plugin.
-
-Mongo session variables
-
-- COOKIE_DOMAIN => Session domain for cookies. Required field if you activate the sessionMongo plugin.
-- SESSION_KEY => Key to cipher the cookies. Required field if you activate the sessionMongo plugin.
-
-### Audit and statistics
-
-Actions going through Control Tower are logged on the `statistics` (sorry about the typo) table, with the following
-format:
-
-```json
-{
-  "_id": "5bf32aebdc8049c3a0943d7e",
-  "sourcePath": "/v1/dataset/1234/layer/5678",
-  "sourceMethod": "DELETE",
-  "errorCode": null,
-  "time": 348,
-  "ip": "123.123.123.123",
-  "endpointPath": "/v1/dataset/:dataset/layer/:layer",
-  "redirectUrl": "http://layer.default.svc.cluster.local:6000/api/v1/dataset/1234/layer/5678",
-  "redirectMethod": "DELETE",
-  "geo": {
-    "completed": true
-  },
-  "anonymous": false,
-  "error": false,
-  "cached": false,
-  "date": "2018-01-01T00:11:22.333Z",
-  "__v": 0
-}
-```
-
-There's currently no UI to review this data, but MongoDB queries are your friends. Keep in mind that this is a very
-large table, so expensive operations like sorting on unfiltered will take some time.
-
-### Plugins
-
-TODO
-
-### Crons
-
-TODO
 
 ## Contributing
 

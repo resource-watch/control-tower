@@ -4,8 +4,8 @@
   "description": "Control Tower API gateway - Resource Watch",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_PATH=app/src DEBUG=oauth-plugin,statistics-plugin,redis-cache-plugin grunt --gruntfile app/Gruntfile.js | bunyan",
-    "run": "NODE_PATH=app/src DEBUG=oauth-plugin,statistics-plugin,redis-cache-plugin node app/index.js | bunyan",
+    "dev": "NODE_PATH=app/src grunt --gruntfile app/Gruntfile.js | bunyan",
+    "run": "NODE_PATH=app/src node app/index.js | bunyan",
     "test": "NODE_PATH=app/src node $NODE_DEBUG_OPTION ./node_modules/.bin/grunt --gruntfile app/Gruntfile.js e2eTest",
     "coverage": "NODE_PATH=app/src node $NODE_DEBUG_OPTION ./node_modules/.bin/grunt --gruntfile app/Gruntfile.js nyc",
     "start": "NODE_PATH=app/src node $NODE_DEBUG_OPTION app/index"
@@ -53,8 +53,6 @@
     "koa": "^2.0.0",
     "koa-body": "^1.4.0",
     "koa-convert": "^1.2.0",
-    "koa-generic-session": "1.11.7",
-    "koa-generic-session-mongo": "^0.4.0",
     "koa-logger": "^2.0.0",
     "koa-mount": "^4.0.0",
     "koa-router": "^7.0.1",

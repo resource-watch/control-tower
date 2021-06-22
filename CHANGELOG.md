@@ -1,3 +1,7 @@
+## 22/06/2021
+
+- Strip down functionality to convert CT to a development only tool.
+
 ## 10/12/2020
 
 - Remove CT-oauth plugin
