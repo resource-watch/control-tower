@@ -12,7 +12,6 @@ class Microservice {
      *
      * @param endpoint
      * @param microservice
-     * @param version
      * @returns {Promise<void>}
      */
     static async saveEndpoint(endpoint, microservice) {

@@ -66,7 +66,6 @@ const getUserFromToken = async (token, isString = true) => {
 const createMicroservice = async (microserviceData) => (MicroserviceModel({
     name: 'test microservice name',
     url: 'http://microservice.com',
-    version: 1,
     endpoints: [],
     ...microserviceData
 })

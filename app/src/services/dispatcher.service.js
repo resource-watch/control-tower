@@ -15,7 +15,6 @@ const ALLOWED_HEADERS = [
 
 const CACHE = {
     endpoints: [],
-    version: null
 };
 
 class Dispatcher {

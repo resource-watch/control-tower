@@ -48,10 +48,6 @@ const Endpoint = new Schema({
             trim: true
         }
     }],
-    version: {
-        type: Number,
-        required: true
-    },
     updatedAt: {
         type: Date,
         default: Date.now,

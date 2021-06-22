@@ -8,7 +8,6 @@ class MicroserviceSerializer {
             updatedAt: el.updatedAt,
             createdAt: el.createdAt,
             endpoints: el.endpoints,
-            version: el.version
         };
     }
 

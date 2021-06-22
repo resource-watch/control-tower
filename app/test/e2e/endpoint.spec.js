@@ -106,7 +106,6 @@ describe('GET Endpoints', () => {
                         url: 'http://mymachine:6001'
                     }
                 ],
-                version: 1
             }
         );
     });

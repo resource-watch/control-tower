@@ -86,7 +86,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         await createEndpoint(
@@ -104,7 +103,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         await createEndpoint(
@@ -122,7 +120,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
 
@@ -161,7 +158,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         const endpointTwo = await createEndpoint(
@@ -179,7 +175,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         const endpointThree = await createEndpoint(
@@ -197,7 +192,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
 
@@ -256,7 +250,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         await createEndpoint(
@@ -274,7 +267,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         const endpointThree = await createEndpoint(
@@ -292,7 +284,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
 
@@ -351,7 +342,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         const endpointTwo = await createEndpoint(
@@ -369,7 +359,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         const endpointThree = await createEndpoint(
@@ -387,7 +376,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
 
@@ -446,7 +434,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         const endpointTwo = await createEndpoint(
@@ -464,7 +451,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
         const endpointThree = await createEndpoint(
@@ -482,7 +468,6 @@ describe('Get endpoints', () => {
                         url: 'http://test-microservice-one:8000'
                     }
                 ],
-                version: 1,
             }
         );
 
