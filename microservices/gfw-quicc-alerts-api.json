@@ -1,0 +1,53 @@
+{
+  "port": 30556,
+  "endpoints": [
+    {
+      "path": "/v1/quicc-alerts/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/quicc-alerts/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/quicc-alerts/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/quicc-alerts/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/quicc-alerts/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/quicc-alerts/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v1/quicc-alerts/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/quicc-alerts/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v1/quicc-alerts",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/quicc-alerts"
+      }
+    },
+    {
+      "path": "/v1/quicc-alerts/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/quicc-alerts/latest"
+      }
+    }
+  ]
+}

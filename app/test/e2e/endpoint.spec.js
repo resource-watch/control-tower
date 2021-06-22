@@ -49,7 +49,7 @@ describe('GET Endpoints', () => {
 
         mockGetUserFromToken(user, token);
 
-        await new Endpoint({ ...endpointTest, authenticated: true }).save();
+        await new Endpoint({ ...endpointTest }).save();
 
         const resEndpoints = await requester
             .get('/api/v1/endpoint')
@@ -70,11 +70,7 @@ describe('GET Endpoints', () => {
         resEndpoints.body[0].should.deep.equal(
             {
                 pathKeys: [],
-                authenticated: true,
-                applicationRequired: false,
                 binary: false,
-                cache: [],
-                uncache: [],
                 path: '/v1/dataset',
                 method: 'POST',
                 pathRegex: {},

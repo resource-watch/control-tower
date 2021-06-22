@@ -1,0 +1,53 @@
+{
+  "port": 30528,
+  "endpoints": [
+    {
+      "path": "/v1/contextual-layer",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/contextual-layer"
+      }
+    },
+    {
+      "path": "/v1/contextual-layer",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/contextual-layer"
+      }
+    },
+    {
+      "path": "/v1/contextual-layer/team/:teamId",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/contextual-layer/team/:teamId"
+      }
+    },
+    {
+      "path": "/v1/contextual-layer/:layerId",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/contextual-layer/:layerId"
+      }
+    },
+    {
+      "path": "/v1/contextual-layer/:layerId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/contextual-layer/:layerId"
+      }
+    },
+    {
+      "path": "/v1/contextual-layer/loss-layer/:startYear/:endYear/:z/:x/:y.png",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/contextual-layer/loss-layer/:startYear/:endYear/:z/:x/:y.png"
+      }
+    }
+  ]
+}

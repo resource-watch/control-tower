@@ -1,0 +1,14 @@
+{
+  "port": 30501,
+  "endpoints": [
+    {
+      "path": "/v1/arcgis-proxy/ImageServer/computeHistograms",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/arcgis-proxy/ImageServer/computeHistograms"
+      }
+    }
+  ]
+}

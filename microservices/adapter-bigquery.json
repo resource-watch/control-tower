@@ -1,0 +1,57 @@
+{
+  "port": 30506,
+  "endpoints": [
+    {
+      "path": "/v1/query/bigquery/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/bigquery/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/query/bigquery/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/bigquery/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/download/bigquery/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/bigquery/download/:dataset"
+      }
+    },
+    {
+      "path": "/v1/download/bigquery/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/bigquery/download/:dataset"
+      }
+    },
+    {
+      "path": "/v1/fields/bigquery/:dataset",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/bigquery/fields/:dataset"
+      }
+    },
+    {
+      "path": "/v1/rest-datasets/bigquery",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/bigquery/rest-datasets/bigquery"
+      }
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "port": 30532,
+  "endpoints": [
+    {
+      "path": "/v1/geostore",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/geostore"
+      }
+    },
+    {
+      "path": "/v1/geostore/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/geostore/find-by-ids"
+      }
+    },
+    {
+      "path": "/v1/geostore/area",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/geostore/area"
+      }
+    },
+    {
+      "path": "/v1/geostore/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/geostore/:id"
+      }
+    },
+    {
+      "path": "/v1/geostore/:id/view",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/geostore/:id/view"
+      }
+    },
+    {
+      "path": "/v1/geostore/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/geostore/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/geostore/admin/list",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/geostore/admin/list"
+      }
+    },
+    {
+      "path": "/v1/geostore/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/geostore/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/geostore/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/geostore/admin/:iso/:id1/:id2"
+      }
+    },
+    {
+      "path": "/v1/geostore/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/geostore/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v1/geostore/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/geostore/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v1/coverage/intersect/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/coverage/intersect/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v1/coverage/intersect/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/coverage/intersect/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/coverage/intersect/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/coverage/intersect/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/coverage/intersect/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/coverage/intersect/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v1/coverage/intersect",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/coverage/intersect"
+      }
+    },
+    {
+      "path": "/v2/geostore/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v2/geostore/find-by-ids"
+      }
+    },
+    {
+      "path": "/v2/geostore/area",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v2/geostore/area"
+      }
+    },
+    {
+      "path": "/v2/geostore/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/geostore/:id"
+      }
+    },
+    {
+      "path": "/v2/geostore/:id/view",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/geostore/:id/view"
+      }
+    },
+    {
+      "path": "/v2/geostore/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/geostore/admin/:iso"
+      }
+    },
+    {
+      "path": "/v2/geostore/admin/list",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/geostore/admin/list"
+      }
+    },
+    {
+      "path": "/v2/geostore/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/geostore/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v2/geostore/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/geostore/admin/:iso/:id1/:id2"
+      }
+    },
+    {
+      "path": "/v2/geostore/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/geostore/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v2/geostore/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/geostore/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v2/coverage/intersect/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/coverage/intersect/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v2/coverage/intersect/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/coverage/intersect/admin/:iso"
+      }
+    },
+    {
+      "path": "/v2/coverage/intersect/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/coverage/intersect/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v2/coverage/intersect/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/coverage/intersect/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v2/coverage/intersect",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/coverage/intersect"
+      }
+    }
+  ]
+}

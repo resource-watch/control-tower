@@ -26,12 +26,6 @@ describe('Endpoint dispatch tests', () => {
         ensureCorrectError(result, 'Endpoint not found', 404);
     });
 
-    it('Create endpoint after cache is was declared and version is not updated should return a 404 HTTP code with a "Endpoint not found" message', async () => {
-        await createEndpoint();
-        const result = await microservice.post('/api/v1/dataset');
-        ensureCorrectError(result, 'Endpoint not found', 404);
-    });
-
     it('Created endpoint should return a 200 HTTP code', async () => {
         await updateVersion();
         await createEndpoint();
@@ -39,13 +33,6 @@ describe('Endpoint dispatch tests', () => {
         const result = await microservice.post('/api/v1/dataset');
         result.status.should.equal(200);
         result.text.should.equal('ok');
-    });
-
-    it('Created endpoint with applicationRequired and not send application should return a 401 HTTP code with a "Required app_key" message', async () => {
-        await updateVersion();
-        await createEndpoint({ applicationRequired: true });
-        const result = await microservice.post('/api/v1/dataset');
-        ensureCorrectError(result, 'Required app_key', 401);
     });
 
     it('External request\'s query params are passed along to the internal call on POST requests', async () => {
@@ -306,12 +293,6 @@ describe('Endpoint dispatch tests', () => {
         createMockEndpoint('/api/v1/dataset');
         const result = await microservice.post('/api/v1/dataset');
         result.status.should.equal(200);
-    });
-
-    it('Create endpoint with wrong version should return not found', async () => {
-        await createEndpoint({ version: 2 });
-        const result = await microservice.post('/api/v1/dataset');
-        result.status.should.equal(404);
     });
 
     it('Endpoint with pathRegex are matched to external requests and return a 200 HTTP code (positive test)', async () => {

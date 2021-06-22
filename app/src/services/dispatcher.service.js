@@ -1,11 +1,7 @@
 const logger = require('logger');
-const appConstants = require('app.constants');
 const EndpointModel = require('models/endpoint.model');
-const VersionModel = require('models/version.model');
 const url = require('url');
 const EndpointNotFound = require('errors/endpointNotFound');
-const NotAuthenticated = require('errors/notAuthenticated');
-const NotApplicationKey = require('errors/notApplicationKey');
 const pathToRegexp = require('path-to-regexp');
 const fs = require('fs');
 
@@ -145,30 +141,23 @@ class Dispatcher {
         return validHeaders;
     }
 
-    static async reloadEndpoints(versionObj) {
+    static async reloadEndpoints() {
         logger.debug('Reloading endpoints');
-        CACHE.endpoints = await EndpointModel.find({
-            version: versionObj.version,
-        });
-        // logger.debug(CACHE.endpoints);
-        CACHE.version = {
-            version: versionObj.version,
-            lastUpdated: versionObj.lastUpdated
-        };
+        CACHE.endpoints = await EndpointModel.find();
     }
 
     static async getEndpoint(pathname, method) {
         logger.info(`[DispatcherService - getEndpoint] Searching for endpoint with path ${pathname} and method ${method}`);
         logger.debug('[DispatcherService - getEndpoint] Obtaining version');
-        const version = await VersionModel.findOne({
-            name: appConstants.ENDPOINT_VERSION,
-        });
-        logger.debug('[DispatcherService - getEndpoint] Version found: ', version);
-        logger.debug('[DispatcherService - getEndpoint] Version last', version.lastUpdated);
-        if (!CACHE.version || !CACHE.version.lastUpdated || !version.lastUpdated || CACHE.version.lastUpdated.getTime() !== version.lastUpdated.getTime()) {
-            logger.debug('[DispatcherService - getEndpoint] Reloading endpoints cache from database');
-            await Dispatcher.reloadEndpoints(version);
-        }
+        // const version = await VersionModel.findOne({
+        //     name: appConstants.ENDPOINT_VERSION,
+        // });
+        // logger.debug('[DispatcherService - getEndpoint] Version found: ', version);
+        // logger.debug('[DispatcherService - getEndpoint] Version last', version.lastUpdated);
+        // if (!CACHE.version || !CACHE.version.lastUpdated || !version.lastUpdated || CACHE.version.lastUpdated.getTime() !== version.lastUpdated.getTime()) {
+        //     logger.debug('[DispatcherService - getEndpoint] Reloading endpoints cache from database');
+        //     await Dispatcher.reloadEndpoints(version);
+        // }
         if (!CACHE.endpoints || CACHE.endpoints.length === 0) {
             logger.fatal('[DispatcherService - getEndpoint] Endpoints cache is empty');
             return null;
@@ -199,15 +188,7 @@ class Dispatcher {
 
         logger.info(`[DispatcherService - getRequest] Endpoint found. Path: ${endpoint.path} | Method: ${endpoint.method}`);
         logger.info('[DispatcherService - getRequest] Checking if authentication is necessary');
-        if (endpoint.authenticated && !Dispatcher.hasLoggedUser(ctx)) {
-            logger.info('[DispatcherService - getRequest] Authentication is needed but no user data was found in the request');
-            throw new NotAuthenticated();
-        }
 
-        if (endpoint.applicationRequired && !ctx.state.appKey) {
-            logger.info('[DispatcherService - getRequest] Application key is needed but none was found in the request');
-            throw new NotApplicationKey('Required app_key');
-        }
         let redirectEndpoint = null;
         if (endpoint && endpoint.redirect.length === 0) {
             logger.error('[DispatcherService - getRequest] No redirects exist');

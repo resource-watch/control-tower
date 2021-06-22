@@ -1,0 +1,21 @@
+{
+  "port": 30531,
+  "endpoints": [
+    {
+      "path": "/v1/layer/:layer/tile/gee/:z/:x/:y",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/layer/:layer/tile/gee/:z/:x/:y"
+      }
+    },
+    {
+      "path": "/v1/layer/gee/:layer/expire-cache",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/layer/gee/:layer/expire-cache"
+      }
+    }
+  ]
+}

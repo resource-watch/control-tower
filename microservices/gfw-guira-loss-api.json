@@ -1,0 +1,125 @@
+{
+  "port": 30535,
+  "endpoints": [
+    {
+      "path": "/v2/guira-loss/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/guira-loss/admin/:iso"
+      }
+    },
+    {
+      "path": "/v2/guira-loss/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/guira-loss/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v2/guira-loss/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/guira-loss/admin/:iso/:id1/:id2"
+      }
+    },
+    {
+      "path": "/v2/guira-loss/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/guira-loss/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v2/guira-loss/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/guira-loss/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v2/guira-loss",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/guira-loss"
+      }
+    },
+    {
+      "path": "/v2/guira-loss/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/guira-loss/latest"
+      }
+    },
+    {
+      "path": "/v2/guira-loss",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v2/guira-loss"
+      }
+    },
+    {
+      "path": "/v1/guira-loss/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/guira-loss/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/guira-loss/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/guira-loss/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/guira-loss/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/guira-loss/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v1/guira-loss/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/guira-loss/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v1/guira-loss",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/guira-loss"
+      }
+    },
+    {
+      "path": "/v1/guira-loss/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/guira-loss/latest"
+      }
+    },
+    {
+      "path": "/v1/guira-loss",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/guira-loss"
+      }
+    }
+  ]
+}

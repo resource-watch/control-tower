@@ -1,0 +1,86 @@
+{
+  "port": 30559,
+  "endpoints": [
+    {
+      "path": "/v1/",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/"
+      }
+    },
+    {
+      "path": "/v1/rw-lp/*.js",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/rw-lp/*.js"
+      }
+    },
+    {
+      "path": "/v1/rw-lp/*.css",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/rw-lp/*.css"
+      }
+    },
+    {
+      "path": "/v1/rw-lp/*.png",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/rw-lp/*.png"
+      }
+    },
+    {
+      "path": "/v1/rw-lp/*.jpg",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/rw-lp/*.jpg"
+      }
+    },
+    {
+      "path": "/v1/rw-lp/*.svg",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/rw-lp/*.svg"
+      }
+    },
+    {
+      "path": "/v1/rw-lp/*.ico",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/rw-lp/*.ico"
+      }
+    },
+    {
+      "path": "/v1/rw-lp/*.txt",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/rw-lp/*.txt"
+      }
+    },
+    {
+      "path": "/v1/rw-lp/*.json",
+      "authenticated": false,
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/rw-lp/*.json"
+      }
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "port": 30537,
+  "endpoints": [
+    {
+      "path": "/v2/prodes-loss/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/prodes-loss/admin/:iso"
+      }
+    },
+    {
+      "path": "/v2/prodes-loss/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/prodes-loss/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v2/prodes-loss/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/prodes-loss/admin/:iso/:id1/:id2"
+      }
+    },
+    {
+      "path": "/v2/prodes-loss/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/prodes-loss/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v2/prodes-loss/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/prodes-loss/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v2/prodes-loss",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/prodes-loss"
+      }
+    },
+    {
+      "path": "/v2/prodes-loss",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v2/prodes-loss"
+      }
+    },
+    {
+      "path": "/v2/prodes-loss/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/prodes-loss/latest"
+      }
+    },
+    {
+      "path": "/v1/prodes-loss/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/prodes-loss/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/prodes-loss/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/prodes-loss/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/prodes-loss/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/prodes-loss/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v1/prodes-loss/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/prodes-loss/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v1/prodes-loss",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/prodes-loss"
+      }
+    },
+    {
+      "path": "/v1/prodes-loss",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/prodes-loss"
+      }
+    },
+    {
+      "path": "/v1/prodes-loss/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/prodes-loss/latest"
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "port": 30529,
+  "endpoints": [
+    {
+      "path": "/v1/teams/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/teams/:id"
+      }
+    },
+    {
+      "path": "/v1/teams/user/:userId",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/teams/user/:userId"
+      }
+    },
+    {
+      "path": "/v1/teams",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/teams"
+      }
+    },
+    {
+      "path": "/v1/teams/:id",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/teams/:id"
+      }
+    },
+    {
+      "path": "/v1/teams/:id",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/teams/:id"
+      }
+    },
+    {
+      "path": "/v1/teams/confirm/:token",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/teams/confirm/:token"
+      }
+    }
+  ]
+}

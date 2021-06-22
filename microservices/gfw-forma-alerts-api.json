@@ -1,0 +1,61 @@
+{
+  "port": 30534,
+  "endpoints": [
+    {
+      "path": "/v1/forma-alerts/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/forma-alerts/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/forma-alerts/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/forma-alerts/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/forma-alerts/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/forma-alerts/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v1/forma-alerts/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/forma-alerts/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v1/forma-alerts",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/forma-alerts"
+      }
+    },
+    {
+      "path": "/v1/forma-alerts",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/forma-alerts"
+      }
+    },
+    {
+      "path": "/v1/forma-alerts/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/forma-alerts/latest"
+      }
+    }
+  ]
+}

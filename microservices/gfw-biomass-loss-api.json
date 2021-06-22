@@ -1,0 +1,21 @@
+{
+  "port": 30533,
+  "endpoints": [
+    {
+      "path": "/v1/biomass-loss/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/biomass-loss/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/biomass-loss/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/biomass-loss/admin/:iso/:id1"
+      }
+    }
+  ]
+}

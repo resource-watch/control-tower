@@ -1,0 +1,21 @@
+{
+  "port": 30536,
+  "endpoints": [
+    {
+      "path": "/v1/ogr/convert",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/ogr/convert"
+      }
+    },
+    {
+      "path": "/v2/ogr/convert",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v2/ogr/convert"
+      }
+    }
+  ]
+}

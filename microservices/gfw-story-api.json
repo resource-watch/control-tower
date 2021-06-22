@@ -1,0 +1,53 @@
+{
+  "port": 30560,
+  "endpoints": [
+    {
+      "path": "/v1/story",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/story"
+      }
+    },
+    {
+      "path": "/v1/story/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/story/:id"
+      }
+    },
+    {
+      "path": "/v1/story/:id",
+      "method": "PUT",
+      "redirect": {
+        "method": "PUT",
+        "path": "/api/v1/story/:id"
+      }
+    },
+    {
+      "path": "/v1/story/:id",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/story/:id"
+      }
+    },
+    {
+      "path": "/v1/story/user/:user_id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/story/user/:user_id"
+      }
+    },
+    {
+      "path": "/v1/story",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/story"
+      }
+    }
+  ]
+}

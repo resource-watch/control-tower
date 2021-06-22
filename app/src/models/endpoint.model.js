@@ -8,11 +8,7 @@ const Endpoint = new Schema({
     method: { type: String, required: true, trim: true },
     pathRegex: { type: RegExp, required: true },
     pathKeys: [{ type: String, trim: true }],
-    authenticated: { type: Boolean, default: false },
-    applicationRequired: { type: Boolean, default: false },
     binary: { type: Boolean, default: false },
-    cache: [{ type: String, required: false }],
-    uncache: [{ type: String, required: false }],
     redirect: [{
         path: { type: String, required: true, trim: true },
         url: { type: String, required: true, trim: true },

@@ -1,0 +1,95 @@
+{
+  "port": 30541,
+  "endpoints": [
+    {
+      "path": "/v1/glad-alerts/admin/:iso_code",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/glad-alerts-athena/admin/:iso_code"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/admin/:iso_code/:adm1_code",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/glad-alerts-athena/admin/:iso_code/:adm1_code"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/admin/:iso_code/:adm1_code/:adm2_code",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/glad-alerts-athena/admin/:iso_code/:adm1_code/:adm2_code"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/download",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/glad-alerts-athena/download"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/download",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/glad-alerts-athena/download"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/glad-alerts-athena/"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/latest/",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/glad-alerts-athena/latest/"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/glad-alerts-athena/"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/wdpa/:wdpa_id",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/glad-alerts-athena/wdpa/:wdpa_id"
+      }
+    },
+    {
+      "path": "/v1/glad-alerts/use/:use_type/:use_id",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/glad-alerts-athena/use/:use_type/:use_id"
+      }
+    }
+  ]
+}

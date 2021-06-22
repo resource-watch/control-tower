@@ -5,20 +5,6 @@ const { Schema } = mongoose;
 const Microservice = new Schema({
     name: { type: String, required: true, trim: true },
     url: { type: String, required: true, trim: true },
-    pathInfo: { type: String, required: true, default: '/info' },
-    pathLive: { type: String, required: true, default: '/ping' },
-    cache: [{ type: String, required: false }],
-    uncache: [{ type: String, required: false }],
-    infoStatus:
-        new Schema(
-            {
-                lastCheck: { type: Date, required: false },
-                numRetries: { type: Number, required: true, default: 0 },
-                error: { type: String, required: false, trim: true },
-            }, {
-                _id: false
-            }
-        ),
     updatedAt: { type: Date, default: Date.now, required: true },
     createdAt: { type: Date, default: Date.now, required: true },
     endpoints: [
@@ -35,7 +21,6 @@ const Microservice = new Schema({
             }
         )
     ],
-    tags: [{ type: String, required: false, trim: true }],
     version: { type: Number, required: true },
 });
 

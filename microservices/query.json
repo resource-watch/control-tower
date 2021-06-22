@@ -1,0 +1,97 @@
+{
+  "port": 30555,
+  "endpoints": [
+    {
+      "path": "/v1/query/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/query/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/query",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/query"
+      }
+    },
+    {
+      "path": "/v1/query",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/query"
+      }
+    },
+    {
+      "path": "/v1/download/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/download/:dataset"
+      }
+    },
+    {
+      "path": "/v1/download/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/download/:dataset"
+      }
+    },
+    {
+      "path": "/v1/download",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/download"
+      }
+    },
+    {
+      "path": "/v1/download",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/download"
+      }
+    },
+    {
+      "path": "/v1/jiminy",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/jiminy"
+      }
+    },
+    {
+      "path": "/v1/jiminy",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/jiminy"
+      }
+    },
+    {
+      "path": "/v1/fields/:dataset",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/fields/:dataset"
+      }
+    }
+  ]
+}

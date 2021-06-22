@@ -1,0 +1,397 @@
+{
+  "port": 30565,
+  "endpoints": [
+    {
+      "path": "/v1/dataset/:dataset/vocabulary",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary/:vocabulary",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary",
+      "method": "PUT",
+      "redirect": {
+        "method": "PUT",
+        "path": "/api/v1/dataset/:dataset/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary/:vocabulary",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/dataset/:dataset/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary/:vocabulary/concat",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/vocabulary/:vocabulary/concat"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary/clone/dataset",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/vocabulary/clone/dataset"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary/:vocabulary",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/:dataset/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/:dataset/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/vocabulary/:vocabulary",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/vocabulary/find",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/vocabulary/find"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/:widget/vocabulary",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/widget/:widget/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/:widget/vocabulary/:vocabulary",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/widget/:widget/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/:widget/vocabulary",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/widget/:widget/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/:widget/vocabulary/:vocabulary",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/dataset/:dataset/widget/:widget/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/:widget/vocabulary/:vocabulary",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/:dataset/widget/:widget/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/:widget/vocabulary",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/:dataset/widget/:widget/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/:widget/vocabulary/:vocabulary",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/widget/:widget/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/vocabulary/find",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/widget/vocabulary/find"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer/vocabulary",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/layer/:layer/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer/vocabulary/:vocabulary",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/layer/:layer/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer/vocabulary",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/layer/:layer/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer/vocabulary/:vocabulary",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/dataset/:dataset/layer/:layer/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer/vocabulary/:vocabulary",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/:dataset/layer/:layer/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer/vocabulary",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/:dataset/layer/:layer/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/:layer/vocabulary/:vocabulary",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/layer/:layer/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/vocabulary/find",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/dataset/:dataset/layer/vocabulary/find"
+      }
+    },
+    {
+      "path": "/v1/vocabulary",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/vocabulary/:vocabulary",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/vocabulary/:vocabulary/tags",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/vocabulary/:vocabulary/tags"
+      }
+    },
+    {
+      "path": "/v1/vocabulary",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/vocabulary"
+      }
+    },
+    {
+      "path": "/v1/vocabulary/:vocabulary",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/vocabulary/:vocabulary",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/vocabulary/:vocabulary"
+      }
+    },
+    {
+      "path": "/v1/dataset/vocabulary/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/vocabulary/find-by-ids"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/widget/vocabulary/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/widget/vocabulary/find-by-ids"
+      }
+    },
+    {
+      "path": "/v1/dataset/:dataset/layer/vocabulary/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/dataset/:dataset/layer/vocabulary/find-by-ids"
+      }
+    },
+    {
+      "path": "/v1/favourite",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/favourite"
+      }
+    },
+    {
+      "path": "/v1/favourite",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/favourite"
+      }
+    },
+    {
+      "path": "/v1/favourite/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/favourite/:id"
+      }
+    },
+    {
+      "path": "/v1/favourite/:id",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/favourite/:id"
+      }
+    },
+    {
+      "path": "/v1/collection",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/collection"
+      }
+    },
+    {
+      "path": "/v1/collection/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/collection/:id"
+      }
+    },
+    {
+      "path": "/v1/collection",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/collection"
+      }
+    },
+    {
+      "path": "/v1/collection/:id/resource",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/collection/:id/resource"
+      }
+    },
+    {
+      "path": "/v1/collection/:id",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/collection/:id"
+      }
+    },
+    {
+      "path": "/v1/collection/:id",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/collection/:id"
+      }
+    },
+    {
+      "path": "/v1/collection/:id/resource/:resourceType/:resourceId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/collection/:id/resource/:resourceType/:resourceId"
+      }
+    },
+    {
+      "path": "/v1/collection/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/collection/find-by-ids"
+      }
+    },
+    {
+      "path": "/v1/favourite/find-by-user",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/favourite/find-by-user"
+      }
+    }
+  ]
+}

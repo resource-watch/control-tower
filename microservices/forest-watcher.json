@@ -1,0 +1,21 @@
+{
+  "port": 30525,
+  "endpoints": [
+    {
+      "path": "/v1/forest-watcher/area",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/forest-watcher/area"
+      }
+    },
+    {
+      "path": "/v1/forest-watcher/area",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/forest-watcher/area"
+      }
+    }
+  ]
+}

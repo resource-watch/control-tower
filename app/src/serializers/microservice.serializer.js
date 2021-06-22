@@ -5,15 +5,9 @@ class MicroserviceSerializer {
             id: el._id,
             name: el.name,
             url: el.url,
-            pathInfo: el.pathInfo,
-            pathLive: el.pathLive,
-            cache: el.cache,
-            uncache: el.uncache,
-            infoStatus: el.infoStatus,
             updatedAt: el.updatedAt,
             createdAt: el.createdAt,
             endpoints: el.endpoints,
-            tags: el.tags,
             version: el.version
         };
     }

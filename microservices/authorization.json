@@ -1,0 +1,37 @@
+{
+  "port": 30505,
+  "endpoints": [
+    {
+      "path": "/auth/user/me",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/auth/user/me"
+      }
+    },
+    {
+      "path": "/auth/user/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/auth/user/find-by-ids"
+      }
+    },
+    {
+      "path": "/auth/user/ids/:roles",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/auth/user/ids/:roles"
+      }
+    },
+    {
+      "path": "/auth/authorization-code/callback",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/auth/authorization-code/callback"
+      }
+    }
+  ]
+}

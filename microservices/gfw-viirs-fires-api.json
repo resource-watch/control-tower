@@ -1,0 +1,133 @@
+{
+  "port": 30564,
+  "endpoints": [
+    {
+      "path": "/v2/viirs-active-fires/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/viirs-active-fires/admin/:iso"
+      }
+    },
+    {
+      "path": "/v2/viirs-active-fires/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/viirs-active-fires/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v2/viirs-active-fires/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/viirs-active-fires/admin/:iso/:id1/:id2"
+      }
+    },
+    {
+      "path": "/v2/viirs-active-fires/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/viirs-active-fires/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v2/viirs-active-fires/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/viirs-active-fires/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v2/viirs-active-fires",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/viirs-active-fires"
+      }
+    },
+    {
+      "path": "/v2/viirs-active-fires/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/viirs-active-fires/latest"
+      }
+    },
+    {
+      "path": "/v2/viirs-active-fires",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v2/viirs-active-fires"
+      }
+    },
+    {
+      "path": "/v1/viirs-active-fires/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/viirs-active-fires/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/viirs-active-fires/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/viirs-active-fires/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/viirs-active-fires/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/viirs-active-fires/admin/:iso/:id1/:id2"
+      }
+    },
+    {
+      "path": "/v1/viirs-active-fires/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/viirs-active-fires/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v1/viirs-active-fires/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/viirs-active-fires/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v1/viirs-active-fires",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/viirs-active-fires"
+      }
+    },
+    {
+      "path": "/v1/viirs-active-fires/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/viirs-active-fires/latest"
+      }
+    },
+    {
+      "path": "/v1/viirs-active-fires",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/viirs-active-fires"
+      }
+    }
+  ]
+}

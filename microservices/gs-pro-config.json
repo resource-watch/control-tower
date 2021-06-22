@@ -1,0 +1,14 @@
+{
+  "port": 30543,
+  "endpoints": [
+    {
+      "path": "/v1/pro-config/:tech_title",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/proconfig/pro-config/:tech_title"
+      }
+    }
+  ]
+}

@@ -78,7 +78,6 @@ const testAppKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODk
 
 const microserviceTest = {
     name: 'test-microservice-one',
-    tags: ['test'],
     endpoints: [{
         path: '/v1/testOne',
         method: 'GET',
@@ -98,11 +97,7 @@ const microserviceTest = {
 
 const endpointTest = {
     pathKeys: [],
-    authenticated: false,
-    applicationRequired: false,
     binary: false,
-    cache: [],
-    uncache: [],
     path: '/v1/dataset',
     method: 'POST',
     pathRegex: '',

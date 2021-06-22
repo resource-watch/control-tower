@@ -1,11 +1,6 @@
 const Router = require('koa-router');
 const MicroserviceModel = require('models/microservice.model');
-const VersionModel = require('models/version.model');
-const appConstants = require('app.constants');
 const logger = require('logger');
-const MicroserviceService = require('services/microservice.service');
-const MicroserviceDuplicated = require('errors/microserviceDuplicated');
-const MicroserviceNotExist = require('errors/microserviceNotExist');
 const Utils = require('utils');
 const mongoose = require('mongoose');
 const MicroserviceSerializer = require('serializers/microservice.serializer');
@@ -22,11 +17,7 @@ class MicroserviceRouter {
         const query = pick(ctx.query, ['url']);
 
         logger.info('[MicroserviceRouter] Obtaining registered microservices list');
-        const versionFound = await VersionModel.findOne({
-            name: appConstants.ENDPOINT_VERSION,
-        });
-        logger.debug('[MicroserviceRouter] Found', versionFound);
-        ctx.body = await MicroserviceModel.find({ ...query, version: versionFound.version }, { __v: 0 });
+        ctx.body = await MicroserviceModel.find({ ...query }, { __v: 0 });
     }
 
     static async get(ctx) {
@@ -47,39 +38,9 @@ class MicroserviceRouter {
         ctx.body = MicroserviceSerializer.serialize(microservice);
     }
 
-    static async register(ctx) {
-        logger.info(`[MicroserviceRouter] Registering microservice`);
-        try {
-            const result = await MicroserviceService.register(ctx.request.body);
-            ctx.body = result;
-        } catch (err) {
-            if (err instanceof MicroserviceDuplicated) {
-                ctx.throw(400, err.message);
-                return;
-            }
-            throw err;
-        }
-    }
-
-    static async delete(ctx) {
-        logger.info(`[MicroserviceRouter] Removing microservice with id ${ctx.params.id}`);
-        try {
-            const result = await MicroserviceService.deleteMicroservice(ctx.params.id);
-            ctx.body = result;
-        } catch (err) {
-            if (err instanceof MicroserviceNotExist) {
-                ctx.throw(404, err.message);
-                return;
-            }
-            throw err;
-        }
-    }
-
 }
 
 router.get('/', getLoggedUser, Utils.isLogged, Utils.isAdmin, MicroserviceRouter.getAll);
 router.get('/:id', getLoggedUser, Utils.isLogged, Utils.isAdmin, MicroserviceRouter.get);
-router.post('/', MicroserviceRouter.register);
-router.delete('/:id', getLoggedUser, Utils.isLogged, Utils.isAdmin, MicroserviceRouter.delete);
 
 module.exports = router;

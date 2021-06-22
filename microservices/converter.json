@@ -1,0 +1,69 @@
+{
+  "port": 30514,
+  "endpoints": [
+    {
+      "path": "/v1/convert/fs2SQL",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/convert/fs2SQL"
+      }
+    },
+    {
+      "path": "/v1/convert/fs2SQL",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/convert/fs2SQL"
+      }
+    },
+    {
+      "path": "/v1/convert/sql2FS",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/convert/sql2FS"
+      }
+    },
+    {
+      "path": "/v1/convert/sql2FS",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/convert/sql2FS"
+      }
+    },
+    {
+      "path": "/v1/convert/checkSQL",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/convert/checkSQL"
+      }
+    },
+    {
+      "path": "/v1/convert/sql2SQL",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/convert/sql2SQL"
+      }
+    },
+    {
+      "path": "/v1/convert/sql2SQL",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/convert/sql2SQL"
+      }
+    },
+    {
+      "path": "/v1/convert/json2SQL",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/convert/json2SQL"
+      }
+    }
+  ]
+}

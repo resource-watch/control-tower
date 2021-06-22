@@ -1,0 +1,161 @@
+{
+  "port": 30549,
+  "endpoints": [
+    {
+      "path": "/v1/query/nexgddp/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/query/nexgddp/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/nexgddp/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/fields/nexgddp/:dataset",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/fields/:dataset"
+      }
+    },
+    {
+      "path": "/v1/query/loca/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/query/loca/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/nexgddp/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/fields/loca/:dataset",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/fields/:dataset"
+      }
+    },
+    {
+      "path": "/v1/rest-datasets/nexgddp",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/nexgddp/rest-datasets/nexgddp"
+      }
+    },
+    {
+      "path": "/v1/rest-datasets/loca",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/nexgddp/rest-datasets/nexgddp"
+      }
+    },
+    {
+      "path": "/v1/nexgddp/diff",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/nexgddp/diff"
+      }
+    },
+    {
+      "path": "/v1/loca/diff",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/nexgddp/diff"
+      }
+    },
+    {
+      "path": "/v1/layer/:layer/tile/nexgddp/:z/:x/:y",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/layer/:layer/tile/nexgddp/:z/:x/:y"
+      }
+    },
+    {
+      "path": "/v1/layer/:layer/tile/loca/:z/:x/:y",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/layer/:layer/tile/nexgddp/:z/:x/:y"
+      }
+    },
+    {
+      "path": "/v1/layer/nexgddp/:layer/expire-cache",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/nexgddp/layer/nexgddp/:layer/expire-cache"
+      }
+    },
+    {
+      "path": "/v1/layer/loca/:layer/expire-cache",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/nexgddp/layer/loca/:layer/expire-cache"
+      }
+    },
+    {
+      "path": "/v1/nexgddp/info/:indicator",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/info/:indicator"
+      }
+    },
+    {
+      "path": "/v1/loca/info/:indicator",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/locainfo/:indicator"
+      }
+    },
+    {
+      "path": "/v1/nexgddp/dataset/:indicator/:scenario/:temporal_res",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/dataset/:indicator/:scenario/:temporal_res"
+      }
+    },
+    {
+      "path": "/v1/loca/dataset/:indicator/:scenario/:temporal_res",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/nexgddp/locadataset/:indicator/:scenario/:temporal_res"
+      }
+    },
+    {
+      "path": "/v1/rest-datasets/nexgddp/:dataset",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/nexgddp/rest-datasets/nexgddp/:dataset"
+      }
+    }
+  ]
+}

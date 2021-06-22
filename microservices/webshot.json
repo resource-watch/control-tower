@@ -1,0 +1,23 @@
+{
+  "port": 30566,
+  "endpoints": [
+    {
+      "path": "/v1/webshot/pdf",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/webshot"
+      }
+    },
+    {
+      "path": "/v1/webshot/widget/:widget/thumbnail",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/webshot/widget/:widget/thumbnail"
+      }
+    }
+  ]
+}

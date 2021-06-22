@@ -63,11 +63,7 @@ describe('Get endpoints', () => {
         await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: false,
-                cache: [],
-                uncache: [],
                 path: '/v1/test',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
@@ -85,11 +81,7 @@ describe('Get endpoints', () => {
         await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: false,
-                cache: [],
-                uncache: [],
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
@@ -107,11 +99,7 @@ describe('Get endpoints', () => {
         await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: false,
-                cache: [],
-                uncache: [],
                 path: '/v1/testTwo',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
@@ -135,190 +123,6 @@ describe('Get endpoints', () => {
         response.body.should.be.an('array').and.have.lengthOf(3);
     });
 
-    it('Getting endpoints with filter should return a list of endpoints that match the filter - authenticated', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
-
-        mockGetUserFromToken(user, token);
-        mockGetUserFromToken(user, token);
-
-        const endpointOne = await createEndpoint(
-            {
-                pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
-                binary: false,
-                cache: [],
-                uncache: [],
-                path: '/v1/test',
-                method: 'GET',
-                pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
-                redirect: [
-                    {
-                        microservice: 'test1',
-                        method: 'GET',
-                        path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000'
-                    }
-                ],
-                version: 1,
-            }
-        );
-        const endpointTwo = await createEndpoint(
-            {
-                pathKeys: [],
-                authenticated: true,
-                applicationRequired: false,
-                binary: false,
-                cache: [],
-                uncache: [],
-                path: '/v1/testOne',
-                method: 'GET',
-                pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
-                redirect: [
-                    {
-                        microservice: 'test1',
-                        method: 'GET',
-                        path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000'
-                    }
-                ],
-                version: 1,
-            }
-        );
-        const endpointThree = await createEndpoint(
-            {
-                pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
-                binary: false,
-                cache: [],
-                uncache: [],
-                path: '/v1/testTwo',
-                method: 'GET',
-                pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
-                redirect: [
-                    {
-                        microservice: 'test1',
-                        method: 'GET',
-                        path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000'
-                    }
-                ],
-                version: 1,
-            }
-        );
-
-        const responseOne = await requester
-            .get(`/api/v1/endpoint`)
-            .query({ authenticated: true })
-            .set('Authorization', `Bearer ${token}`);
-
-        responseOne.status.should.equal(200);
-        responseOne.body.should.be.an('array').and.have.lengthOf(1);
-        responseOne.body.map((element) => element._id).should.have.members([endpointTwo._id.toString()]);
-
-        const responseTwo = await requester
-            .get(`/api/v1/endpoint`)
-            .query({ authenticated: false })
-            .set('Authorization', `Bearer ${token}`);
-
-        responseTwo.status.should.equal(200);
-        responseTwo.body.should.be.an('array').and.have.lengthOf(2);
-        responseTwo.body.map((element) => element._id).should.have.members([endpointOne._id.toString(), endpointThree._id.toString()]);
-    });
-
-    it('Getting endpoints with filter should return a list of endpoints that match the filter - applicationRequired', async () => {
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
-
-        mockGetUserFromToken(user, token);
-        mockGetUserFromToken(user, token);
-
-        const endpointOne = await createEndpoint(
-            {
-                pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
-                binary: false,
-                cache: [],
-                uncache: [],
-                path: '/v1/test',
-                method: 'GET',
-                pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
-                redirect: [
-                    {
-                        microservice: 'test1',
-                        method: 'GET',
-                        path: '/api/v1/test',
-                        url: 'http://test-microservice-one:8000'
-                    }
-                ],
-                version: 1,
-            }
-        );
-        const endpointTwo = await createEndpoint(
-            {
-                pathKeys: [],
-                authenticated: true,
-                applicationRequired: true,
-                binary: false,
-                cache: [],
-                uncache: [],
-                path: '/v1/testOne',
-                method: 'GET',
-                pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
-                redirect: [
-                    {
-                        microservice: 'test1',
-                        method: 'GET',
-                        path: '/api/v1/testOne',
-                        url: 'http://test-microservice-one:8000'
-                    }
-                ],
-                version: 1,
-            }
-        );
-        const endpointThree = await createEndpoint(
-            {
-                pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
-                binary: false,
-                cache: [],
-                uncache: [],
-                path: '/v1/testTwo',
-                method: 'GET',
-                pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
-                redirect: [
-                    {
-                        microservice: 'test1',
-                        method: 'GET',
-                        path: '/api/v1/testTwo',
-                        url: 'http://test-microservice-one:8000'
-                    }
-                ],
-                version: 1,
-            }
-        );
-
-        const responseOne = await requester
-            .get(`/api/v1/endpoint`)
-            .query({ applicationRequired: true })
-            .set('Authorization', `Bearer ${token}`);
-
-        responseOne.status.should.equal(200);
-        responseOne.body.should.be.an('array').and.have.lengthOf(1);
-        responseOne.body.map((element) => element._id).should.have.members([endpointTwo._id.toString()]);
-
-        const responseTwo = await requester
-            .get(`/api/v1/endpoint`)
-            .query({ applicationRequired: false })
-            .set('Authorization', `Bearer ${token}`);
-
-        responseTwo.status.should.equal(200);
-        responseTwo.body.should.be.an('array').and.have.lengthOf(2);
-        responseTwo.body.map((element) => element._id).should.have.members([endpointOne._id.toString(), endpointThree._id.toString()]);
-    });
-
     it('Getting endpoints with filter should return a list of endpoints that match the filter - binary', async () => {
         const { token, user } = await createUserAndToken({ role: 'ADMIN' });
 
@@ -328,11 +132,7 @@ describe('Get endpoints', () => {
         const endpointOne = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: true,
-                cache: [],
-                uncache: [],
                 path: '/v1/test',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
@@ -350,11 +150,7 @@ describe('Get endpoints', () => {
         const endpointTwo = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: true,
-                applicationRequired: true,
                 binary: false,
-                cache: [],
-                uncache: [],
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
@@ -372,11 +168,7 @@ describe('Get endpoints', () => {
         const endpointThree = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: true,
-                cache: [],
-                uncache: [],
                 path: '/v1/testTwo',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
@@ -420,11 +212,7 @@ describe('Get endpoints', () => {
         const endpointOne = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: true,
-                cache: [],
-                uncache: [],
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
@@ -442,11 +230,7 @@ describe('Get endpoints', () => {
         await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: true,
-                applicationRequired: true,
                 binary: false,
-                cache: [],
-                uncache: [],
                 path: '/v1/testTwo',
                 method: 'GET',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
@@ -464,11 +248,7 @@ describe('Get endpoints', () => {
         const endpointThree = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: true,
-                cache: [],
-                uncache: [],
                 path: '/v1/testThree',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
@@ -512,11 +292,7 @@ describe('Get endpoints', () => {
         const endpointOne = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: true,
-                cache: [],
-                uncache: [],
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
@@ -534,11 +310,7 @@ describe('Get endpoints', () => {
         const endpointTwo = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: true,
-                applicationRequired: true,
                 binary: false,
-                cache: [],
-                uncache: [],
                 path: '/v1/testTwo',
                 method: 'POST',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
@@ -556,11 +328,7 @@ describe('Get endpoints', () => {
         const endpointThree = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: true,
-                cache: [],
-                uncache: [],
                 path: '/v1/testThree',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
@@ -604,11 +372,7 @@ describe('Get endpoints', () => {
         await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: true,
-                cache: [],
-                uncache: [],
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
@@ -626,11 +390,7 @@ describe('Get endpoints', () => {
         const endpointTwo = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: true,
-                applicationRequired: true,
                 binary: false,
-                cache: [],
-                uncache: [],
                 path: '/v1/testTwo',
                 method: 'POST',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
@@ -648,11 +408,7 @@ describe('Get endpoints', () => {
         const endpointThree = await createEndpoint(
             {
                 pathKeys: [],
-                authenticated: false,
-                applicationRequired: false,
                 binary: true,
-                cache: [],
-                uncache: [],
                 path: '/v1/testThree',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,

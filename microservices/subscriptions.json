@@ -1,0 +1,149 @@
+{
+  "port": 30561,
+  "endpoints": [
+    {
+      "path": "/v1/subscriptions",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/subscriptions"
+      }
+    },
+    {
+      "path": "/v1/subscriptions",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/:id/data",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/:id/data"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/:id",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/subscriptions/:id"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/:id",
+      "method": "PATCH",
+      "redirect": {
+        "method": "PATCH",
+        "path": "/api/v1/subscriptions/:id"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/find-by-ids",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/subscriptions/find-by-ids"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/find-all",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/find-all"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/user/:userId",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/user/:userId"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/:id"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/:id/send_confirmation",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/:id/send_confirmation"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/:id/confirm",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/:id/confirm"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/:id/unsubscribe",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/:id/unsubscribe"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/notify-updates/:dataset",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/subscriptions/notify-updates/:dataset"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/test-email-alerts",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/subscriptions/test-email-alerts"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/statistics",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/statistics"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/statistics-group",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/statistics-group"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/statistics-by-user",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/subscriptions/statistics-by-user"
+      }
+    },
+    {
+      "path": "/v1/subscriptions/check-hook",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/subscriptions/check-hook"
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 const nock = require('nock');
 const { ObjectId } = require('mongoose').Types;
+const DispatcherService = require('services/dispatcher.service');
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
 const VersionModel = require('models/version.model');
@@ -67,7 +68,11 @@ const createMicroservice = async (microserviceData) => (MicroserviceModel({
     ...microserviceData
 }).save());
 
-const createEndpoint = (endpoint) => new EndpointModel({ ...endpointTest, ...endpoint }).save();
+const createEndpoint = async (endpoint) => {
+    const endpointModel = await new EndpointModel({ ...endpointTest, ...endpoint }).save();
+    DispatcherService.reloadEndpoints();
+    return endpointModel;
+};
 
 const createMicroserviceWithEndpoints = async (microserviceData) => {
     const microservice = await createMicroservice(microserviceData);

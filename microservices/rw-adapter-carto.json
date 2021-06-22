@@ -1,0 +1,65 @@
+{
+  "port": 30507,
+  "endpoints": [
+    {
+      "path": "/v1/query/cartodb/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/carto/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/query/cartodb/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/carto/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/download/cartodb/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/carto/download/:dataset"
+      }
+    },
+    {
+      "path": "/v1/download/cartodb/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/carto/download/:dataset"
+      }
+    },
+    {
+      "path": "/v1/fields/cartodb/:dataset",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/carto/fields/:dataset"
+      }
+    },
+    {
+      "path": "/v1/rest-datasets/cartodb",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/carto/rest-datasets/cartodb"
+      }
+    },
+    {
+      "path": "/v1/rest-datasets/cartodb/:dataset",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/carto/rest-datasets/cartodb/:dataset"
+      }
+    }
+  ]
+}

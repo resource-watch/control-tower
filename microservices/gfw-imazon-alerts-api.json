@@ -1,0 +1,125 @@
+{
+  "port": 30545,
+  "endpoints": [
+    {
+      "path": "/v2/imazon-alerts/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/imazon-alerts/admin/:iso"
+      }
+    },
+    {
+      "path": "/v2/imazon-alerts/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/imazon-alerts/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v2/imazon-alerts/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/imazon-alerts/admin/:iso/:id1/:id2"
+      }
+    },
+    {
+      "path": "/v2/imazon-alerts/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/imazon-alerts/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v2/imazon-alerts/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/imazon-alerts/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v2/imazon-alerts",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/imazon-alerts"
+      }
+    },
+    {
+      "path": "/v2/imazon-alerts/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/imazon-alerts/latest"
+      }
+    },
+    {
+      "path": "/v2/imazon-alerts",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v2/imazon-alerts"
+      }
+    },
+    {
+      "path": "/v1/imazon-alerts/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/imazon-alerts/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/imazon-alerts/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/imazon-alerts/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/imazon-alerts/use/:name/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/imazon-alerts/use/:name/:id"
+      }
+    },
+    {
+      "path": "/v1/imazon-alerts/wdpa/:id",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/imazon-alerts/wdpa/:id"
+      }
+    },
+    {
+      "path": "/v1/imazon-alerts",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/imazon-alerts"
+      }
+    },
+    {
+      "path": "/v1/imazon-alerts/latest",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/imazon-alerts/latest"
+      }
+    },
+    {
+      "path": "/v1/imazon-alerts",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/imazon-alerts"
+      }
+    }
+  ]
+}

@@ -2,8 +2,6 @@ const Router = require('koa-router');
 const logger = require('logger');
 const DispatcherService = require('services/dispatcher.service.js');
 const EndpointNotFound = require('errors/endpointNotFound');
-const NotAuthenticated = require('errors/notAuthenticated');
-const NotApplicationKey = require('errors/notApplicationKey');
 const fs = require('fs');
 
 const router = new Router();
@@ -34,8 +32,6 @@ const ALLOWED_HEADERS = [
     'Surrogate-Key',
     'surrogate-key',
     'APP_KEY',
-    'cache',
-    'uncache'
 ];
 
 function getHeadersFromResponse(response) {
@@ -146,16 +142,6 @@ class DispatcherRouter {
             if (err instanceof EndpointNotFound) {
                 logger.info(`Endpoint not found: ${err.message}`);
                 ctx.throw(404, `Endpoint not found`);
-                return;
-            }
-            if (err instanceof NotAuthenticated) {
-                logger.info('Not authenticated');
-                ctx.throw(401, err.message);
-                return;
-            }
-            if (err instanceof NotApplicationKey) {
-                logger.info('Not application key');
-                ctx.throw(401, err.message);
                 return;
             }
             logger.error(err);

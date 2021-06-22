@@ -1,0 +1,85 @@
+{
+  "port": 30539,
+  "endpoints": [
+    {
+      "path": "/v1/umd-loss-gain/admin/ifl/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/umd-loss-gain/admin/ifl/:iso"
+      }
+    },
+    {
+      "path": "/v1/umd-loss-gain/admin/ifl/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/umd-loss-gain/admin/ifl/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v1/umd-loss-gain/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/umd-loss-gain/admin/:iso"
+      }
+    },
+    {
+      "path": "/v1/umd-loss-gain/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/umd-loss-gain/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v2/umd-loss-gain/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/umd-loss-gain/admin/:iso"
+      }
+    },
+    {
+      "path": "/v2/umd-loss-gain/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/umd-loss-gain/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v2/umd-loss-gain/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v2/umd-loss-gain/admin/:iso/:id1/:id2"
+      }
+    },
+    {
+      "path": "/v3/umd-loss-gain/admin/:iso",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v3/umd-loss-gain/admin/:iso"
+      }
+    },
+    {
+      "path": "/v3/umd-loss-gain/admin/:iso/:id1",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v3/umd-loss-gain/admin/:iso/:id1"
+      }
+    },
+    {
+      "path": "/v3/umd-loss-gain/admin/:iso/:id1/:id2",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v3/umd-loss-gain/admin/:iso/:id1/:id2"
+      }
+    }
+  ]
+}

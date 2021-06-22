@@ -1,0 +1,14 @@
+{
+  "port": 30554,
+  "endpoints": [
+    {
+      "path": "/v1/proxy/:alias",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/proxy/:alias"
+      }
+    }
+  ]
+}
