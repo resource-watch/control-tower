@@ -3,8 +3,6 @@ const { ObjectId } = require('mongoose').Types;
 const DispatcherService = require('services/dispatcher.service');
 const MicroserviceModel = require('models/microservice.model');
 const EndpointModel = require('models/endpoint.model');
-const JWT = require('jsonwebtoken');
-const { promisify } = require('util');
 const { endpointTest } = require('./test.constants');
 
 const getUUID = () => Math.random()
@@ -35,32 +33,15 @@ const createUser = (userData) => ({
     ...userData
 });
 
-const createTokenForUser = (tokenData) => promisify(JWT.sign)(tokenData, process.env.JWT_SECRET);
-
 const createUserAndToken = async (userData) => {
     const user = createUser(userData);
-    const userForToken = {
-        id: user._id.toString(),
-        role: user.role,
-        provider: user.provider,
-        email: user.email,
-        extraUserData: user.extraUserData,
-        createdAt: Date.now(),
-        photo: user.photo,
-        name: user.name
-    };
 
-    const token = await createTokenForUser(userForToken);
+    const token = `${getUUID()}`;
 
     return {
         user,
         token
     };
-};
-
-const getUserFromToken = async (token, isString = true) => {
-    const userData = await promisify(JWT.verify)(token, process.env.JWT_SECRET);
-    return isString ? JSON.stringify(userData) : userData;
 };
 
 const createMicroservice = async (microserviceData) => (MicroserviceModel({
@@ -212,7 +193,6 @@ module.exports = {
     createUserAndToken,
     createMicroservice,
     createMicroserviceWithEndpoints,
-    getUserFromToken,
     isTokenRequired,
     isAdminOnly,
     ensureHasPaginationElements,

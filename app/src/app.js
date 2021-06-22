@@ -9,7 +9,6 @@ const path = require('path');
 const convert = require('koa-convert');
 const sleep = require('sleep');
 const cors = require('@koa/cors');
-const koaSimpleHealthCheck = require('koa-simple-healthcheck');
 const ErrorSerializer = require('serializers/errorSerializer');
 const mongooseOptions = require('../../config/mongoose');
 
@@ -87,7 +86,6 @@ async function init() {
 
             app.use(convert(koaBodyMiddleware));
             app.use(koaLogger());
-            app.use(koaSimpleHealthCheck());
 
             loader.loadRoutes(app);
             app.use(require('routes/dispatcher.js')

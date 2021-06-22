@@ -116,40 +116,6 @@ the [Google APIs page](https://console.developers.google.com/apis/credentials?pr
 
 ## Documentation
 
-### Authentication
-
-A JWT token contains the following information:
-
-```json
-{
-  "id": "1a10d7c6e0a37126611fd7a7",
-  "role": "ADMIN",
-  "provider": "local",
-  "email": "admin@control-tower.org",
-  "extraUserData": {
-    "apps": [
-      "rw",
-      "gfw",
-      "gfw-climate",
-      "prep",
-      "aqueduct",
-      "forest-atlas",
-      "data4sdgs"
-    ]
-  }
-}
-```
-
-In a dev environment, you can use the following tokens to identify as different users (generated with `mysecret` key).
-
-Role USER, registered with all Applications
-Token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsInJvbGUiOiJVU0VSIiwicHJvdmlkZXIiOiJsb2NhbCIsImVtYWlsIjoidXNlckBjb250cm9sLXRvd2VyLm9yZyIsImV4dHJhVXNlckRhdGEiOnsiYXBwcyI6WyJydyIsImdmdyIsImdmdy1jbGltYXRlIiwicHJlcCIsImFxdWVkdWN0IiwiZm9yZXN0LWF0bGFzIiwiZGF0YTRzZGdzIl19fQ.twB7Ff3Y_g0fiwPbNLnsjwbJTzra4r3e3VyJV5MMwp0`
-
-Role MANAGER, registered with all Applications
-Token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsInJvbGUiOiJNQU5BR0VSIiwicHJvdmlkZXIiOiJsb2NhbCIsImVtYWlsIjoibWFuYWdlckBjb250cm9sLXRvd2VyLm9yZyIsImV4dHJhVXNlckRhdGEiOnsiYXBwcyI6WyJydyIsImdmdyIsImdmdy1jbGltYXRlIiwicHJlcCIsImFxdWVkdWN0IiwiZm9yZXN0LWF0bGFzIiwiZGF0YTRzZGdzIl19fQ.6U9vkDNEZxjyPN7BUd_PT0DXrXcgQjgrscoG_TaIApU`
-
-Role ADMIN, registered with all Applications
-Token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsInJvbGUiOiJBRE1JTiIsInByb3ZpZGVyIjoibG9jYWwiLCJlbWFpbCI6ImFkbWluQGNvbnRyb2wtdG93ZXIub3JnIiwiZXh0cmFVc2VyRGF0YSI6eyJhcHBzIjpbInJ3IiwiZ2Z3IiwiZ2Z3LWNsaW1hdGUiLCJwcmVwIiwiYXF1ZWR1Y3QiLCJmb3Jlc3QtYXRsYXMiLCJkYXRhNHNkZ3MiXX19.CZrK1VRCaFGCk5NQOJUIFfUb-feBwkGZ_ORu42O_fyU`
 
 ### Environment variables
 
