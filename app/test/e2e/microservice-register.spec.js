@@ -47,7 +47,6 @@ describe('Microservices endpoints', () => {
                 return uri.startsWith('/info');
             })
             .reply(200, {
-                swagger: {},
                 name: 'test-microservice-one',
                 tags: ['test'],
                 endpoints: [{
@@ -63,7 +62,6 @@ describe('Microservices endpoints', () => {
         const response = await requester.post(`/api/v1/microservice`).send(testMicroserviceOne);
 
         response.status.should.equal(200);
-        response.body.status.should.equal('active');
 
         const microservice = await MicroserviceModel.find();
         microservice.should.have.lengthOf(1);
@@ -99,7 +97,6 @@ describe('Microservices endpoints', () => {
         const response = await requester.post(`/api/v1/microservice`).send(testMicroserviceOne);
 
         response.status.should.equal(200);
-        response.body.status.should.equal('pending');
 
         const microservice = await MicroserviceModel.find();
         microservice.should.have.lengthOf(1);
@@ -157,7 +154,6 @@ describe('Microservices endpoints', () => {
                 return uri.startsWith('/info');
             })
             .reply(200, {
-                swagger: {},
                 name: 'test-microservice-one',
                 tags: ['test'],
                 endpoints: [{
@@ -173,7 +169,6 @@ describe('Microservices endpoints', () => {
         const response = await requester.post(`/api/v1/microservice`).send(testMicroserviceOne);
 
         response.status.should.equal(200);
-        response.body.status.should.equal('active');
 
         const microservice = await MicroserviceModel.find();
         microservice.should.have.lengthOf(1);
@@ -221,7 +216,6 @@ describe('Microservices endpoints', () => {
                 return uri.startsWith('/info');
             })
             .reply(200, {
-                swagger: {},
                 name: 'test-microservice-one',
                 tags: ['test'],
                 endpoints: [{
@@ -244,7 +238,6 @@ describe('Microservices endpoints', () => {
         const response = await requester.post(`/api/v1/microservice`).send(testMicroserviceOne);
 
         response.status.should.equal(200);
-        response.body.status.should.equal('active');
 
         const microservice = await MicroserviceModel.find();
         microservice.should.have.lengthOf(1);
@@ -297,7 +290,6 @@ describe('Microservices endpoints', () => {
                 return uri.startsWith('/info');
             })
             .reply(200, {
-                swagger: {},
                 name: 'test-microservice-two',
                 tags: ['test'],
                 endpoints: [{
@@ -313,7 +305,6 @@ describe('Microservices endpoints', () => {
         const response = await requester.post(`/api/v1/microservice`).send(testMicroserviceTwo);
 
         response.status.should.equal(200);
-        response.body.status.should.equal('active');
 
         const microservice = await MicroserviceModel.find();
         microservice.should.have.lengthOf(2);
@@ -373,7 +364,6 @@ describe('Microservices endpoints', () => {
                 return uri.startsWith('/info');
             })
             .reply(200, {
-                swagger: {},
                 name: 'test-microservice-one',
                 tags: ['test'],
                 endpoints: [{
@@ -398,7 +388,6 @@ describe('Microservices endpoints', () => {
         const response = await requester.post(`/api/v1/microservice`).send(testMicroserviceOne);
 
         response.status.should.equal(200);
-        response.body.status.should.equal('active');
 
         const microservice = await MicroserviceModel.find();
         microservice.should.have.lengthOf(1);
@@ -474,7 +463,6 @@ describe('Microservices endpoints', () => {
                 return uri.startsWith('/info');
             })
             .reply(200, {
-                swagger: {},
                 name: 'test-microservice-one',
                 tags: ['test'],
                 endpoints: [{
@@ -492,7 +480,6 @@ describe('Microservices endpoints', () => {
         const response = await requester.post(`/api/v1/microservice`).send(testMicroserviceTwo);
 
         response.status.should.equal(200);
-        response.body.status.should.equal('active');
 
         const microservice = await MicroserviceModel.find();
         microservice.should.have.lengthOf(2);
@@ -576,7 +563,6 @@ describe('Microservices endpoints', () => {
                 return uri.startsWith('/info');
             })
             .reply(200, {
-                swagger: {},
                 name: 'test-microservice-one',
                 tags: ['test'],
                 endpoints: [{
@@ -594,7 +580,6 @@ describe('Microservices endpoints', () => {
         const response = await requester.post(`/api/v1/microservice`).send(testMicroserviceTwo);
 
         response.status.should.equal(200);
-        response.body.status.should.equal('active');
 
         const microservice = await MicroserviceModel.find();
         microservice.should.have.lengthOf(2);

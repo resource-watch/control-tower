@@ -77,7 +77,6 @@ const USERS = {
 const testAppKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIn0.sQOVoEtkQlgy8UwlPOi5YWSdGAkRn80JqT53RdktIms';
 
 const microserviceTest = {
-    swagger: {},
     name: 'test-microservice-one',
     tags: ['test'],
     endpoints: [{

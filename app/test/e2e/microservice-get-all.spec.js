@@ -93,57 +93,6 @@ describe('Microservices endpoints - Get all', () => {
         response.body.should.be.an('array').and.have.lengthOf(2);
     });
 
-    it('Getting a list of microservices filtered by status should return the microservices that match that status', async () => {
-        const testMicroserviceOne = {
-            name: `test-microservice-one`,
-            url: 'http://test-microservice-one:8000',
-            status: 'pending',
-            endpoints: [
-                {
-                    microservice: 'test-microservice-one',
-                    path: '/v1/test',
-                    method: 'GET',
-                    redirect: {
-                        method: 'GET',
-                        path: '/api/v1/test'
-                    }
-                }
-            ],
-        };
-        const testMicroserviceTwo = {
-            name: `test-microservice-two`,
-            url: 'http://test-microservice-two:8000',
-            status: 'active',
-            endpoints: [
-                {
-                    microservice: 'test-microservice-two',
-                    path: '/v1/test',
-                    method: 'GET',
-                    redirect: {
-                        method: 'GET',
-                        path: '/api/v1/test'
-                    }
-                }
-            ],
-        };
-
-        const microserviceOne = await createMicroservice(testMicroserviceOne);
-        await createMicroservice(testMicroserviceTwo);
-
-        const { token, user } = await createUserAndToken({ role: 'ADMIN' });
-
-        mockGetUserFromToken(user, token);
-
-        const response = await requester
-            .get(`/api/v1/microservice`)
-            .query({ status: 'pending' })
-            .set('Authorization', `Bearer ${token}`);
-
-        response.status.should.equal(200);
-        response.body.should.be.an('array').and.have.lengthOf(1);
-        response.body[0].should.have.property('_id').and.equal(microserviceOne.id);
-    });
-
     it('Getting a list of microservices filtered by url should return the microservices that match that url', async () => {
         const testMicroserviceOne = {
             name: `test-microservice-one`,

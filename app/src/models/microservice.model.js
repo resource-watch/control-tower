@@ -4,11 +4,9 @@ const { Schema } = mongoose;
 
 const Microservice = new Schema({
     name: { type: String, required: true, trim: true },
-    swagger: { type: String, required: false, trim: true },
     url: { type: String, required: true, trim: true },
     pathInfo: { type: String, required: true, default: '/info' },
     pathLive: { type: String, required: true, default: '/ping' },
-    status: { type: String, default: 'pending' },
     cache: [{ type: String, required: false }],
     uncache: [{ type: String, required: false }],
     infoStatus:

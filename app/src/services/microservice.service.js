@@ -9,14 +9,9 @@ const request = require('request-promise');
 const url = require('url');
 const crypto = require('crypto');
 const pathToRegexp = require('path-to-regexp');
-const NotificationService = require('services/notification.service.js');
 const JWT = require('jsonwebtoken');
 const { promisify } = require('util');
 const { uniq } = require('lodash');
-
-const MICRO_STATUS_PENDING = 'pending';
-const MICRO_STATUS_ACTIVE = 'active';
-const MICRO_STATUS_ERROR = 'error';
 
 class Microservice {
 
@@ -182,7 +177,6 @@ class Microservice {
         microservice.endpoints = result.endpoints;
         microservice.cache = result.cache;
         microservice.uncache = result.uncache;
-        microservice.swagger = JSON.stringify(result.swagger);
         microservice.updatedAt = Date.now();
         microservice.token = token;
         if (result.tags) {
@@ -233,14 +227,8 @@ class Microservice {
             if (existingMicroservice) {
                 micro = await MicroserviceModel.findByIdAndUpdate(
                     existingMicroservice._id,
-                    { status: MICRO_STATUS_PENDING },
                     { new: true }
                 );
-            }
-
-            if (existingMicroservice && existingMicroservice.status === MICRO_STATUS_PENDING) {
-                logger.error('[MicroserviceRouter] Mutex active in microservice ', info.url);
-                return null;
             }
 
             try {
@@ -253,22 +241,19 @@ class Microservice {
 
                     micro = await new MicroserviceModel({
                         name: info.name,
-                        status: MICRO_STATUS_PENDING,
                         url: info.url,
                         pathInfo: info.pathInfo,
-                        swagger: info.swagger,
                         token: crypto.randomBytes(20).toString('hex'),
                         tags: uniq(info.tags),
                         version,
                     }).save();
 
                 }
-                logger.debug(`[MicroserviceRouter] Creating microservice with status ${MICRO_STATUS_PENDING}`);
+                logger.debug(`[MicroserviceRouter] Creating microservice`);
 
                 const correct = await Microservice.getMicroserviceInfo(micro, version);
                 if (correct) {
                     logger.info(`[MicroserviceRouter] Microservice ${micro.name} was reached successfully, setting status to 'active'`);
-                    micro.status = MICRO_STATUS_ACTIVE;
                     await micro.save();
                     if (existingVersion) {
                         existingVersion.lastUpdated = new Date();
@@ -349,179 +334,6 @@ class Microservice {
         await microservice.remove();
 
         return microservice;
-    }
-
-    /**
-     *
-     *
-     * @param micro
-     * @returns {Promise<boolean>}
-     */
-    static async checkLiveMicro(micro) {
-        logger.debug(`[MicroserviceService] Checking liveliness of microservice: ${micro.name} `);
-        const urlLive = url.resolve(micro.url, micro.pathLive);
-        logger.debug(`[MicroserviceService] Doing request to ${urlLive}`);
-        if (!micro.infoStatus) {
-            micro.infoStatus = {};
-        }
-        try {
-            await request({
-                uri: urlLive,
-                timeout: 5000
-            });
-            micro.infoStatus.lastCheck = new Date();
-            micro.infoStatus.error = null;
-            micro.infoStatus.numRetries = 0;
-            await micro.save();
-            logger.debug(`[MicroserviceService] Microservice ${micro.name} is live`);
-        } catch (err) {
-            logger.error(`[MicroserviceService] Microservice ${micro.name} is DOWN`, err);
-            micro.infoStatus.lastCheck = new Date();
-            micro.infoStatus.numRetries++;
-            micro.status = MICRO_STATUS_ERROR;
-            micro.infoStatus.error = err.message;
-            // TODO: if a live MS stopped replying, we should probably block its endpoints.
-            await micro.save();
-
-            if (micro.infoStatus.numRetries === 3) {
-                await NotificationService.sendAlertMicroserviceDown(micro.name, micro.url, err);
-            }
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     *
-     *
-     * @returns {Promise<void>}
-     */
-    static async checkActiveMicroservices() {
-        logger.info('[MicroserviceService] Checking live microservices');
-
-        const versionFound = await VersionModel.findOne({
-            name: appConstants.ENDPOINT_VERSION,
-        });
-        logger.debug('[MicroserviceService] Found', versionFound);
-
-        logger.info('[MicroserviceService] Obtaining microservices with version ', versionFound);
-        const microservices = await MicroserviceModel.find({
-            status: MICRO_STATUS_ACTIVE,
-            version: versionFound.version
-        });
-        if (!microservices || microservices.length === 0) {
-            logger.info('[MicroserviceService] No registered microservices found.');
-            return;
-        }
-        for (let i = 0, { length } = microservices; i < length; i++) {
-            await Microservice.checkLiveMicro(microservices[i]);
-        }
-        logger.info('[MicroserviceService] Finished checking live microservices');
-    }
-
-    /**
-     * Tries to contact "error" microservices, and activates them if they have recovered
-     * If a microservice has spent too many iterations on "error" state, it will be deleted.
-     *
-     * @returns {Promise<void>}
-     */
-    static async checkErrorMicroservices() {
-        logger.info('[MicroserviceService] Trying register microservices with status error');
-        const versionFound = await VersionModel.findOne({
-            name: appConstants.ENDPOINT_VERSION,
-        });
-        const { version } = versionFound;
-
-        const errorMicroservices = await MicroserviceModel.find({
-            status: MICRO_STATUS_ERROR,
-            version
-        });
-
-        if (!errorMicroservices || errorMicroservices.length === 0) {
-            logger.info('[MicroserviceService] No microservices in error state found.');
-            return;
-        }
-
-        for (let i = 0, { length } = errorMicroservices; i < length; i++) {
-            const micro = errorMicroservices[i];
-            const correct = await Microservice.getMicroserviceInfo(micro, version);
-            if (correct) {
-                logger.info(`[MicroserviceService] Microservice "${micro.name}" with previous "error" state is now active.`);
-                micro.status = MICRO_STATUS_ACTIVE;
-                await micro.save();
-                logger.info('[MicroserviceService] Updated successfully');
-            } else {
-                if (!micro.infoStatus) {
-                    micro.infoStatus = {};
-                }
-                micro.infoStatus.numRetries++;
-                logger.info(`[MicroserviceService] Microservice "${micro.name}" in error state for the ${micro.infoStatus.numRetries}th attempt.`);
-                if (micro.infoStatus.numRetries >= config.get('microservice.errorToDeleteThreshold')) {
-                    logger.info(`[MicroserviceService] Microservice "${micro.name}" exceeded its retries budget, deleting.`);
-                    await Microservice.deleteMicroservice(micro.id);
-                } else {
-                    await micro.save();
-                }
-            }
-        }
-    }
-
-    /**
-     * Tries to contact "pending" microservices, and activates them if they have recovered.
-     * If a microservice has spent too many iterations on "pending" state, it will be set to "error".
-     *
-     * @returns {Promise<void>}
-     */
-    static async checkPendingMicroservices() {
-        logger.info('[MicroserviceService] Trying register microservices with status pending');
-        const versionFound = await VersionModel.findOne({
-            name: appConstants.ENDPOINT_VERSION,
-        });
-        const { version } = versionFound;
-
-        const pendingMicroservices = await MicroserviceModel.find({
-            status: MICRO_STATUS_PENDING,
-            version
-        });
-
-        if (!pendingMicroservices || pendingMicroservices.length === 0) {
-            logger.info('[MicroserviceService] No microservices in pending state found.');
-            return;
-        }
-
-        for (let i = 0, { length } = pendingMicroservices; i < length; i++) {
-            const micro = pendingMicroservices[i];
-            const correct = await Microservice.getMicroserviceInfo(micro, version);
-            if (!micro.infoStatus) {
-                micro.infoStatus = {};
-            }
-            if (correct) {
-                logger.info(`[MicroserviceService] Microservice "${micro.name}" with previous "pending" state is now active.`);
-                micro.status = MICRO_STATUS_ACTIVE;
-                micro.infoStatus.numRetries = 0;
-                await micro.save();
-
-                const existingVersion = await VersionModel.findOne({
-                    name: appConstants.ENDPOINT_VERSION,
-                });
-
-                if (existingVersion) {
-                    existingVersion.lastUpdated = new Date();
-                    await existingVersion.save();
-                }
-
-                logger.info('[MicroserviceService] Updated successfully');
-            } else {
-                micro.infoStatus.numRetries++;
-                logger.info(`[MicroserviceService] Microservice "${micro.name}" in pending state for the ${micro.infoStatus.numRetries}th attempt.`);
-                if (micro.infoStatus.numRetries >= config.get('microservice.pendingToErrorThreshold')) {
-                    micro.status = MICRO_STATUS_ERROR;
-                    micro.infoStatus.numRetries = 0;
-                    logger.info(`[MicroserviceService] Microservice "${micro.name}" has surpassed the pending state threshold. Setting state to "error".`);
-                }
-                await micro.save();
-            }
-        }
     }
 
 }

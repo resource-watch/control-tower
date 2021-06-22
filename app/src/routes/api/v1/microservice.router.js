@@ -19,7 +19,7 @@ const router = new Router({
 class MicroserviceRouter {
 
     static async getAll(ctx) {
-        const query = pick(ctx.query, ['status', 'url']);
+        const query = pick(ctx.query, ['url']);
 
         logger.info('[MicroserviceRouter] Obtaining registered microservices list');
         const versionFound = await VersionModel.findOne({
@@ -45,17 +45,6 @@ class MicroserviceRouter {
         }
 
         ctx.body = MicroserviceSerializer.serialize(microservice);
-    }
-
-    static async getStatus(ctx) {
-        logger.info('[MicroserviceRouter] Obtaining microservices status');
-        const versionFound = await VersionModel.findOne({
-            name: appConstants.ENDPOINT_VERSION,
-        });
-        logger.debug('[MicroserviceRouter] Found', versionFound);
-        ctx.body = await MicroserviceModel.find({ version: versionFound.version }, {
-            name: 1, infoStatus: 1, status: 1, _id: 0
-        });
     }
 
     static async register(ctx) {
@@ -88,7 +77,6 @@ class MicroserviceRouter {
 
 }
 
-router.get('/status', MicroserviceRouter.getStatus);
 router.get('/', getLoggedUser, Utils.isLogged, Utils.isAdmin, MicroserviceRouter.getAll);
 router.get('/:id', getLoggedUser, Utils.isLogged, Utils.isAdmin, MicroserviceRouter.get);
 router.post('/', MicroserviceRouter.register);

@@ -4,11 +4,9 @@ class MicroserviceSerializer {
         return {
             id: el._id,
             name: el.name,
-            swagger: el.swagger,
             url: el.url,
             pathInfo: el.pathInfo,
             pathLive: el.pathLive,
-            status: el.status,
             cache: el.cache,
             uncache: el.uncache,
             infoStatus: el.infoStatus,
