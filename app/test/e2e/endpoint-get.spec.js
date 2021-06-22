@@ -78,14 +78,13 @@ describe('Get endpoints', () => {
                 path: '/v1/test',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         await createEndpoint(
@@ -95,14 +94,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         await createEndpoint(
@@ -112,14 +110,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testTwo',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
 
@@ -150,14 +147,13 @@ describe('Get endpoints', () => {
                 path: '/v1/test',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         const endpointTwo = await createEndpoint(
@@ -167,14 +163,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         const endpointThree = await createEndpoint(
@@ -184,14 +179,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testTwo',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
 
@@ -242,14 +236,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         await createEndpoint(
@@ -259,14 +252,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testTwo',
                 method: 'GET',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         const endpointThree = await createEndpoint(
@@ -276,14 +268,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testThree',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
 
@@ -334,14 +325,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         const endpointTwo = await createEndpoint(
@@ -351,14 +341,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testTwo',
                 method: 'POST',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         const endpointThree = await createEndpoint(
@@ -368,14 +357,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testThree',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
 
@@ -426,14 +414,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testOne',
                 method: 'GET',
                 pathRegex: /^\/v1\/test(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/test',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         const endpointTwo = await createEndpoint(
@@ -443,14 +430,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testTwo',
                 method: 'POST',
                 pathRegex: /^\/v1\/testOne(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testOne',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
         const endpointThree = await createEndpoint(
@@ -460,14 +446,13 @@ describe('Get endpoints', () => {
                 path: '/v1/testThree',
                 method: 'GET',
                 pathRegex: /^\/v1\/testTwo(?:\/(?=$))?$/i,
-                redirect: [
+                redirect:
                     {
                         microservice: 'test1',
                         method: 'GET',
                         path: '/api/v1/testTwo',
                         url: 'http://test-microservice-one:8000'
                     }
-                ],
             }
         );
 

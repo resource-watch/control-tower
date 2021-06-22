@@ -19,24 +19,6 @@ const CACHE = {
 
 class Dispatcher {
 
-    static hasLoggedUser(ctx) {
-        if (!ctx.header || !ctx.header.authorization) {
-            return false;
-        }
-
-        const parts = ctx.header.authorization.split(' ');
-
-        if (parts.length === 2) {
-            const scheme = parts[0];
-
-            if (/^Bearer$/i.test(scheme)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     static async buildUrl(sourcePath, redirectEndpoint, endpoint) {
         logger.debug('Building url');
         const result = endpoint.pathRegex.exec(sourcePath);
@@ -49,84 +31,6 @@ class Dispatcher {
         const buildUrl = url.resolve(redirectEndpoint.url, toPath(keys));
         logger.debug(`Final url  ${buildUrl}`);
         return buildUrl;
-    }
-
-    static buildPathFilter(sourcePath, filterEndpoint, endpoint) {
-        logger.debug('Building url');
-        const result = endpoint.pathRegex.exec(sourcePath);
-        let keys = {}; // eslint-disable-line prefer-const
-        // eslint-disable-next-line no-return-assign
-        endpoint.pathKeys.map((key, i) => (
-            keys[filterEndpoint.params[key]] = result[i + 1]
-        ));
-        const toPath = pathToRegexp.compile(filterEndpoint.path);
-        const path = toPath(keys);
-        logger.debug(`Final path  ${path}`);
-        return path;
-    }
-
-    static searchFilterValue(filter, filterValues) {
-        logger.debug('Searching filterValue to filter', filter.name);
-
-        if (filterValues) {
-            for (let i = 0, { length } = filterValues; i < length; i++) {
-                if (filterValues[i].name === filter.name && filterValues[i].path === filter.path
-                    && filterValues[i].method === filter.method && filterValues[i].result.correct) {
-                    return filterValues[i].result.data;
-                }
-            }
-        }
-        logger.warn('Could not find filter value to filter', filter.name);
-        return null;
-    }
-
-    static checkCompare(compare, dataFilter, condition = 'AND') {
-        logger.debug('Check compare filter to filter', compare, 'and dataFilter', dataFilter);
-        if (compare && dataFilter) {
-            if (compare instanceof Array) {
-                for (let j = 0, lengthCompare = compare.length; j < lengthCompare; j++) {
-                    const match = Dispatcher.checkCompare(compare[j], dataFilter, condition);
-                    if (match && condition === 'OR') {
-                        return true;
-                    }
-                    if (!match && condition === 'AND') {
-                        return false;
-                    }
-                }
-            } else {
-                const compareKeys = Object.keys(compare);
-
-                for (let i = 0, { length } = compareKeys; i < length; i++) {
-                    const key = compareKeys[i];
-                    if (typeof compare[key] === 'object') {
-                        logger.debug('IS A OBJECT');
-                        const match = Dispatcher.checkCompare(compare[key], dataFilter[key], condition);
-                        if (!match) {
-                            return false;
-                        }
-                    } else if (compare[key] !== dataFilter[key]) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        if (condition === 'OR') {
-            return false;
-        }
-        if (condition === 'AND') {
-            return true;
-        }
-        return false;
-    }
-
-    static cloneEndpoint(endpoint) {
-        const newObject = { ...endpoint };
-        newObject.redirect = [];
-        for (let i = 0, { length } = endpoint.redirect; i < length; i++) {
-            newObject.redirect.push({ ...endpoint.redirect[i] });
-        }
-        return newObject;
     }
 
     static getHeadersFromRequest(headers) {
@@ -176,24 +80,9 @@ class Dispatcher {
         }
 
         logger.info(`[DispatcherService - getRequest] Endpoint found. Path: ${endpoint.path} | Method: ${endpoint.method}`);
-        logger.info('[DispatcherService - getRequest] Checking if authentication is necessary');
 
-        let redirectEndpoint = null;
-        if (endpoint && endpoint.redirect.length === 0) {
-            logger.error('[DispatcherService - getRequest] No redirects exist');
-            throw new EndpointNotFound(`${parsedUrl.pathname} not found`);
-        }
+        const redirectEndpoint = endpoint.redirect;
 
-        if (endpoint.redirect && endpoint.redirect.length > 1) {
-            logger.debug(`[DispatcherService - getRequest] Found several redirect endpoints (num: ${endpoint.redirect.length}).
-            Obtaining final endpoint with random`);
-            const pos = Math.floor(Math.random() * endpoint.redirect.length);
-            logger.debug(`[DispatcherService - getRequest] Position choose ${pos}`);
-            redirectEndpoint = endpoint.redirect[pos];
-        } else {
-            logger.debug('[DispatcherService - getRequest] Only one redirect found');
-            [redirectEndpoint] = endpoint.redirect;
-        }
         logger.info('[DispatcherService - getRequest] Dispatching request from %s to %s%s private endpoint.',
             parsedUrl.pathname, redirectEndpoint.url, redirectEndpoint.path);
         logger.debug('[DispatcherService - getRequest] endpoint', endpoint);
@@ -233,18 +122,6 @@ class Dispatcher {
             }
         }
 
-        if (redirectEndpoint.data) {
-            logger.debug('[DispatcherService - getRequest] Adding data');
-            if (configRequest.method === 'GET' || configRequest.method === 'DELETE') {
-                configRequest.qs = configRequest.qs || {};
-                const keys = Object.keys(redirectEndpoint.data);
-                for (let i = 0, { length } = keys; i < length; i++) {
-                    configRequest.qs[keys[i]] = JSON.stringify(redirectEndpoint.data[keys[i]]);
-                }
-            } else {
-                configRequest.body = { ...configRequest.body, ...redirectEndpoint.data };
-            }
-        }
         if (ctx.request.body.files) {
             logger.debug('[DispatcherService - getRequest] Adding files', ctx.request.body.files);
             const { files } = ctx.request.body;
@@ -293,9 +170,6 @@ class Dispatcher {
         if (ctx.request.headers) {
             logger.debug('[DispatcherService - getRequest] Adding headers');
             configRequest.headers = Dispatcher.getHeadersFromRequest(ctx.request.headers);
-        }
-        if (ctx.state && ctx.state.appKey) {
-            configRequest.headers.app_key = JSON.stringify(ctx.state.appKey);
         }
 
         logger.debug('[DispatcherService - getRequest] Checking if is json or formdata request');

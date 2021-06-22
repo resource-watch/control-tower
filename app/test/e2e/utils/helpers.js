@@ -73,7 +73,7 @@ const createMicroservice = async (microserviceData) => (MicroserviceModel({
 
 const createEndpoint = async (endpoint) => {
     const endpointModel = await new EndpointModel({ ...endpointTest, ...endpoint }).save();
-    DispatcherService.reloadEndpoints();
+    await DispatcherService.reloadEndpoints();
     return endpointModel;
 };
 
@@ -86,13 +86,13 @@ const createMicroserviceWithEndpoints = async (microserviceData) => {
 
         endpointData.redirect = [endpointData.redirect];
 
-        if (!endpointData.redirect[0].url) {
-            endpointData.redirect[0].url = microservice.url;
-            endpointData.redirect[0].microservice = microservice.name;
+        if (!endpointData.redirect.url) {
+            endpointData.redirect.url = microservice.url;
+            endpointData.redirect.microservice = microservice.name;
         }
 
-        if (!endpointData.redirect[0].url) {
-            endpointData.redirect[0].url = microservice.url;
+        if (!endpointData.redirect.url) {
+            endpointData.redirect.url = microservice.url;
         }
         endpoints.push(createEndpoint(endpointData));
     });

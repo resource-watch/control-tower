@@ -35,16 +35,16 @@ class Microservice {
             if (!oldRedirect) {
                 logger.debug(`[MicroserviceService] Redirect doesn't exist`);
                 endpoint.redirect.microservice = microservice.name;
-                oldEndpoint.redirect.push(endpoint.redirect);
+                oldEndpoint.redirect = endpoint.redirect;
                 oldEndpoint.updatedAt = new Date();
                 await oldEndpoint.save();
             } else {
                 logger.debug('[MicroserviceService] Redirect exists. Updating', oldRedirect);
                 for (let i = 0, { length } = oldRedirect.redirect; i < length; i++) {
-                    if (oldRedirect.redirect[i].url === endpoint.redirect.url) {
+                    if (oldRedirect.redirect.url === endpoint.redirect.url) {
                         oldRedirect.microservice = microservice.name;
-                        oldRedirect.redirect[i].method = endpoint.redirect.method;
-                        oldRedirect.redirect[i].path = endpoint.redirect.path;
+                        oldRedirect.redirect.method = endpoint.redirect.method;
+                        oldRedirect.redirect.path = endpoint.redirect.path;
                     }
                 }
                 oldEndpoint.updatedAt = new Date();
@@ -59,7 +59,7 @@ class Microservice {
                 pathKeys = pathKeys.map((key) => key.name);
             }
             logger.debug('[MicroserviceService] Saving new endpoint');
-            logger.debug('[MicroserviceService] regesx', pathRegex);
+            logger.debug('[MicroserviceService] regex', pathRegex);
             endpoint.redirect.microservice = microservice.name;
             await new EndpointModel({
                 path: endpoint.path,
@@ -67,7 +67,7 @@ class Microservice {
                 pathRegex,
                 pathKeys,
                 binary: endpoint.binary,
-                redirect: [endpoint.redirect],
+                redirect: endpoint.redirect,
             }).save();
         }
     }
@@ -200,16 +200,8 @@ class Microservice {
                 .exec();
 
             if (endpoint) {
-                const redirects = endpoint.redirect.filter((redirect) => redirect.url !== microservice.url);
-                if (redirects && redirects.length > 0) {
-                    logger.info(`[MicroserviceService - removeEndpointsOfMicroservice] Updating endpoint: Path ${endpoint.path} | Method ${endpoint.method}`);
-                    endpoint.redirect = redirects;
-                    endpoint.updatedAt = new Date();
-                    await endpoint.save();
-                } else {
-                    logger.info(`[MicroserviceService - removeEndpointsOfMicroservice] Endpoint empty. Removing endpoint: Path ${endpoint.path} | Method ${endpoint.method}`);
-                    await EndpointModel.deleteOne({ _id: endpoint._id });
-                }
+                logger.info(`[MicroserviceService - removeEndpointsOfMicroservice] Endpoint empty. Removing endpoint: Path ${endpoint.path} | Method ${endpoint.method}`);
+                await EndpointModel.deleteOne({ _id: endpoint._id });
             }
         }
     }

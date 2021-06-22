@@ -6,8 +6,6 @@ const { getTestAgent } = require('./utils/test-server');
 const { endpointTest } = require('./utils/test.constants');
 const {
     createEndpoint,
-    ensureCorrectError,
-
     hexToString,
     createUserAndToken
 } = require('./utils/helpers');
@@ -23,22 +21,15 @@ let microservice;
 const changeMethod = (method) => ({
     ...endpointTest,
     method,
-    redirect: [{
-        ...endpointTest.redirect[0],
+    redirect: {
+        ...endpointTest.redirect,
         method
-    }]
+    }
 });
 
 describe('Endpoint dispatch tests', () => {
     before(async () => {
         microservice = await getTestAgent();
-    });
-
-    it('Created endpoint without redirects should return a 404 HTTP code with a "Endpoint not found" message', async () => {
-
-        await createEndpoint({ redirect: [] });
-        const result = await microservice.post('/api/v1/dataset');
-        ensureCorrectError(result, 'Endpoint not found', 404);
     });
 
     it('Created endpoint should return a 200 HTTP code', async () => {
@@ -328,10 +319,10 @@ describe('Endpoint dispatch tests', () => {
 
         await createEndpoint({
             ...endpointTest,
-            redirect: [{
-                ...endpointTest.redirect[0],
+            redirect: {
+                ...endpointTest.redirect,
                 method: 'get'
-            }]
+            }
         });
         createMockEndpoint('/api/v1/dataset', { method: 'get' });
         const result = await microservice.post('/api/v1/dataset');

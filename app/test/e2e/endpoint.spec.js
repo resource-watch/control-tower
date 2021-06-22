@@ -77,7 +77,7 @@ describe('GET Endpoints', () => {
             .above(0);
 
         delete resEndpoints.body[0]._id;
-        delete resEndpoints.body[0].redirect[0]._id;
+        delete resEndpoints.body[0].redirect._id;
 
         resEndpoints.body[0].should.have.property('createdAt')
             .and
@@ -98,14 +98,13 @@ describe('GET Endpoints', () => {
                 path: '/v1/dataset',
                 method: 'POST',
                 pathRegex: {},
-                redirect: [
+                redirect:
                     {
                         microservice: 'dataset',
                         method: 'POST',
                         path: '/api/v1/dataset',
                         url: 'http://mymachine:6001'
                     }
-                ],
             }
         );
     });

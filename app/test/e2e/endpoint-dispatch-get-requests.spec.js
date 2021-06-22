@@ -26,21 +26,21 @@ describe('Dispatch GET requests', () => {
         await createEndpoint({
             method: 'GET',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{
-                ...endpointTest.redirect[0],
+            redirect: {
+                ...endpointTest.redirect,
                 method: 'GET'
-            }]
+            }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
+            redirect:
                 {
                     microservice: 'test1',
                     method: 'GET',
                     path: '/api/v1/test1/test',
                     url: 'http://mymachine:6001'
                 }
-            ],
+            ,
         });
 
         nock('http://mymachine:6001')
@@ -62,22 +62,22 @@ describe('Dispatch GET requests', () => {
         await createEndpoint({
             method: 'GET',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{
-                ...endpointTest.redirect[0],
+            redirect: {
+                ...endpointTest.redirect,
                 method: 'GET',
-            }]
+            }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
             method: 'GET',
-            redirect: [
+            redirect:
                 {
                     microservice: 'test1',
                     method: 'GET',
                     path: '/api/v1/test1/test',
                     url: 'http://mymachine:6001'
                 }
-            ],
+
         });
 
         nock('http://mymachine:6001', { reqheaders: { authorization: `Bearer ${token}` } })
@@ -100,20 +100,20 @@ describe('Dispatch GET requests', () => {
         await createEndpoint({
             method: 'GET',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{
-                ...endpointTest.redirect[0],
+            redirect: {
+                ...endpointTest.redirect,
                 method: 'GET'
-            }]
+            }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
             method: 'GET',
-            redirect: [{
+            redirect: {
                 microservice: 'test1',
                 method: 'GET',
                 path: '/api/v1/test1/test',
                 url: 'http://mymachine:6001'
-            }],
+            }
         });
 
         nock('http://mymachine:6001')

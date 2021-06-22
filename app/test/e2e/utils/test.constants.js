@@ -101,14 +101,13 @@ const endpointTest = {
     path: '/v1/dataset',
     method: 'POST',
     pathRegex: '',
-    redirect: [
+    redirect:
         {
             microservice: 'dataset',
             method: 'POST',
             path: '/api/v1/dataset',
             url: 'http://mymachine:6001'
-        }
-    ],
+        },
 };
 
 module.exports = {

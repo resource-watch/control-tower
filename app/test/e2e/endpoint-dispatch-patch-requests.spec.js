@@ -28,18 +28,17 @@ describe('Dispatch PATCH requests', () => {
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
             method: 'PATCH',
-            redirect: [{ ...endpointTest.redirect[0] }]
+            redirect: { ...endpointTest.redirect }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
+            redirect:
                 {
                     microservice: 'test1',
                     method: 'GET',
                     path: '/api/v1/test1/test',
                     url: 'http://mymachine:6001'
                 }
-            ],
         });
 
         nock('http://mymachine:6001')
@@ -63,18 +62,17 @@ describe('Dispatch PATCH requests', () => {
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
             method: 'PATCH',
-            redirect: [{ ...endpointTest.redirect[0] }]
+            redirect: { ...endpointTest.redirect }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
+            redirect:
                 {
                     microservice: 'test1',
                     method: 'GET',
                     path: '/api/v1/test1/test',
                     url: 'http://mymachine:6001'
                 }
-            ],
         });
 
         nock('http://mymachine:6001', { reqheaders: { authorization: `Bearer ${token}` } })
@@ -99,18 +97,18 @@ describe('Dispatch PATCH requests', () => {
         await createEndpoint({
             pathRegex: new RegExp('^/api/v1/dataset$'),
             method: 'PATCH',
-            redirect: [{ ...endpointTest.redirect[0] }]
+            redirect: { ...endpointTest.redirect }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [
+            redirect:
                 {
                     microservice: 'test1',
                     method: 'GET',
                     path: '/api/v1/test1/test',
                     url: 'http://mymachine:6001'
                 }
-            ],
+
         });
 
         nock('http://mymachine:6001', { reqheaders: { authorization: `Bearer ${token}` } })

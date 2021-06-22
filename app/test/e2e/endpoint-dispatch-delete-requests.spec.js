@@ -33,19 +33,19 @@ describe('Dispatch DELETE requests', () => {
         await createEndpoint({
             method: 'DELETE',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{
-                ...endpointTest.redirect[0],
+            redirect: {
+                ...endpointTest.redirect,
                 method: 'DELETE',
-            }]
+            }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
-            redirect: [{
+            redirect: {
                 microservice: 'test1',
                 method: 'DELETE',
                 path: '/api/v1/test1/test',
                 url: 'http://mymachine:6001'
-            }],
+            },
         });
 
         nock('http://mymachine:6001')
@@ -67,20 +67,20 @@ describe('Dispatch DELETE requests', () => {
         await createEndpoint({
             method: 'DELETE',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{
-                ...endpointTest.redirect[0],
+            redirect: {
+                ...endpointTest.redirect,
                 method: 'DELETE'
-            }]
+            }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
             method: 'DELETE',
-            redirect: [{
+            redirect: {
                 microservice: 'test1',
                 method: 'DELETE',
                 path: '/api/v1/test1/test',
                 url: 'http://mymachine:6001'
-            }],
+            },
         });
 
         nock('http://mymachine:6001', { reqheaders: { authorization: `Bearer ${token}` } })
@@ -106,20 +106,20 @@ describe('Dispatch DELETE requests', () => {
         await createEndpoint({
             method: 'DELETE',
             pathRegex: new RegExp('^/api/v1/dataset$'),
-            redirect: [{
-                ...endpointTest.redirect[0],
+            redirect: {
+                ...endpointTest.redirect,
                 method: 'DELETE'
-            }]
+            }
         });
         await createEndpoint({
             path: '/api/v1/test1/test',
             method: 'DELETE',
-            redirect: [{
+            redirect: {
                 microservice: 'test1',
                 method: 'DELETE',
                 path: '/api/v1/test1/test',
                 url: 'http://mymachine:6001'
-            }],
+            },
         });
 
         nock('http://mymachine:6001')

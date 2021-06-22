@@ -26,7 +26,7 @@ const Endpoint = new Schema({
         type: Boolean,
         default: false
     },
-    redirect: [{
+    redirect: {
         path: {
             type: String,
             required: true,
@@ -47,7 +47,7 @@ const Endpoint = new Schema({
             required: false,
             trim: true
         }
-    }],
+    },
     updatedAt: {
         type: Date,
         default: Date.now,
