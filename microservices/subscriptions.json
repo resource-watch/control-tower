@@ -144,6 +144,14 @@
         "method": "POST",
         "path": "/api/v1/subscriptions/check-hook"
       }
+    },
+    {
+      "path": "/v1/subscriptions/by-user/:userId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/subscriptions/by-user/:userId"
+      }
     }
   ]
 }

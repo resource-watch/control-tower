@@ -92,6 +92,14 @@
         "method": "POST",
         "path": "/api/v1/dataset/:dataset/recover"
       }
+    },
+    {
+      "path": "/v1/dataset/by-user/:userId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/dataset/by-user/:userId"
+      }
     }
   ]
 }

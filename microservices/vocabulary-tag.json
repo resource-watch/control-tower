@@ -322,6 +322,14 @@
       }
     },
     {
+      "path": "/v1/favourite/by-user/:userId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/favourite/by-user/:userId"
+      }
+    },
+    {
       "path": "/v1/collection",
       "method": "GET",
       "redirect": {
@@ -391,6 +399,14 @@
       "redirect": {
         "method": "POST",
         "path": "/api/v1/favourite/find-by-user"
+      }
+    },
+    {
+      "path": "/v1/collection/by-user/:userId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/collection/by-user/:userId"
       }
     }
   ]

@@ -34,6 +34,14 @@
       }
     },
     {
+      "path": "/v1/story/by-user/:userId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/by-user/:userId"
+      }
+    },
+    {
       "path": "/v1/story/user/:user_id",
       "method": "GET",
       "redirect": {

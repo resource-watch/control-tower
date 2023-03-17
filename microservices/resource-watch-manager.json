@@ -50,6 +50,14 @@
       }
     },
     {
+      "path": "/v1/dashboard/by-user/:userId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/dashboards/by-user/:userId"
+      }
+    },
+    {
       "path": "/v1/dashboard/:dashboard/clone",
       "method": "POST",
       "redirect": {
@@ -215,6 +223,14 @@
       "redirect": {
         "method": "DELETE",
         "path": "/api/topics/:topic"
+      }
+    },
+    {
+      "path": "/v1/topic/by-user/:userId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/topics/by-user/:userId"
       }
     },
     {

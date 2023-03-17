@@ -7,7 +7,7 @@
       "binary": true,
       "redirect": {
         "method": "GET",
-        "path": "/api/v1/proconfig/pro-config/:tech_title"
+        "path": "/api/v1/pro-config/:tech_title"
       }
     }
   ]

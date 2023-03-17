@@ -88,6 +88,14 @@
         "method": "DELETE",
         "path": "/api/v1/layer/:layer/expire-cache"
       }
+    },
+    {
+      "path": "/v1/layer/by-user/:userId",
+      "method": "DELETE",
+      "redirect": {
+        "method": "DELETE",
+        "path": "/api/v1/layer/by-user/:userId"
+      }
     }
   ]
 }
